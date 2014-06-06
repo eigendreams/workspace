@@ -1,0 +1,28 @@
+<launch>
+
+	<!-- machine tags -->
+	<machine name="c1" address="jakob-net" env-loader="/opt/ros/groovy/env.sh" user="jakob" password="********" default="true" />
+	<machine name="c2" address="finder-laptop" env-loader="/opt/ros/groovy/env.sh" user="finder-laptop" password="********" />
+
+	<!-- joystick node -->
+	<node machine="c1" respawn="true" pkg="joy" type="joy_node" name="joy_node" >
+		<param name="dev" type="string" value="/dev/input/js1" />
+		<param name="deadzone" value="0.05" />
+	</node>
+
+	<!-- rrhh_joy node -->
+	<node machine="c1" respawn="true" pkg="rrhh" type="joy.py" name="rrhh_joy" >
+		<param name="linear" value="5" type="int"/>
+		<param name="angular" value="0" type="int"/>
+		<param name="reverse" value="1" type="int"/>
+		<param name="start" value="8" type="int"/>
+		<param name="stop" value="2" type="int"/>
+	</node>
+	
+	<!-- rrhh_tf node -->
+	<node machine="c1" respawn="true" pkg="rrhh" type="tf.py" name="rrhh_tf" />
+
+	<!-- rosserial node, external -->
+	<node machine="c2" respawn="true" pkg="rosserial_python" type="serial_node.py" name="_serial_node" args="/dev/ttyUSB0" />
+
+</launch>

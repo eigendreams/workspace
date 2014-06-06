@@ -1,0 +1,10 @@
+<launch>
+
+	<!-- machine tags -->
+	<machine name="c1" address="jakob-net" env-loader="/opt/ros/hydro/env.sh" user="jakob" password="B9y0n6" default="true" />
+	<machine name="c2" address="finder-thinkpad" env-loader="/home/finder-think/workspace/catkin/devel/env.sh" user="finder-think" password="finder-think" />
+
+	<!-- rosserial node, external -->
+	<node machine="c2" respawn="true" pkg="rosserial_python" type="serial_node.py" name="node_1" args="/dev/ttyACM0" />
+
+</launch>

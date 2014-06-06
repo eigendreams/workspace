@@ -1,0 +1,38 @@
+<launch>
+
+    <!-- machine tags -->
+    <machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
+    <machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true" />
+    <machine name="c2_src" address="finder-thinkpad" env-loader="~/workspace/catkin/devel/env.sh" user="finder-think" password="finder-think" />
+    <machine name="c2_opt" address="finder-thinkpad" env-loader="/opt/ros/hydro/env.sh" user="finder-think" password="finder-think" />
+
+    <!-- rosserial node, external -->
+    <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode1" args="/dev/ttyACM0" />
+    <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode2" args="/dev/ttyACM1" />
+    <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode3" args="/dev/ttyACM2" />
+    
+    <!-- launching interfaces in finder -->
+    <node machine="c2_src" respawn="true" pkg="finder" type="interface_arm.py" name="interface_arm" />
+    <node machine="c2_src" respawn="true" pkg="finder" type="interface_diff.py" name="interface_diff" />
+    <node machine="c2_src" respawn="true" pkg="finder" type="interface_litarms.py" name="interface_litarms" />
+    
+    <!-- launching interfaces in remote system, correcting for virtual joy hook -->
+    <node machine="c1_src" respawn="true" pkg="finder" type="finderv2_testing_interface.py" name="finderv2_gui_1" >
+     <remap from="joy" to="joy1"/>
+    </node>
+    <node machine="c1_src" respawn="true" pkg="finder" type="finderv2_testing_interface.py" name="finderv2_gui_2" >
+     <remap from="joy" to="joy2"/>
+    </node>    
+    <node machine="c1_opt" respawn="true" pkg="joy" type="joy_node" name="joy_node_1">
+     <param name="dev" value="/dev/input/js1" />
+     <remap from="joy" to="joy1"/>
+    </node>
+    <node machine="c1_opt" respawn="true" pkg="joy" type="joy_node" name="joy_node_2">
+     <param name="dev" value="/dev/input/js2" />
+     <remap from="joy" to="joy2"/>
+    </node>
+    
+    <!-- power monitor, for laptop battery as of now -->
+    <node machine="c2_src" respawn="true" pkg="finder" type="battery_monitor.py" name="battery_monitor" />
+
+</launch>

@@ -1,0 +1,27 @@
+<launch>
+
+    <!-- machine tags -->
+    <machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
+    <machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true" />
+
+    <node machine="c1_opt" name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+	    <param name="video_device" value="/dev/video1" />
+	    <param name="image_width" value="320" />
+	    <param name="image_height" value="240" />
+	    <param name="pixel_format" value="yuyv" />
+	    <param name="camera_frame_id" value="usb_cam" />
+	    <param name="io_method" value="mmap"/>
+    </node>
+
+<!--
+    <node machine="c1_opt" name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/usb_cam/image_raw"/>
+		<param name="image_transport" type="string" value="compressed"/>
+	</node>
+-->
+	
+	<node machine="c1_src" pkg="navigation" name="detector_humanos" type="detector_humanos">
+		<remap from="/usb_cam1/image_raw" to="/usb_cam/image_raw" />
+	</node>
+	
+</launch>

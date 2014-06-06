@@ -1,0 +1,13 @@
+<launch>
+
+<node name="image_viewusb" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam/image_raw"/>
+    <param name="image_transport" type="string" value="compressed"/>
+</node>
+
+<node name="image_viewusb1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam1/image_raw"/>
+    <param name="image_transport" type="string" value="compressed"/>
+</node>
+
+</launch>

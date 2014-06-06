@@ -1,0 +1,11 @@
+<launch>
+
+  <node pkg="usb_cam" name="camara" type="usb_cam_node">
+   <param name="pixel_format" type="string" value="yuyv"/>
+  </node>
+
+  <node pkg="navigation" name="conversor_cv" type="conversor_cv">
+	<remap from="in" to="camara/image_raw"/>
+  </node>
+
+</launch>
