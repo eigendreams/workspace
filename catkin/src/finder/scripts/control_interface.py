@@ -115,7 +115,6 @@ class Finder_diff_joy:
 
         self.bl_active = data.buttons[self.buttons_names['left_trigger_button']]
         self.fr_active = data.axes[self.axes_names['right_trigger_pad']] - 1
-        print "fr_active_ " + str(self.fr_active)
         self.br_active = data.buttons[self.buttons_names['right_trigger_button']]
         self.fl_active = data.axes[self.axes_names['left_trigger_pad']] - 1 
 
