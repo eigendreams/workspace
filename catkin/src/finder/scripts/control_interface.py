@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import rospy
-from finder.msg import TwoWheelInt16
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool
 from std_msgs.msg import Int16

@@ -11,6 +11,6 @@
     </node>
     
     <node machine="c2_src" respawn="true" pkg="finder" type="battery_monitor.py" name="battery_monitor" />
-    <node machine="c1_src" respawn="true" pkg="finder" control_interface.py" name="control_interface" />
+    <node machine="c1_src" respawn="true" pkg="finder" type="control_interface.py" name="control_interface" />
     
 </launch>
