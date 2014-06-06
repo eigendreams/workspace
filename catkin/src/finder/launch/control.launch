@@ -1,0 +1,16 @@
+<launch>
+
+    <!-- machine tags -->
+    <machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
+    <machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true" />
+    <machine name="c2_src" address="finder-think" env-loader="~/workspace/catkin/devel/env.sh" user="finder" password="finder" />
+    <machine name="c2_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" user="finder" password="finder" />
+
+    <node machine="c1_opt" respawn="true" pkg="joy" type="joy_node" name="joy_node">
+     <param name="dev" value="/dev/input/js0" />
+    </node>
+    
+    <node machine="c2_src" respawn="true" pkg="finder" type="battery_monitor.py" name="battery_monitor" />
+    <node machine="c1_src" respawn="true" pkg="finder" control_interface.py" name="control_interface" />
+    
+</launch>

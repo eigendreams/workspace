@@ -183,12 +183,21 @@ class Finder_diff_joy:
 
         if self.fr_active:
             self.fr_rate = self.little_arm_rate
+        else:
+            self.fr_rate = 0
         if self.fl_active:
             self.fl_rate = self.little_arm_rate
+        else:
+            self.fl_rate = 0
         if self.br_active:
             self.br_rate = self.little_arm_rate
+        else:
+            self.br_rate = 0
         if self.bl_active:
             self.bl_rate = self.little_arm_rate
+        else:
+            self.bl_rate = 0
+
 
         if self.little_arm_reset == 1:
             if self.fr_active:
