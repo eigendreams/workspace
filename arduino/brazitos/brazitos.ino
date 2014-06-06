@@ -1,18 +1,17 @@
 #include "ros.h"
-#include "finder/FourArmsInt16.h"
-
+#include "std_msgs/Int16.h"
+#include "std_msgs/Empty.h"
 #include "Servo.h"
 #include "Talon.h"
 #include "Encoder.h"
-#include "SimplePID.h"
 
 ros::NodeHandle nh;
 
 // umbral, max
-TalonClass MTFR(2, 50); // NEW MOTOR
-TalonClass MTFL(2, 35);
-TalonClass MTBR(2, 35);
-TalonClass MTBL(2, 35);
+TalonClass MTFR(2, 70);
+TalonClass MTFL(2, 70);
+TalonClass MTBR(2, 70);
+TalonClass MTBL(2, 70);
 
 // pin, min, max, max_change, map
 EncoderClass ENCFR(A0, 0, 1023, 255, 100);
@@ -20,55 +19,44 @@ EncoderClass ENCFL(A1, 0, 1023, 255, 100);
 EncoderClass ENCBR(A2, 0, 1023, 255, 100);
 EncoderClass ENCBL(A3, 0, 1023, 255, 100);
 
-// P, I, D, Km, umbral, max
-SimplePID PIDFR(4, .5, 0, 0, 5, 50);
-SimplePID PIDFL(2, .5, 0, 0, 5, 35);
-SimplePID PIDBR(2, .5, 0, 0, 5, 35);
-SimplePID PIDBL(2, .5, 0, 0, 5, 35);
+// The incoming 6 DOF int16 information from ROS
+int fr_out = 0;
+int fl_out = 0;
+int br_out = 0;
+int bl_out = 0;
 
 // Encoder lectures
-int mtfr_lec;
-int mtfl_lec;
-int mtbr_lec;
-int mtbl_lec;
-
-// The incoming 6 DOF int16 information from ROS
-int mtfr_des = 0;
-int mtfl_des = 0;
-int mtbr_des = 0;
-int mtbl_des = 0;
-
-// All the subs handlers functions, update is asynchronous (done in the loop), keep names short
-void arms_des_cb(const finder::FourArmsInt16& d_msg) {
-  mtfr_des = d_msg.mtfr;  
-  mtfl_des = d_msg.mtfl;  
-  mtbr_des = d_msg.mtbr;  
-  mtbl_des = d_msg.mtbl;  
-}
-ros::Subscriber<finder::FourArmsInt16> arms_des_sub("traction_arms", arms_des_cb);
-
-// All the subs handlers functions, update is asynchronous (done in the loop), keep names short
-void pid_des_cb(const finder::FourArmsInt16& d_msg) {
-  float pid_p = (d_msg.mtfr / 1000.);
-  float pid_i = (d_msg.mtfl / 1000.);
-  float pid_d = (d_msg.mtbr / 1000.);
-  float pid_m = (d_msg.mtbl / 1000.);
-
-  PIDFR.setTunings(pid_p, pid_i, pid_d, pid_m);
-  PIDFL.setTunings(pid_p, pid_i, pid_d, pid_m);
-  PIDBR.setTunings(pid_p, pid_i, pid_d, pid_m);
-  PIDBL.setTunings(pid_p, pid_i, pid_d, pid_m);
-}
-ros::Subscriber<finder::FourArmsInt16> pid_des_sub("pid_des", pid_des_cb);
-
-// All the pubs msgs, keep names short
-finder::FourArmsInt16 arms_lec;
-ros::Publisher arms_lec_pub("traction_arms_lec", &arms_lec);
-
-finder::FourArmsInt16 arms_out;
-ros::Publisher arms_out_pub("traction_arms_out", &arms_out);
+int fr_lec;
+int fl_lec;
+int br_lec;
+int bl_lec;
 
 unsigned long milisLast = 0;
+unsigned long milisLastMsg = 0;
+bool timedOut = false;
+
+void fr_out_cb(const std_msgs::Int16& dmsg) {fr_out = dmsg.data;}
+void fl_out_cb(const std_msgs::Int16& dmsg) {fl_out = dmsg.data;}
+void br_out_cb(const std_msgs::Int16& dmsg) {br_out = dmsg.data;}
+void bl_out_cb(const std_msgs::Int16& dmsg) {bl_out = dmsg.data;}
+void alive_cb(const std_msgs::Empty& dmsg) {
+  milisLastMsg = millis();
+  timedOut = false;
+}
+ros::Subscriber<std_msgs::Int16> fr_out_sub("fr_out", fr_out_cb);
+ros::Subscriber<std_msgs::Int16> fl_out_sub("fl_out", fl_out_cb);
+ros::Subscriber<std_msgs::Int16> br_out_sub("br_out", br_out_cb);
+ros::Subscriber<std_msgs::Int16> bl_out_sub("bl_out", bl_out_cb);
+ros::Subscriber<std_msgs::Empty> alive_sub("alive", alive_cb);
+
+std_msgs::Int16 fr_lec_msg;
+std_msgs::Int16 fl_lec_msg;
+std_msgs::Int16 br_lec_msg;
+std_msgs::Int16 bl_lec_msg;
+ros::Publisher fr_lec_pub("fr_lec", &fr_lec_msg);
+ros::Publisher fl_lec_pub("fl_lec", &fl_lec_msg);
+ros::Publisher br_lec_pub("br_lec", &br_lec_msg);
+ros::Publisher bl_lec_pub("bl_lec", &bl_lec_msg);
 
 void setup() {
   MTFR.attach(3);
@@ -78,79 +66,55 @@ void setup() {
 
   nh.initNode();
 
-  nh.subscribe(pid_des_sub);
-  nh.subscribe(arms_des_sub);
-  nh.advertise(arms_lec_pub);
-  nh.advertise(arms_out_pub);
-}
-
-int select(int value) {
-  if (abs(value) > 251) return 0;
-  if (value > 503) return value - 1006;
-  if (value < -503) return value + 1006;
-  return value;
+  nh.subscribe(fr_out_sub);
+  nh.subscribe(fl_out_sub);
+  nh.subscribe(br_out_sub);
+  nh.subscribe(bl_out_sub);
+  nh.subscribe(alive_sub);
+  nh.advertise(fr_lec_pub);
+  nh.advertise(fl_lec_pub);
+  nh.advertise(br_lec_pub);
+  nh.advertise(bl_lec_pub);
 }
 
 void loop() {
   nh.spinOnce();
+
   unsigned long milisNow = millis();
 
   if (milisNow - milisLast >= 100) {
 
+    /*// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
+    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
+    if (milisNow - milisLastMsg >= 2000) {
+      fr_out = 0;
+      fl_out = 0;
+      br_out = 0;
+      bl_out = 0;
+      timedOut = true;
+    }*/
+
     // Obten los valores absolutos de los encoders
-    int mtfr_lecNow = ENCFR.read();
-    int mtfl_lecNow = ENCFL.read();
-    int mtbr_lecNow = ENCBR.read();
-    int mtbl_lecNow = ENCBL.read();
-
-    // Calcula el cambio obtenido de los encoders? 
-    int change_fr = mtfr_lecNow - mtfr_lec;
-    int change_fl = mtfl_lecNow - mtfl_lec;
-    int change_br = mtbr_lecNow - mtbr_lec;
-    int change_bl = mtbl_lecNow - mtbl_lec;
-
-    // Actualiza variables
-    mtfr_lec = mtfr_lecNow;
-    mtfl_lec = mtfl_lecNow;
-    mtbr_lec = mtbr_lecNow;
-    mtbl_lec = mtbl_lecNow;
-
-    // Pero si el cambio se sale de rango de 0 a 1006? Ajustando modulo 1006
-    change_fr = select(change_fr);
-    change_fl = select(change_fl);
-    change_br = select(change_br);
-    change_bl = select(change_bl)*-1;
-
-    // Y este cambio debe mapearse a algo de -100 a 100 (el signo se conserva)
-    change_fr = (change_fr * 200. / 1006.);
-    change_fl = (change_fl * 200. / 1006.);
-    change_br = (change_br * 200. / 1006.);
-    change_bl = (change_bl * 200. / 1006.);
-
-    // Y publicar los changes
-    arms_lec.mtfr = change_fr;
-    arms_lec.mtfl = change_fl;
-    arms_lec.mtbr = change_br;
-    arms_lec.mtbl = change_bl;
-    arms_lec_pub.publish(&arms_lec);
-
-    // Y ese cambio es el valor de entrada del PIDm
-    PIDFR.compute(change_fr, mtfr_des);
-    PIDFL.compute(change_fl, mtfl_des);
-    PIDBR.compute(change_br, mtbr_des);
-    PIDBL.compute(change_bl, mtbl_des);
+    fr_lec = ENCFR.read();
+    fl_lec = ENCFL.read();
+    br_lec = ENCBR.read();
+    bl_lec = ENCBL.read();
 
     // Y darle salida a cada motor en cada DOF
-    MTFR.write(-PIDFR.get()); //CHANGED!!!
-    MTFL.write(PIDFL.get());
-    MTBR.write(PIDBR.get());
-    MTBL.write(PIDBL.get());
+    MTFR.write(fr_out);
+    MTFL.write(fl_out);
+    MTBR.write(br_out);
+    MTBL.write(bl_out);
     
-    arms_out.mtfr = PIDFR.get();
-    arms_out.mtfl = PIDFL.get();
-    arms_out.mtbr = PIDBR.get();
-    arms_out.mtbl = PIDBL.get();
-    arms_out_pub.publish(&arms_out);
+    fr_lec_msg.data = fr_lec;
+    fl_lec_msg.data = fl_lec;
+    br_lec_msg.data = br_lec;
+    bl_lec_msg.data = bl_lec;
+
+    fr_lec_pub.publish(&fr_lec_msg);
+    fl_lec_pub.publish(&fl_lec_msg);
+    br_lec_pub.publish(&br_lec_msg);
+    bl_lec_pub.publish(&bl_lec_msg);
 
     milisLast = milisNow;
   }

@@ -1,130 +1,7 @@
-/*
- * New robotic arm control library, using the LEONARDO ONLY (needs more than 2K RAM)
- *
- * *****************************************************************************
- *
- * Device map:
- *
- * 	DOF		MOTOR		DRIVER		NEEDS		PINS		SENSOR		MODE
- * 	1		DC			SHIELD		EN, SE		3, 5		POT, MGN	A0, SPI
- * 	2		BIG DC		TALON		SERVO		7			MGN			A1, SPI
- * 	3		BIG DC		TALON		SERVO		8			MGN			A2, SPI
- * 	4		DC			SHIELD		EN, SE		4, 6		MGN			A3, SPI
- * 	5		SERVO		-			SERVO		9			-			-
- * 	6		DYN			-			DYN			0, 1, 2		-			-
- *
- * SPI takes pins 11, 12, 13 (in software mode because it's a LEONARDO, use 10 as CS if encoders are chained
- * DYN takes pins 0, 1, 2, NEEDS A LEONARDO!!! (because of Hardware Serial1)
- *
- * *****************************************************************************
- *
- * Pin map:
- *
- * 	PIN		DESC
- * 	0		Dynamixel RX-TX
- * 	1		Dynamixel RX-TX
- * 	2		Dynamixel direction select
- * 	3		DC Motor 1 Direction
- * 	4		DC Motor 2 Direction
- * 	5		DC Motor 1 Enable
- * 	6		DC Motor 2 Enable
- * 	7		Talon 1
- * 	8		Talon 2
- * 	9		Servo
- * 	10		AS5043 CS if chained encoders OR extra Servo
- * 	11		AS5043 PROG
- * 	12		AS5043 DO
- * 	13		AS5043 CLK
- *
- * 	A0		DC Motor ANALOG INPUT if potentiometer, if MGN then CS0 or AnalogOut
- * 	A1		AS5043 CS1 or AnalogOut
- * 	A2		AS5043 CS2 or AnalogOut
- * 	A3		AS5043 CS3 or AnalogOut
- *
- * *****************************************************************************
- *
- * The following libraries are needed:
- *
- *	Servo
- *	ros
- *	DynamixelSerial
- *	SimpleDynamixel
- *	SimpleDriver
- *	Talon
- *	SimpleServo
- *	AS5043
- *	Encoder
- *	SimplePID
- *
- * The ros library is a modified version for the Leonardo
- * The DynamixelSerial class needs a HardwareSerial object passed in the constructor
- * The SimpleDynamixel is a wrapper class for DynamixelSerial and needs one instance of it passed
- * The SimpleDriver is a wrapper class for motor control
- * The Talon is a simple class for Talon control (uses the Servo class)
- * The SimpleServo is a simple class for servo control (to ensure consistency with other libs)
- * The AS5043 class needs the pin numbers when used in software mode (software mode needed in LEONARDO)
- * The Encoder class is a wrapper for the AS5043 class and for an analogInput "equivalent" functionality
- * The SimplePID is a simple controller class
- *
- * *****************************************************************************
- *
- * Now, all sensors (and all sensor should be magnetic encoders, though the base sensor
- * could be a simple multiturn or endless pot) have a resolution of 10 bits, from 0
- * to 1023, now, only the first 4 DOF need any form of control, since the last 2 DOF,
- * being servos, can simply be written to with the desired angle value.
- *
- * However, there are differences between the use of small DC motors and the BIG DC motors. The
- * DC motors use a shield, and can be set with a PWM from 2 * (-127 to + 127). The Talon
- * motors, being "servo-like", could be called with an angle, but the encapsulating Talon
- * class deals with them as "motor-like" devices, going from -127 to +127. This is done
- * to ensure "orthogonality", and to create general control functions. Since -128 * 2 = -256 is
- * outside the range of PWM output, we must restrict values to [-127, +127].
- *
- * The max "angle" absolute value of the Servo output classes SimpleDynamixel and SimpleServo
- * can be specified in the constructor. This way, we can set "angles" for each servo as
- * however we like, -90 to +90, -127 to +127, etcetera, mapping to "standard" 0 to 180
- *
- * All motors, then, are set with values from -angle to +angle, be it speed (SimpleDriver, Talon)
- * or position (SimpleDynamixel, SimpleServo). Another class, SaberSerial, also follows this
- * convention (set in hardware too) with -127 to +127. The operation range is covered with Int16
- *
- * This way all sensors are 10 bits, and all actuators are 8/9/10 bits. Even though this loses
- * resolution in the PWM output of the simple motor driver and servo output of the Talon wrapper, we
- * consider that 255 values are enough for most non high precision scenarios, and that
- * the PWM signal does not loses appreciable effect. But we gain uniformity, consistency,
- * and less hassle when dealing with all the DOF for control tasks.
- *
- * *****************************************************************************
- *
- * All encoders use (or should use) the same AS5043Class instance. The "proper" way to read them
- * would be to use the read() method of the AS5043Class instance, and then get the information of each
- * encoder with the get() method of each EncoderClass instance. There is a read() method in the
- * EncoderClass, but using it is expensive (ALL sensor would be reread at each call, this takes
- * much more time and scrambles timeStamps and angle changes).
- *
- * *****************************************************************************
- *
- * Finally, since a resolution reduction is necessary in some of the DOFs, the same -127 to +127
- * convention can also be applied to encoder reads, if the max angle of the encoder is set to +127 at
- * construction, but could be set to something else too. This is particularly important if using a multiturn
- * pot to read position since resolution is constrained anyway. Or for example, when using a restricted
- * DOF, a resolution reduction is convenient. Also reduces noise, somewhat. Range is covered with Int16
- *
- * *****************************************************************************
- *
- * Keep in ming that the "best" initial request for each DOF should be something on the line of:
- *
- * 	BASE -> 0		(goes from -180 to +180)
- * 	BRAZO -> -90		(goes from -90 to +90)
- * 	ANTEBRAZO -> -90		(goes from -90 to +90)
- * 	MUNNIECA -> 0		(goes from -90 to +90)
- * 	PALMA -> 0		(goes from -90 to +90)
- * 	DYNAMIXEL -> 0		(goes from -90 to +90)
- */
 #define USE_USBCON
 #include "ros.h"
-#include "arm_interface/Arm.h"
 #include "std_msgs/Int16.h"
+#include "std_msgs/Empty.h"
 
 #include "Servo.h"
 #include "DynamixelSerial.h"
@@ -134,8 +11,6 @@
 #include "SimpleServo.h"
 #include "AS5043.h"
 #include "Encoder.h"
-#include "SimplePID.h"
-#include "SimpleOpen.h"
 
 ros::NodeHandle nh;
 
@@ -175,130 +50,143 @@ EncoderClass ENCBRAZO(&AS5043obj, A1, 350, 820, -100);
 EncoderClass ENCANTEBRAZO(& AS5043obj, A2, 550, 90, -100);
 EncoderClass ENCMUNNIECA(A3, 350, 895, 100, 100);
 
-// TODO Fix the numbers!!!
-// The set of PID controllers for each controllable DOF, set kp, ki, kd, km IN SECONDS!!!, last value is umbral for zero error/ zero output
-SimplePID PIDBASE(5, 0, 0, 0, 0, 100); // NEEDS an umbral of zero to avoid vanishing of the ITerm contribution (if set), because motor cannot hold itself
-SimplePID PIDBRAZO(4, 0, 0, 0, 7, 50);
-SimplePID PIDANTE(4, 0, 0, 0, 7, 50);
-SimplePID PIDMUNNIECA(5, 0, 0, 0, 0, 100);
-// TODO fix description!!! Not PID yet
-// float KScale, int StartValue, int OutputFixed (+/-)
-// SimpleOpen OPENMUNNIECA(0.9, 0, 127);
-
 // The incoming 6 DOF int16 information from ROS
-int base_des = 0;
-int brazo_des = 0;
-int antebrazo_des = 0;
-int munnieca_des = 0;
-int palma_des = 0;
-int dynamixel_des = 0;
+int base_out = 0;
+int arm_out = 0;
+int forearm_out = 0;
+int wrist_out= 0;
+int palm_out = 0;
+int gripper_out = 0;
 
-// // All the subs handlers functions, update is asynchronous (done in the loop), keep names short
-// void arm_des_cb(const arm_interface::Arm& d_msg) {
-// 	base_des = d_msg.base;
-// 	brazo_des = d_msg.brazo;
-// 	antebrazo_des = d_msg.antebrazo;
-// 	munnieca_des = d_msg.munnieca;
-// 	palma_des = d_msg.palma;
-// 	dynamixel_des = d_msg.dynamixelBASE;
-// }
-// ros::Subscriber<arm_interface::Arm> arms_des_sub("arm_motors", arm_des_cb);
-
-void arm_des_cb(const std_msgs::Int16& d_msg) {
-	base_des = d_msg.data;
- 	/*brazo_des = 0;
- 	antebrazo_des = 0;
- 	munnieca_des = 0;
- 	palma_des = 0;
- 	dynamixel_des = 0;*/
-}
-ros::Subscriber<std_msgs::Int16> arms_des_sub("motor_arm_base", arm_des_cb);
-
-// All the pubs msgs, keep names short
-arm_interface::Arm arms_lec;
-ros::Publisher arms_lec_pub("arm_lectures", &arms_lec);
+int base_lec;
+int arm_lec;
+int forearm_lec;
+int wrist_lec;
+int palm_lec;
+int gripper_lec;
 
 unsigned long milisLast = 0;
+unsigned long milisLastMsg = 0;
+bool timedOut = false;
+
+void base_out_cb(const std_msgs::Int16& dmsg) {base_out = dmsg.data;}
+void arm_out_cb(const std_msgs::Int16& dmsg) {arm_out = dmsg.data;}
+void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
+void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
+void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
+void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
+void alive_cb(const std_msgs::Empty& dmsg) {
+  milisLastMsg = millis();
+  timedOut = false;
+}
+ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
+ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
+ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
+ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
+ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
+ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
+ros::Subscriber<std_msgs::Empty> alive_sub("alive", alive_cb);
+
+std_msgs::Int16 base_lec_msg;
+std_msgs::Int16 arm_lec_msg;
+std_msgs::Int16 forearm_lec_msg;
+std_msgs::Int16 wrist_lec_msg;
+std_msgs::Int16 palm_lec_msg;
+std_msgs::Int16 gripper_lec_msg;
+ros::Publisher base_lec_pub("base_lec", &base_lec_msg);
+ros::Publisher arm_lec_pub("arm_lec", &arm_lec_msg);
+ros::Publisher forearm_lec_pub("forearm_lec", &forearm_lec_msg);
+ros::Publisher wrist_lec_pub("wrist_lec", &wrist_lec_msg);
+ros::Publisher palm_lec_pub("palm_lec", &palm_lec_msg);
+ros::Publisher gripper_lec_pub("gripper_lec", &gripper_lec_msg);
 
 void setup() {
 	BASE.begin();
 	MUNNIECA.begin();
-
 	BRAZO.attach(7);
 	ANTEBRAZO.attach(8);
 	PALMA.attach(10);
 
+	// Select encoders as digital
 	pinMode(A0, OUTPUT);
 	pinMode(A1, OUTPUT);
-
-	//servoobj.attach(10);
+	pinMode(A2, OUTPUT);
 
 	nh.initNode();
 
-	nh.subscribe(arms_des_sub);
-	nh.advertise(arms_lec_pub);
+	nh.subscribe(base_out_sub);
+	nh.subscribe(arm_out_sub);
+	nh.subscribe(forearm_out_sub);
+	nh.subscribe(wrist_out_sub);
+	nh.subscribe(palm_out_sub);
+	nh.subscribe(gripper_out_sub);
+	nh.subscribe(alive_sub);
+	nh.advertise(base_lec_pub);
+	nh.advertise(arm_lec_pub);
+	nh.advertise(forearm_lec_pub);
+	nh.advertise(wrist_lec_pub);
+	nh.advertise(palm_lec_pub);
+	nh.advertise(gripper_lec_pub);
 
-	// Comm at 1 Mhz
+	// Comm at 1 Mhz and ENC initialization
 	Dynamixelobj.begin(1000000UL, 2);
-	DYNAMIXEL.begin();
 	AS5043obj.begin();
-
-	// Initialize desired values to ACTUAL values (to avoid jerk)
-	base_des = ENCBASE.read();
-	brazo_des = ENCBRAZO.read();
-	antebrazo_des = ENCANTEBRAZO.read();
-	munnieca_des = 0;
-	palma_des = 0;
-	dynamixel_des = 0;
 }
 
 void loop() {
 	nh.spinOnce();
+
 	unsigned long milisNow = millis();
 
-	// Maybe in here
-	// MUNNIECA.write(OPENMUNNIECA.check());
-
 	// 20 Hz operation
-	if (milisNow - milisLast >= 50) {
+	if (milisNow - milisLast >= 100) {
 
-		milisLast = milisNow;
+		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
+	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
+	    /*if (milisNow - milisLastMsg >= 2000) {
+	      base_out = 0;
+	      arm_out = 0;
+	      forearm_out = 0;
+	      wrist_out = 0;		// CHECK THIS ONE!!!
+	      palm_out = 0;
+	      gripper_out = 0;
+	      timedOut = true;
+	    }*/
 
-		int base_lec = ENCBASE.readAngle();
-		int brazo_lec = ENCBRAZO.readAngle();
-		int antebrazo_lec = ENCANTEBRAZO.readAngle();
-		int munnieca_lec = ENCMUNNIECA.readAngle();
+	    // Obten los valores absolutos de los encoders
+	    base_lec = ENCBASE.read();
+	    arm_lec = ENCBRAZO.read();
+	    forearm_lec = ENCANTEBRAZO.read();
+	    wrist_lec = ENCMUNNIECA.read();
+	    palm_lec = PALMA.read();
+	    gripper_lec = DYNAMIXEL.read();
 
-		PIDBASE.compute(base_lec, base_des);
-		PIDBRAZO.compute(brazo_lec, brazo_des);
-		PIDANTE.compute(antebrazo_lec, antebrazo_des);
-		PIDMUNNIECA.compute(munnieca_lec, munnieca_des);
-		// OPENMUNNIECA.setGoal(munnieca_des);
+		BASE.write(base_out);
+		BRAZO.write(arm_out);
+		ANTEBRAZO.write(forearm_out);
+		MUNNIECA.write(wrist_out);
+		PALMA.write(palm_out);
+		DYNAMIXEL.write(gripper_out);
 
-		/*
-		BASE.write(PIDBASE.get());
-		BRAZO.write(PIDBRAZO.get());
-		ANTEBRAZO.write(PIDANTE.get());
-		MUNNIECA.write(OPENMUNNIECA.check());
-		PALMA.write(palma_des);
-		DYNAMIXEL.write(dynamixel_des);
-		*/
+		base_lec_msg.data = base_lec;
+		arm_lec_msg.data = arm_lec;
+		forearm_lec_msg.data = forearm_lec;
+		wrist_lec_msg.data = wrist_lec;
+		palm_lec_msg.data = palm_lec;
+		gripper_lec_msg.data = gripper_lec;
 
-		BASE.write(PIDBASE.get());
-		BRAZO.write(PIDBRAZO.get());//brazo_des);
-		ANTEBRAZO.write(PIDANTE.get());//antebrazo_des);
-		MUNNIECA.write(0*PIDMUNNIECA.get());
-		PALMA.write(palma_des);
-		DYNAMIXEL.write(dynamixel_des);
-
-		arms_lec.base = base_lec;
-		arms_lec.brazo = brazo_lec;
-		arms_lec.antebrazo = antebrazo_lec;
-		arms_lec.munnieca = munnieca_lec;
-		arms_lec.palma = PALMA.read();
-		arms_lec.dynamixel = DYNAMIXEL.read();
-
-		arms_lec_pub.publish(&arms_lec);
+		base_lec_pub.publish(&base_lec_msg);
+		delay(1);
+		arm_lec_pub.publish(&arm_lec_msg);
+		delay(1);
+		forearm_lec_pub.publish(&forearm_lec_msg);
+		delay(1);
+		wrist_lec_pub.publish(&wrist_lec_msg);
+		delay(1);
+		palm_lec_pub.publish(&palm_lec_msg);
+		delay(1);
+		gripper_lec_pub.publish(&gripper_lec_msg);
+		delay(1);
 	}
 }
 
