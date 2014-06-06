@@ -27,8 +27,6 @@ class Left_node:
         rospy.loginfo("left_node starting with name %s", self.nodename) 
         self.rate = rospy.get_param("param_global_rate", 10)
 
-        self.leftLecSub = rospy.Subscriber("left_lec", Int16, self.leftLecCb)
-        self.leftDesSub = rospy.Subscriber("left_des", Float32, self.leftDesCb)
         self.leftOutPub = rospy.Publisher("left_out", Int16)
         self.leftAngPub = rospy.Publisher("left_ang", Float32)
         self.leftVelPub = rospy.Publisher("left_vel", Float32)
@@ -75,6 +73,9 @@ class Left_node:
         # inits
         self.init_time = rospy.get_time()
         #self.angInit()
+
+        self.leftLecSub = rospy.Subscriber("left_lec", Int16, self.leftLecCb)
+        self.leftDesSub = rospy.Subscriber("left_des", Float32, self.leftDesCb)
 
 
     def map(self, x, in_min, in_max, out_min, out_max):

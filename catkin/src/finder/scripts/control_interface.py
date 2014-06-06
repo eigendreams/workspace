@@ -37,7 +37,7 @@ class Finder_diff_joy:
         self.axes_names = {'h_left_pad':0, 'v_left_pad':1, 'v_right_pad':4, 'h_right_pad':3, 'h_arrow': 6,
                             'left_trigger_pad': 2, 'right_trigger_pad': 5}
         self.buttons_names = {'reverse':1, 'left_trigger_button': 4, 'right_trigger_button': 5, 'right_pad_button': 10}
-        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)
+        
         
         # Setting up the output data type
         # self.wheelData = TwoWheelInt16()
@@ -100,6 +100,8 @@ class Finder_diff_joy:
         # self.last_angular_rate = 0        
 
         self.base_des = 0       
+
+        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)
         
     def joyCb(self, data):
 		
@@ -113,6 +115,7 @@ class Finder_diff_joy:
 
         self.bl_active = data.buttons[self.buttons_names['left_trigger_button']]
         self.fr_active = data.axes[self.axes_names['right_trigger_pad']] - 1
+        print "fr_active_ " + str(self.fr_active)
         self.br_active = data.buttons[self.buttons_names['right_trigger_button']]
         self.fl_active = data.axes[self.axes_names['left_trigger_pad']] - 1 
 
@@ -180,11 +183,11 @@ class Finder_diff_joy:
         # motor_traction_arm_br_rate = 0
         # motor_traction_arm_bl_rate = 0
 
-        if self.fr_active:
+        if self.fr_active < -1:
             self.fr_rate = self.little_arm_rate
         else:
             self.fr_rate = 0
-        if self.fl_active:
+        if self.fl_active < -1:
             self.fl_rate = self.little_arm_rate
         else:
             self.fl_rate = 0

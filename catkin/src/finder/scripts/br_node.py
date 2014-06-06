@@ -27,9 +27,6 @@ class Br_node:
         rospy.loginfo("br_node starting with name %s", self.nodename) 
         self.rate = rospy.get_param("param_global_rate", 10)
 
-        self.brResetSub = rospy.Subscriber("br_reset", Int16, self.brResetCb)
-        self.brLecSub = rospy.Subscriber("br_lec", Int16, self.brLecCb)
-        self.brDesSub = rospy.Subscriber("br_des", Float32, self.brDesCb)
         self.brOutPub = rospy.Publisher("br_out", Int16)
         self.brAngPub = rospy.Publisher("br_ang", Float32)
         self.brVelPub = rospy.Publisher("br_vel", Float32)
@@ -90,6 +87,10 @@ class Br_node:
         #self.angInit()
 
         self.init_flag = False;
+
+        self.brResetSub = rospy.Subscriber("br_reset", Int16, self.brResetCb)
+        self.brLecSub = rospy.Subscriber("br_lec", Int16, self.brLecCb)
+        self.brDesSub = rospy.Subscriber("br_des", Float32, self.brDesCb)
 
 
     def map(self, x, in_min, in_max, out_min, out_max):
