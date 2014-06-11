@@ -65,6 +65,8 @@ class Control_interface:
         self.bl_reset = 0   
 
         self.lock = False
+        self.fast_arms = False
+        self.fast_traction = False
 
         # THIS MUST BE AT THE END!!!
         self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)
@@ -75,6 +77,8 @@ class Control_interface:
         self.angular_rate   = data.axes[self.axes_names['left_stick_hor']] * 100
         self.linear_rate    = data.axes[self.axes_names['left_stick_ver']] * 100
 
+        # El lock existe para evitar que el presionar el eje cross_hor y otro boton a eje
+        # al mismo tiempo "desborde" el base_rate
         if not self.lock:
             if data.axes[self.axes_names['cross_hor']] != 0:
                 self.base_rate += data.axes[self.axes_names['cross_hor']] * -.1
@@ -82,13 +86,18 @@ class Control_interface:
         if data.axes[self.axes_names['cross_hor']] == 0:
             self.lock = False;
 
+        # Se reemplazaron por comparaciones para Booleanos (0 es False y 1 es True)
         self.bl_active = data.buttons[self.buttons_names['LB']]
         self.fr_active = data.axes[self.axes_names['RT']] < 0
         self.br_active = data.buttons[self.buttons_names['RB']]
         self.fl_active = data.axes[self.axes_names['LT']] < 0
 
+        # El valor de little arm rate es fijo, y puede ser -10 o + 10 como maximo
         self.little_arm_rate = data.axes[self.axes_names['right_stick_ver']] * 10.
-        self.little_arm_reset = data.buttons[self.buttons_names['btn_stick_right']]
+        self.little_arm_reset = data.buttons[self.buttons_names['B']]
+
+        self.fast_traction = data.buttons[self.buttons_names['btn_stick_left']]
+        self.fast_arms = data.buttons[self.buttons_names['btn_stick_right']]
 
         
     def motorTractionUpdate(self):
@@ -114,27 +123,37 @@ class Control_interface:
 
     def motorTractionArmUpdate(self):
 
+        if self.fast_arms:
+            self.tmp_rate = self.little_arm_rate * 2
+        else:
+            self.tmp_rate = self.little_arm_rate 
+
         if self.fr_active:
-            self.fr_rate = self.little_arm_rate
+            self.fr_rate = self.tmp_rate
         else:
             self.fr_rate = 0
         if self.fl_active:
-            self.fl_rate = self.little_arm_rate
+            self.fl_rate = self.tmp_rate
         else:
             self.fl_rate = 0
         if self.br_active:
-            self.br_rate = self.little_arm_rate
+            self.br_rate = self.tmp_rate
         else:
             self.br_rate = 0
         if self.bl_active:
-            self.bl_rate = self.little_arm_rate
+            self.bl_rate = self.tmp_rate
         else:
             self.bl_rate = 0
+
+        self.frPub.publish(self.fr_rate * -1)
+        self.flPub.publish(self.fl_rate * -1)
+        self.brPub.publish(self.br_rate)
+        self.blPub.publish(self.bl_rate * -1)
 
         if self.little_arm_reset == 1:
             if self.fr_active:
                 self.fr_rate = 0
-                self.frResetPub.publish(1)
+                self.frResetPub.publish(1)  
             if self.fl_active:
                 self.fl_rate = 0
                 self.flResetPub.publish(1)
@@ -143,12 +162,12 @@ class Control_interface:
                 self.brResetPub.publish(1)
             if self.bl_active:
                 self.bl_rate = 0
-                self.blResetPub.publish(1)                                              
-
-        self.frPub.publish(self.fr_rate * -1)
-        self.flPub.publish(self.fl_rate * -1)
-        self.brPub.publish(self.br_rate)
-        self.blPub.publish(self.bl_rate * -1)
+                self.blResetPub.publish(1)
+        else:
+            self.frResetPub.publish(0)
+            self.flResetPub.publish(0)   
+            self.brResetPub.publish(0)       
+            self.blResetPub.publish(0)                                
 
         print "fr: " + str(self.fr_rate)
         print "fl: " + str(self.fl_rate)
