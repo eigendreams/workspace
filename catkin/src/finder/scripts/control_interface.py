@@ -2,9 +2,9 @@
 # -*- coding: utf8 -*-
 
 import rospy
+from std_msgs.msg import Bool
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
-from std_msgs.msg import Bool
 from sensor_msgs.msg import Joy
 
 class Control_interface:
@@ -105,6 +105,10 @@ class Control_interface:
         left_des = self.linear_rate + self.angular_rate
         right_des = self.linear_rate - self.angular_rate
 
+        if not self.fast_traction:
+            left_des = left_des / 2
+            right_des = right_des / 2
+
         left_des = self.constrain(left_des,-100,100)
         right_des = self.constrain(right_des,-100,100)
 
@@ -145,11 +149,6 @@ class Control_interface:
         else:
             self.bl_rate = 0
 
-        self.frPub.publish(self.fr_rate * -1)
-        self.flPub.publish(self.fl_rate * -1)
-        self.brPub.publish(self.br_rate)
-        self.blPub.publish(self.bl_rate * -1)
-
         if self.little_arm_reset == 1:
             if self.fr_active:
                 self.fr_rate = 0
@@ -167,7 +166,12 @@ class Control_interface:
             self.frResetPub.publish(0)
             self.flResetPub.publish(0)   
             self.brResetPub.publish(0)       
-            self.blResetPub.publish(0)                                
+            self.blResetPub.publish(0)      
+
+        self.frPub.publish(self.fr_rate * -1)
+        self.flPub.publish(self.fl_rate * -1)
+        self.brPub.publish(self.br_rate)
+        self.blPub.publish(self.bl_rate * -1)                          
 
         print "fr: " + str(self.fr_rate)
         print "fl: " + str(self.fl_rate)
@@ -183,7 +187,7 @@ class Control_interface:
             self.motorArmUpdate()
             self.motorTractionArmUpdate()
             r.sleep()
-
+            
 
     def constrain(self, value, lower_limit, higher_limit):
         

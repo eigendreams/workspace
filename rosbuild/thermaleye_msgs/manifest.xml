@@ -1,0 +1,17 @@
+<package>
+  <description brief="thermaleye_msgs">
+
+     thermaleye_msgs
+
+  </description>
+  <author>jakob</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/thermaleye_msgs</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+
