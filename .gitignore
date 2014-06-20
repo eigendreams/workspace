@@ -2,6 +2,8 @@ backups/
 git/
 tmp/
 trash/
+maps/
 **/bin/
 **/build/
 **/lib/
+*.*
