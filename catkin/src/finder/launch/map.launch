@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="geotiff_map_file_path" default="/home/jakob/workspace/maps"/>
+  <arg name="map_file_path" value="$(arg geotiff_map_file_path)"/>
+  <remap from="image_percept" to="worldmodel/image_percept" />
+
+  <param name="pub_map_odom_transform" value="true"/> 
+  <param name="map_frame" value="map"/> 
+  <param name="base_frame" value="base_frame"/> 
+  <param name="odom_frame" value="odom"/>
+
+  <node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node">
+    <param name="min_ang" value="-2" />
+    <param name="max_ang" value="2" />
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 /map /odom 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="0 0 0 0 0 0 /odom /base_footprint 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_link" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_link_2_base_stabilized_link" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_stablized_2_base_frame" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_frame_2_laser_link" args="0 0 0 0 0 0 /base_frame /laser 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_2_nav_link" args="0 0 0 0 0 0 /base_frame /nav 100"/>
+
+  <node pkg="rviz" type="rviz" name="rviz" args="-d rviz_cfg.rviz"/>
+
+  <node name="usb_cam_0" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="mjpeg" />
+    <param name="camera_frame_id" value="usb_cam_0" />
+    <param name="io_method" value="mmap" />
+    <rosparam file="/home/jakob/workspace/cam_cal.yml"/>
+  </node>
+
+  <node name="qrcode" pkg="hector_qrcode_detection" type="qrcode_detection_node" output="screen">
+    <remap from="image" to="usb_cam_0/image_raw" />
+  </node>
+
+
+
+  <node pkg="hector_object_tracker" type="object_tracker" name="object_tracker" output="screen">
+      <param name="project_objects" type="bool" value="false" />
+      <param name="min_height" type="double" value="-0.5" />
+      <param name="max_height" type="double" value="0.4" />
+      <param name="angle_variance" type="double" value="0.121846968"/>
+      <param name="pending_support" type="double" value="1.0" />
+      <param name="active_support" type="double" value="10" />
+      <param name="publish_interval" type="double" value="1" />
+      <remap from="visualization_marker" to="worldmodel/visualization_marker" />
+      <remap from="visualization_marker_array" to="worldmodel/visualization_marker_array" />
+<!--     
+      <rosparam>
+        verification_services: [
+           { service: victim_verification/verify_victim, type: object, class_id: victim, ignore: true },
+           { service: thermal_self_filter/verify_percept, type: percept, class_id: victim, required: true },
+        ]
+      </rosparam>
+-->
+  </node>
+
+<!--
+  <node pkg="hector_object_tracker" type="object_tracker" name="object_tracker" output="screen">
+      <param name="project_objects" type="bool" value="true" />
+      <param name="angle_variance" type="double" value="0.121846968"/>
+      <param name="publish_interval" type="double" value="1.0" />
+
+      <rosparam>
+        victim:
+          pending_support: 1.0
+          active_support: 10.0
+          min_height: -0.5
+          max_height: 0.2
+          marker_color: [0.8, 0.0, 0.0]
+        qrcode:
+          active_support: 1.0
+          marker_color: [0.0, 0.0, 0.8]
+-->
+<!--
+        verification_services:
+          - service: victim_verification/verify_victim
+            type: object
+            class_id: victim
+            ignore: true
+          - service: thermal_self_filter/verify_percept
+            type: percept
+            class_id: victim
+            required: false
+        negative_update:
+          - topic: thermal/camera_info
+            class_id: victim
+            min_distance: 0.0
+            max_distance: 1.0
+            negative_support: 0.5
+-->
+<!--
+      </rosparam>
+-->
+<!--
+      <remap from="visualization_marker" to="worldmodel/visualization_marker" />
+      <remap from="visualization_marker_array" to="worldmodel/visualization_marker_array" />
+    </node>
+-->
+
+  <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
+  <arg name="base_frame" default="base_footprint"/>
+  <arg name="odom_frame" default="nav"/>
+  <arg name="pub_map_odom_transform" default="true"/>
+  <arg name="scan_subscriber_queue_size" default="5"/>
+  <arg name="scan_topic" default="scan"/>
+  <arg name="map_size" default="1024"/>
+  
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <!-- Frame names -->
+    <param name="map_frame" value="map" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="odom_frame" value="$(arg odom_frame)" />
+    
+    <!-- Tf use -->
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="true"/>
+    <param name="pub_map_odom_transform" value="$(arg pub_map_odom_transform)"/>
+    
+    <!-- Map size / start point -->
+    <param name="map_resolution" value="0.050"/>
+    <param name="map_size" value="$(arg map_size)"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5" />
+    <param name="map_multi_res_levels" value="2" />
+    
+    <!-- Map update parameters -->
+    <param name="update_factor_free" value="0.4"/>
+    <param name="update_factor_occupied" value="0.9" />    
+    <param name="map_update_distance_thresh" value="0.4"/>
+    <param name="map_update_angle_thresh" value="0.06" />
+    <param name="laser_z_min_value" value = "-1.0" />
+    <param name="laser_z_max_value" value = "1.0" />
+    
+    <!-- Advertising config --> 
+    <param name="advertise_map_service" value="true"/>
+    
+    <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
+    <param name="scan_topic" value="$(arg scan_topic)"/>
+    
+    <!-- Debug parameters -->
+    <!--
+      <param name="output_timing" value="false"/>
+      <param name="pub_drawings" value="true"/>
+      <param name="pub_debug_output" value="true"/>
+    -->
+    <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
+  </node>
+
+   <arg name="trajectory_source_frame_name" default="/base_link"/>
+   <arg name="trajectory_update_rate" default="4"/>
+   <arg name="trajectory_publish_rate" default="0.25"/>
+   <arg name="map_file_base_name" default="hector_slam_map"/>
+  
+  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
+    <param name="target_frame_name" type="string" value="/map" />
+    <param name="source_frame_name" type="string" value="$(arg trajectory_source_frame_name)" />
+    <param name="trajectory_update_rate" type="double" value="$(arg trajectory_update_rate)" />
+    <param name="trajectory_publish_rate" type="double" value="$(arg trajectory_publish_rate)" />
+  </node>
+
+  <node pkg="hector_geotiff" type="geotiff_node" name="hector_geotiff_node" output="screen" launch-prefix="nice -n 15">
+    <remap from="map" to="/dynamic_map" />
+    <param name="map_file_path" type="string" value="$(arg map_file_path)" />
+    <param name="map_file_base_name" type="string" value="$(arg map_file_base_name)" />
+    <param name="geotiff_save_period" type="double" value="10" />
+    <param name="draw_background_checkerboard" type="bool" value="true" />
+    <param name="draw_free_space_grid" type="bool" value="true" />
+    <param name="plugins" type="string" value="hector_worldmodel_geotiff_plugins/QRCodeMapWriter" />
+    <param name="QRCodeMapWriter/draw_all_objects" value="true" />
+    <param name="QRCodeMapWriter/class_id" value="qrcode" />
+  </node>
+<!--
+    <arg name="trajectory_source_frame_name" value="scanmatcher_frame"/>
+-->
+
+<!--
+  <node name="qrcode_detection_kinect" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection openni/openni_nodelet_manager">
+    <remap from="openni/image"             to="openni/rgb/image_mono" />
+    <remap from="openni/image_percept"     to="worldmodel/image_percept" />
+    <remap from="openni/image/qrcode"      to="image/qrcode" />
+    <remap from="openni/image/camera_info" to="image/camera_info" />
+  </node>
+-->
+
+<!--
+  <node name="qrcode_detection_pseye_left" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection pseye_camera_left">
+    <remap from="image" to="left/image_mono" />
+  </node>
+-->
+
+<!--
+  <node name="qrcode_detection_pseye_right" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection pseye_camera_right">
+    <remap from="image" to="right/image_mono" />
+  </node>
+-->
+
+</launch>
