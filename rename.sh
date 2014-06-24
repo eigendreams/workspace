@@ -13,4 +13,6 @@ sed -i -e "s/jakob/$user_name/" /home/$user_name/workspace/rosbuild/setup.bash
 sed -i -e "s/jakob-think/$host_name/"  /home/$user_name/workspace/rosbuild/setup.sh
 sed -i -e "s/jakob/$user_name/" /home/$user_name/workspace/rosbuild/setup.sh
 
+sed -i -e "s/jakob-think/$host_name/"  /home/$user_name/workspace/.bashrc
+sed -i -e "s/jakob/$user_name/" /home/$user_name/workspace/.bashrc
 
