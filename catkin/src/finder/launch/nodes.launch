@@ -1,19 +1,15 @@
 <?xml version="1.0"?>
+
 <launch>
 
-    <!-- machine tags -->
-    <machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
-    <machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true" />
-    <machine name="c2_src" address="finder-think" env-loader="~/workspace/catkin/devel/env.sh" user="finder" password="finder" />
-    <machine name="c2_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" user="finder" password="finder" />
-
     <!-- launching interfaces in finder -->
-    <node machine="c2_src" respawn="true" pkg="finder" type="base_node.py" name="base_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="left_node.py" name="left_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="right_node.py" name="right_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="fr_node.py" name="fr_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="fl_node.py" name="fl_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="br_node.py" name="br_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="bl_node.py" name="bl_node" />
+    <node machine="c2_src" respawn="true" pkg="finder" type="base_node.py" name="base_node" />
+
     
 </launch>

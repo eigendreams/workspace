@@ -21,7 +21,7 @@ class Base_node:
         self.base_enc_ana = False
         self.base_enc_max = 1023
         self.base_ang_def = 0
-        self.base_offset = 745
+        self.base_offset = 245
 
         # PID control parameters
         self.kp = 100

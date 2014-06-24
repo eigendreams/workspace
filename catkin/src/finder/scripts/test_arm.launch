@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch>
+  
+  <!--<include file="$(find finder)/launch/video0_test.launch"/>-->
+  <include file="$(find finder)/launch/machines.launch"/>
+  
+  <node machine="c2_src" respawn="true" pkg="finder" type="arm_fixed_node.py" name="arm_fixed_node" />
+  <node machine="c2_src" respawn="true" pkg="finder" type="arm_node.py" name="arm_node" />
+  <node machine="c2_src" respawn="true" pkg="finder" type="forearm_node.py" name="forearm_node" />
+  <node machine="c2_src" respawn="true" pkg="finder" type="wrist_node.py" name="wrist_node" />
+  <node machine="c2_src" respawn="true" pkg="finder" type="palm_node.py" name="palm_node" />
+  <node machine="c2_src" respawn="true" pkg="finder" type="gripper_node.py" name="gripper_node" />
+
+</launch>

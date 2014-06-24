@@ -3,6 +3,7 @@ git/
 tmp/
 trash/
 maps/
+ftz/
 **/bin/
 **/build/
 **/lib/

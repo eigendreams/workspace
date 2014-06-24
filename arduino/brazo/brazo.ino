@@ -143,7 +143,7 @@ void loop() {
 
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-	    /*if (milisNow - milisLastMsg >= 2000) {
+	    if (milisNow - milisLastMsg >= 3500) {
 	      base_out = 0;
 	      arm_out = 0;
 	      forearm_out = 0;
@@ -151,7 +151,7 @@ void loop() {
 	      palm_out = 0;
 	      gripper_out = 0;
 	      timedOut = true;
-	    }*/
+	    }
 
 	    // Obten los valores absolutos de los encoders
 	    base_lec = ENCBASE.read();
@@ -175,18 +175,12 @@ void loop() {
 		palm_lec_msg.data = palm_lec;
 		gripper_lec_msg.data = gripper_lec;
 
-		base_lec_pub.publish(&base_lec_msg);
-		delay(1);
-		arm_lec_pub.publish(&arm_lec_msg);
-		delay(1);
-		forearm_lec_pub.publish(&forearm_lec_msg);
-		delay(1);
-		wrist_lec_pub.publish(&wrist_lec_msg);
-		delay(1);
-		palm_lec_pub.publish(&palm_lec_msg);
-		delay(1);
-		gripper_lec_pub.publish(&gripper_lec_msg);
-		delay(1);
+		base_lec_pub.publish(&base_lec_msg); delay(1);
+		arm_lec_pub.publish(&arm_lec_msg); delay(1);
+		forearm_lec_pub.publish(&forearm_lec_msg); delay(1);
+		wrist_lec_pub.publish(&wrist_lec_msg); delay(1);
+		palm_lec_pub.publish(&palm_lec_msg); delay(1);
+		gripper_lec_pub.publish(&gripper_lec_msg); delay(1);
 	}
 }
 

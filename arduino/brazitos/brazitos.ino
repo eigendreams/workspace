@@ -84,15 +84,15 @@ void loop() {
 
   if (milisNow - milisLast >= 100) {
 
-    /*// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
+    // Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
     // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-    if (milisNow - milisLastMsg >= 2000) {
+    if (milisNow - milisLastMsg >= 3500) {
       fr_out = 0;
       fl_out = 0;
       br_out = 0;
       bl_out = 0;
       timedOut = true;
-    }*/
+    }
 
     // Obten los valores absolutos de los encoders
     fr_lec = ENCFR.read();

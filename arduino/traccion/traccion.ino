@@ -79,13 +79,13 @@ void loop() {
 	// 20 Hz / 50 ms operation is best, it seems
 	if (milisNow - milisLast >= 100) {
 
-		/*// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
+		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 		// to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-		if (milisNow - milisLastMsg >= 5000) {
+		if (milisNow - milisLastMsg >= 3500) {
 			left_out = 0;
 			right_out = 0;
 			timedOut = true;
-		}*/
+		}
 
 		left_lec = ENCLEFT.read();
 		right_lec = ENCRIGHT.read();

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<!-- machine tags -->
+	<machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
+	<machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true"/>
+	<machine name="c2_src" address="finder-think" env-loader="/home/finder/workspace/catkin/devel/env.sh" user="finder" password="finder"  />
+	<machine name="c2_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" user="finder" password="finder" />
+	 
+</launch>
