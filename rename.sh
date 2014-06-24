@@ -7,10 +7,10 @@ sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/catkin/src/fin
 sed -i -e 's/jakob/$user_name/g' /home/$user_name/workspace/rosbuild/.rosinstall
 sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/rosbuild/.rosinstall
 
-sed -i -e 's/jakob/$user_name/g' /home/$user_name/workspace/rosbuild/.setup.bash
-sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/rosbuild/.setup.bash
+sed -i -e 's/jakob/$user_name/g' /home/$user_name/workspace/rosbuild/setup.bash
+sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/rosbuild/setup.bash
 
-sed -i -e 's/jakob/$user_name/g' /home/$user_name/workspace/rosbuild/.setup.sh
-sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/rosbuild/.setup.sh
+sed -i -e 's/jakob/$user_name/g' /home/$user_name/workspace/rosbuild/setup.sh
+sed -i -e 's/jakob-think/$host_name/g' /home/$user_name/workspace/rosbuild/setup.sh
 
 
