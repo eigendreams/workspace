@@ -1,8 +1,9 @@
 Modificar los archivos:
 
+Ejecutar el archivo rename.sh o manualmente las cosas:
+
 .bashrc
-catkin/src/finder/launch/video0_test.launch
-catkin/src/finder/launch/geotiff_mapper_test.launch
+catkin/src/finder/launch/machines_test.launch
 rosbuild/.rosinstall
 rosbuild/.setup.bash
 rosbuild/.setup.sh
