@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 
 <launch>
+
+   <include file="$(find finder)/launch/machines.launch"/>
+
    <arg name="map" default="/dynamic_map"/>
-   <arg name="map_" default="/scanmatcher_map"/>
+   <arg name="map_bk" default="/scanmatcher_map"/>
 
    <arg name="trajectory_source_frame_name" default="/base_link"/>
    <arg name="trajectory_update_rate" default="4"/>
    <arg name="trajectory_publish_rate" default="0.25"/>
-   <arg name="map_file_path" default="/home/jakob/workspace/maps"/>
+   <arg name="map_file_path" default="/home/$(arg username)/workspace/maps"/>
    <arg name="map_file_base_name" default="hector_slam_map"/>
   
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">

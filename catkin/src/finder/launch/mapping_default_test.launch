@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 
 <launch>
+
+  <include file="$(find finder)/launch/machines.launch"/>
+  
   <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
   <arg name="base_frame" default="base_frame"/>
   <arg name="odom_frame" default="odom"/>

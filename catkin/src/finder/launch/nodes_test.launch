@@ -2,6 +2,8 @@
 
 <launch>
 
+	<include file="$(find finder)/launch/machines.launch"/>
+	
     <!-- launching interfaces in finder -->
     <node machine="c2_src" respawn="true" pkg="finder" type="left_node.py" name="left_node" />
     <node machine="c2_src" respawn="true" pkg="finder" type="right_node.py" name="right_node" />

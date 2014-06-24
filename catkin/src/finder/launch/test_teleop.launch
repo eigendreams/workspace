@@ -4,10 +4,10 @@
 
 	<include file="$(find finder)/launch/machines.launch"/>
 	
-  	<include file="$(find finder)/launch/arduinos.launch"/>
-  	<include file="$(find finder)/launch/cam_launch.launch"/>
-  	<include file="$(find finder)/launch/nodes.launch"/>
-  	<include file="$(find finder)/launch/control.launch"/>
+  	<include file="$(find finder)/launch/arduinos_test.launch"/>
+  	<include file="$(find finder)/launch/cam_launch_test.launch"/>
+  	<include file="$(find finder)/launch/nodes_test.launch"/>
+  	<include file="$(find finder)/launch/control_test.launch"/>
 
   	<node machine="c2_src" respawn="true" pkg="finder" type="alive.py" name="alive_node" />
  
