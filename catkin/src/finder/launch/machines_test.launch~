@@ -3,7 +3,7 @@
 <launch>
 
 	<arg name="username" default="jakob"/>
-	<arg name="hostname" default="jakob-think"/>
+	<arg name="hostname" default=""/>
 	<arg name="qr_camera" default="usb_cam_1/image_raw"/>
 
 	<!-- machine tags -->
