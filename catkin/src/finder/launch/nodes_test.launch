@@ -2,16 +2,13 @@
 
 <launch>
 
-	<include file="$(find finder)/launch/machines_test.launch"/>
-	
     <!-- launching interfaces in finder -->
-    <node machine="c2_src" respawn="true" pkg="finder" type="left_node.py" name="left_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="right_node.py" name="right_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="fr_node.py" name="fr_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="fl_node.py" name="fl_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="br_node.py" name="br_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="bl_node.py" name="bl_node" />
-    <node machine="c2_src" respawn="true" pkg="finder" type="base_node.py" name="base_node" />
-
+    <node respawn="true" pkg="finder" type="left_node.py" name="left_node" />
+    <node respawn="true" pkg="finder" type="right_node.py" name="right_node" />
+    <node respawn="true" pkg="finder" type="fr_node.py" name="fr_node" />
+    <node respawn="true" pkg="finder" type="fl_node.py" name="fl_node" />
+    <node respawn="true" pkg="finder" type="br_node.py" name="br_node" />
+    <node respawn="true" pkg="finder" type="bl_node.py" name="bl_node" />
+    <node respawn="true" pkg="finder" type="base_node.py" name="base_node" />
     
 </launch>

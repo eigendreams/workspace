@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 
 <launch>
-	
-	<include file="$(find finder)/launch/machines_test.launch"/>
 
 	<node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node">
 	    <param name="min_ang" value="-2" />

@@ -13,7 +13,6 @@
     <rosparam file="/home/jakob/workspace/cam_cal.yml"/>
   </node>
 -->
-  <include file="$(find finder)/launch/machines_test.launch"/>
   
   <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video1" />

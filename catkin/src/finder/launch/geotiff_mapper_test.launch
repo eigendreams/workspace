@@ -2,8 +2,6 @@
 
 <launch>
 
-   <include file="$(find finder)/launch/machines_tets.launch"/>
-
    <arg name="map" default="/dynamic_map"/>
    <arg name="map_bk" default="/scanmatcher_map"/>
 
