@@ -109,14 +109,14 @@ fi
 #################################################################
 source /opt/ros/hydro/setup.bash
 source ~/workspace/catkin/devel/setup.bash
-source ~/workspace/rosbuild/setup.bash
+#source ~/workspace/rosbuild/setup.bash
 
 export ROS_WORKSPACE=$ROS_WORKSPACE:~/workspace/catkin:~/workspace/rosbuild
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/workspace/catkin/src:~/workspace/rosbuild
 
-export ROS_HOSTNAME=$HOSTNAME
-export ROS_MASTER_URI=http://$HOSTNAME:11311
-#export ROS_MASTER_URI=http://finder-think:11311
+export ROS_HOSTNAME=finder-think
+#export ROS_MASTER_URI=http://jakob-think:11311
+export ROS_MASTER_URI=http://finder-think:11311
 
 export EDITOR='nano -w'
 export ROS_OS_OVERRIDE=ubuntu:12.04
