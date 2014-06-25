@@ -1,0 +1,44 @@
+<div ng-include="'partials/navbar'"></div>
+
+
+<div class="container btn-container">
+  <!-- <div class="row">
+    <div ng-repeat="">
+      <div class="text-center col-md-4">
+        <div class="btn btn-warning" ng-click="startNode(node)">Iniciar {{node}}</div>
+      </div>
+      <div class="text-center col-md-4">
+        <div class="btn btn-warning" ng-click="stopNode(node)">Detener {{node}}</div>
+      </div>
+      <div class="text-center col-md-4">
+        <div class="btn" ng-class="{'btn-default':(state==='0'),'btn-success':(state!=='0')}">State</div>
+      </div>
+    </div>
+  </div>
+  <div class="row"> -->
+  <div class="row">
+    <div ng-repeat="(node, state) in nodes">
+      <!-- <div class="text-center col-md-4">
+        <div class="btn btn-warning" ng-click="startNode(node)">Iniciar {{node}}</div>
+      </div>
+      <div class="text-center col-md-4">
+        <div class="btn btn-warning" ng-click="stopNode(node)">Detener {{node}}</div>
+      </div> -->
+      <div class="text-center col-md-4">
+        <div style="width: 150px" class="btn" ng-class="{'btn-default':(state==='0'),'btn-success':(state!=='0')}" ng-click="toggleNode(node)">{{node}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <img style="" class="img-responsive" src="http://localhost:8080/stream?topic=/usb_cam_1/image_raw?quality=50">
+    </div>
+    <!-- <div class="col-md-6">
+      <img style="" class="img-responsive" src="http://localhost:8080/stream?topic=/usb_cam_2/image_raw?quality=50">
+    </div> -->
+  </div>
+</div>
+
+<div class="footer">
+  <p>UNAM ORG, FinDER!!!!</p>
+</div>

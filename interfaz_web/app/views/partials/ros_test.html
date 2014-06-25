@@ -1,0 +1,27 @@
+<div ng-include="'partials/navbar'"></div>
+
+<div class="jumbotron">
+  <h1>Probando a mi buen amigo ROS</h1>
+  <!-- <p class="lead">
+    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
+    Always a pleasure scaffolding your apps.
+  </p>
+  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p> -->
+</div>
+
+<div id="mjpeg"></div>
+<div class="container">
+	<img style="" src="http://localhost:8080/stream?topic=/usb_cam_1/image_raw?quality=5">
+	<img style="" src="http://localhost:8080/stream?topic=/usb_cam_2/image_raw?quality=5">
+</div>
+
+<div class="row marketing">
+  <div ng-repeat="thing in awesomeThings">
+      <h4>{{thing.name}}</h4>
+      <p>{{thing.info}}</p>
+  </div>
+</div>
+
+<div class="footer">
+  <p>♥ from the Yeoman team</p>
+</div>

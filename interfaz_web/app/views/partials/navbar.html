@@ -1,0 +1,75 @@
+<div class="" ng-controller="NavbarCtrl">
+  <!-- <ul class="nav nav-tabs pull-right">
+    <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
+        <a ng-href="{{item.link}}">{{item.title}}</a>
+    </li>
+    <li ng-hide="currentUser" ng-class="{active: isActive('/login')}"><a href="/login">Login</a></li>
+    <li ng-hide="currentUser" ng-class="{active: isActive('/signup')}"><a href="/signup">Sign up</a></li>
+    <li ng-show="currentUser" ng-class="{active: isActive('/logout')}"><a href="" ng-click="logout()">Logout</a></li>
+  </ul>
+  <h3 class="text-muted">finder</h3>
+  <div class="btn-group">
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+	    Action <span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#">Action</a></li>
+	    <li><a href="#">Another action</a></li>
+	    <li><a href="#">Something else here</a></li>
+	    <li class="divider"></li>
+	    <li><a href="#">Separated link</a></li>
+	  </ul>
+	</div> -->
+
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">FinDER</a>
+	      <!-- <div class="navbar-brand">
+		      <div class="btn-group nav">
+				  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" ng-class='{"btn-primary": isCommunicated, "btn-warning": (!isCommunicated && isConnected), "btn-danger":!isConnected}'>
+				    {{state}} <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" role="menu">
+				  	<li><a href="" ng-click="rosConnect()">Connect</a></li>
+				    <li><a href="" ng-click="rosDisconnect()">Disconnect</a></li>
+				  </ul>
+			  </div>
+		  </div> -->
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+	      
+		  <ul class="nav navbar-nav">
+		    <li class="btn-group">
+				  <button type="button" class="btn navbar-btn dropdown-toggle" data-toggle="dropdown" ng-class='{"btn-success": (state == "Connected"), "btn-danger": (state == "Uncommunicated"), "btn-default": (state == "Disconnected")}'>
+				    {{state}} <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" role="menu">
+				  	<li><a href="" ng-click="rosConnect()">Connect</a></li>
+				    <li><a href="" ng-click="rosDisconnect()">Disconnect</a></li>
+				  </ul>
+			  </li>
+			  <li class="navbar-text" ng-hide='(state !== "Connected")'>Laptop: {{laptopBattery.Percentage}} {{laptopBattery.State}}</li>
+			  <!-- <li class="navbar-text" ng-hide='(state !== "Connected")'>{{laptopBattery.State}}</li> -->
+		  </ul>
+	      <ul class="nav navbar-nav navbar-right">
+	        <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}"><a ng-href="{{item.link}}">{{item.title}}</a></li>
+		    <li ng-hide="currentUser" ng-class="{active: isActive('/login')}"><a href="/login">Login</a></li>
+		    <li ng-hide="currentUser" ng-class="{active: isActive('/signup')}"><a href="/signup">Sign up</a></li>
+		    <li ng-show="currentUser" ng-class="{active: isActive('/logout')}"><a href="" ng-click="logout()">Logout</a></li>
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+</div>
+
