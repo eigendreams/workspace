@@ -1,4 +1,4 @@
-#!/usr/bin/env bashhttps://github.com/bosch-ros-pkg/usb_cam
+#!/usr/bin/env bash
 # THIS IS AN AUTO-GENERATED FILE
 # IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
@@ -53,7 +53,5 @@ if [ ! -z "${ROS_ROOT}" ]; then
     fi
   fi
 fi
-
-
 
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/workspace/rosbuild:~/workspace/rosbuild/robot_self_filter

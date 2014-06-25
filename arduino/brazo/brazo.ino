@@ -75,7 +75,7 @@ void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
 void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
-void alive_cb(const std_msgs::Empty& dmsg) {
+void alive_cb(const std_msgs::Int16& dmsg) {
   milisLastMsg = millis();
   timedOut = false;
 }
@@ -85,7 +85,7 @@ ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
-ros::Subscriber<std_msgs::Empty> alive_sub("alive", alive_cb);
+ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
 
 std_msgs::Int16 base_lec_msg;
 std_msgs::Int16 arm_lec_msg;
