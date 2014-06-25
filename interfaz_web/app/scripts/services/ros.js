@@ -4,13 +4,28 @@ angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
     var ros = new ROSLIB.Ros();
-    var connection_active = false;
-    var communication_active = false;
+    var rosConnectionActive = false;
+    var rosCommunicationActive = false;
     var serverConnected = false;
     var nodeState;
     var nodes;
-    
+    var outTopics = [
+      '/left_out',
+      '/right_out',
+      '/fr_out',
+      '/fl_out',
+      '/br_out',
+      '/bl_out',
+      '/base_out',
+      '/arm_out',
+      '/forearm_out',
+      '/wrist_out',
+      '/palm_out',
+      '/gripper_out'
+    ];
 
+    var topics = {};
+    
 
     var getNodes = function () {
       $http.get('/api/getNodes').
@@ -31,8 +46,23 @@ angular.module('finderApp')
       $rootScope.$broadcast('nodesUpdated');
     };
 
+    var getTopics = function () {
+      if (rosCommunicationActive) {
+        ros.getTopics( function (topics) {
+          console.log(topics);
+        });
+      }
+      else {
+        console.log("Error: no hay coneccion de ros");
+      }
+    };
+
     $interval( function () {
       getNodes();
+      // getTopics();
+      // ros.getTopics( function (topics) {
+      //     console.log(topics);
+      //   });
       // console.log(serverConnected);
     }, 1200);
 
@@ -41,7 +71,7 @@ angular.module('finderApp')
     var laptopBattery = '0%';
 
     var setDisconnected = function () {
-      communication_active = false;
+      rosCommunicationActive = false;
     };
 
     // var setServerDisconnected = function () {
@@ -58,7 +88,32 @@ angular.module('finderApp')
       //   });
     };
 
+    // var createTopic = function (topic) {
+
+    //   var listener = new ROSLIB.Topic({
+    //     ros : ros,
+    //     name : topic,
+    //     messageType : 'std_msgs/Int32'
+    //   });
+
+    // }
+
     var init = function () {
+
+      topics = {};
+
+      for (var i=0; i<outTopics.length; i++) {
+        var listener = new ROSLIB.Topic({
+          ros : ros,
+          name : outTopics[i],
+          messageType : 'std_msgs/Int32'
+        });
+
+        topics[outTopics[i]] = listener;
+      }
+
+      console.log(topics);
+
 
       var listenerAlive = new ROSLIB.Topic({
         ros : ros,
@@ -69,14 +124,20 @@ angular.module('finderApp')
       listenerAlive.subscribe(function (message) {
         //console.log('Se recibió un mensaje de alive con el dato ' + listenerAlive.name + " " + message.data);
         // console.log("Connected");
-        checkLaptopBattery();
+        // checkLaptopBattery();
 
-        communication_active = true;
+        rosCommunicationActive = true;
         $timeout.cancel(promise);
         promise = $timeout(setDisconnected, 3000);
-        $rootScope.$apply();
-        console.log(laptopBattery);
+        // $rootScope.$apply();
+        // console.log(laptopBattery);
       });
+
+      console.log("A punto de pedir topicos");
+
+      // ros.getTopics( function (topics) {
+      //     console.log(topics);
+      //   });
     };
 
     return {
@@ -84,31 +145,32 @@ angular.module('finderApp')
       serverConnected: function () {
         return serverConnected;
       },
+      topics : topics,
       connect: function (port) {
         ros.close();
         ros.connect('ws://localhost:' + port);
         init();
         // connection_active = true;
-        connection_active = true;
+        rosConnectionActive = true;
       },
       disconnect: function () {
         ros.close();
         // connection_active = true;
-        connection_active = false;
+        rosConnectionActive = false;
       },
       isConnected: function () {
-        return connection_active;
+        return rosConnectionActive;
         // return false;
       },
       isCommunicated: function () {
-        return communication_active;
+        return rosCommunicationActive;
         // return false;
       },
       getState: function () {
         var state = '';
-        if(connection_active) {
+        if(rosConnectionActive) {
           // console.log(communication_active);
-          if (communication_active) {
+          if (rosCommunicationActive) {
             state = 'Connected';
           }
           else {

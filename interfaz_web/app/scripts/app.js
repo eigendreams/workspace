@@ -40,6 +40,11 @@ angular.module('finderApp', [
         controller: 'HomeCtrl',
         authenticate: false
       })
+      .when('/topics', {
+        templateUrl: 'partials/topics',
+        controller: 'TopicsCtrl',
+        authenticate: false
+      })
       .otherwise({
         redirectTo: '/'
       });
