@@ -2,9 +2,9 @@
 
 <launch>
 
-	<arg name="username" value="jakob"/>
-	<arg name="hostname" value="jakob-think"/>
-	<arg name="qr_camera" value="usb_cam_1/image_raw"/>
+	<arg name="username" default="jakob"/>
+	<arg name="hostname" default="jakob-think"/>
+	<arg name="qr_camera" default="usb_cam_1/image_raw"/>
 
 	<!-- machine tags -->
 	<machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />

@@ -14,6 +14,10 @@
   </node>
 -->
   <include file="$(find finder)/launch/machines.launch"/>
+
+    <arg name="username" default="jakob"/>
+	<arg name="hostname" default="jakob-think"/>
+	<arg name="qr_camera" default="usb_cam_1/image_raw"/>
   
   <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video1" />
