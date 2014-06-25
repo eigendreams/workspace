@@ -2,14 +2,14 @@
 
 <launch>
 
-	<arg name="username" default="jakob"/>
-	<arg name="hostname" default="jakob-think"/>
+	<arg name="username" default="finder"/>
+	<arg name="hostname" default="finder-think"/>
 	<arg name="qr_camera" default="usb_cam_1/image_raw"/>
 
 	<!-- machine tags -->
-	<machine name="c1_opt" address="jakob-think" env-loader="/opt/ros/hydro/env.sh" />
-	<machine name="c1_src" address="jakob-think" env-loader="/home/jakob/workspace/catkin/devel/env.sh" default="true"/>
-	<machine name="c2_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" user="jakob" password="*****" />
-	<machine name="c2_src" address="finder-think" env-loader="/home/jakob/workspace/catkin/devel/env.sh" user="jakob" password="*****"  />
+	<machine name="c1_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" />
+	<machine name="c1_src" address="finder-think" env-loader="/home/finder/workspace/catkin/devel/env.sh" default="true"/>
+	<machine name="c2_opt" address="finder-think" env-loader="/opt/ros/hydro/env.sh" user="finder" password="*****" />
+	<machine name="c2_src" address="finder-think" env-loader="/home/finder/workspace/catkin/devel/env.sh" user="jakob" password="*****"  />
 	 
 </launch>

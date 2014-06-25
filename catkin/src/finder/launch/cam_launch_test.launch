@@ -10,7 +10,7 @@
     <param name="pixel_format" value="mjpeg" />
     <param name="camera_frame_id" value="base_frame" />
     <param name="io_method" value="mmap"/>
-    <rosparam file="/home/jakob/workspace/cam_cal.yml"/>
+    <rosparam file="/home/finder/workspace/cam_cal.yml"/>
   </node>
 -->
   
