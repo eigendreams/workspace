@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<arg name="username" value="jakob"/>
+	<arg name="hostname" value="jakob-think"/>
+	<arg name="qr_camera" value="usb_cam_1/image_raw"/>
+
+	<!-- machine tags -->
+	<machine name="c1_opt" address="localhost" env-loader="/opt/ros/hydro/env.sh" />
+	<machine name="c1_src" address="localhost" env-loader="~/workspace/catkin/devel/env.sh" default="true"/>
+	<machine name="c2_src" address="$(arg hostname)" env-loader="/home/$(arg username)/workspace/catkin/devel/env.sh" user="$(arg username)" password="$(arg username)"  />
+	<machine name="c2_opt" address="$(arg hostname)" env-loader="/opt/ros/hydro/env.sh" user="$(arg username)" password="$(arg username)" />
+	 
+</launch>

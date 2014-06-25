@@ -1,0 +1,7 @@
+Modificar los archivos:
+
+n/src/finder/launch/video0_test.launch
+catkin/src/finder/launch/geotiff_mapper_test.launch
+rosbuild/.rosinstall
+rosbuild/.setup.bash
+rosbuild/.setup.sh
