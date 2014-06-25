@@ -30,13 +30,13 @@ bool timedOut = false;
 
 void left_out_cb(const std_msgs::Int16& dmsg) {left_out = dmsg.data;}
 void right_out_cb(const std_msgs::Int16& dmsg) {right_out = dmsg.data;}
-void alive_cb(const std_msgs::Empty& dmsg) {
+void alive_cb(const std_msgs::Int16& dmsg) {
 	milisLastMsg = millis();
 	timedOut = false;
 }
 ros::Subscriber<std_msgs::Int16> left_out_sub("left_out", left_out_cb);
 ros::Subscriber<std_msgs::Int16> right_out_sub("right_out", right_out_cb);
-ros::Subscriber<std_msgs::Empty> alive_sub("alive", alive_cb);
+ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
 
 std_msgs::Int16 left_lec_msg;
 std_msgs::Int16 right_lec_msg;
