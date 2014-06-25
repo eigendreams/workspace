@@ -2,7 +2,7 @@
 
 <launch>
 
-	<include file="$(find finder)/launch/machines_test.launch"/>
+	<include file="$(find finder)/launch/machines.launch"/>
 	
     <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode1" args="/dev/ttyACM0" />
     <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode2" args="/dev/ttyACM1" />

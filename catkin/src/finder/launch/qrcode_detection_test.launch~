@@ -2,7 +2,7 @@
 
 <launch>
 
-	<include file="$(find finder)/launch/machines_test.launch"/>
+	<include file="$(find finder)/launch/machines.launch"/>
 
   	<remap from="image_percept" to="worldmodel/image_percept" />
 

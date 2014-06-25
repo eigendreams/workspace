@@ -2,7 +2,7 @@
 
 <launch>
 
-   <include file="$(find finder)/launch/machines_tets.launch"/>
+   <include file="$(find finder)/launch/machines.launch"/>
 
    <arg name="map" default="/dynamic_map"/>
    <arg name="map_bk" default="/scanmatcher_map"/>
@@ -35,3 +35,4 @@
   </node>
 
 </launch>
+

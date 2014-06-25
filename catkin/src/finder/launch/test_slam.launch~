@@ -2,7 +2,7 @@
 
 <launch>
  
-  <include file="$(find finder)/launch/machines_test.launch"/>
+  <include file="$(find finder)/launch/machines.launch"/>
  
   <include file="$(find finder)/launch/hokuyo_test.launch"/> 
   <include file="$(find finder)/launch/mapping_default_test.launch"/> 
