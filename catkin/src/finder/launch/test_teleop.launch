@@ -7,6 +7,6 @@
   	<include file="$(find finder)/launch/nodes_test.launch"/>
   	<include file="$(find finder)/launch/control_test.launch"/>
 
-  	<node machine="c2_src" respawn="true" pkg="finder" type="alive.py" name="alive_node" />
+  	<node respawn="true" pkg="finder" type="alive.py" name="alive_node" />
  
 </launch>
