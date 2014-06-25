@@ -81,6 +81,9 @@ angular.module('finderApp')
     }, {
       'title': 'Ros Nodes',
       'link': '/ros_nodes'
+    }, {
+      'title': 'Topics',
+      'link': '/topics'
     }];
     
     $scope.logout = function() {

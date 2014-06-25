@@ -83,7 +83,7 @@ var nodes = {
     state: 0
   },
   roscam : {
-    start: ['roslaunch',['finder','cam_launch.launch']],
+    start: ['roslaunch',['finder','cam_launch_test.launch']],
     stop: "kill -9 $(ps aux | grep cam | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'cam' -c",
     state: 0
@@ -92,6 +92,24 @@ var nodes = {
     start: ['rosrun',['mjpeg_server','mjpeg_server']],
     stop: "kill -9 $(ps aux | grep mjpeg_server | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'mjpeg_server' -c",
+    state: 0
+  },
+  rosbatterymonitor : {
+    start: ['rosrun',['finder','battery_monitor.py']],
+    stop: "kill -9 $(ps aux | grep battery_monitor | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'battery_monitor' -c",
+    state: 0
+  },
+  rosapi : {
+    start: ['rosrun',['rosapi','rosapi']],
+    stop: "kill -9 $(ps aux | grep rosapi | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'rosapi' -c",
+    state: 0
+  },
+  roscontrol : {
+    start: ['rosrun',['finder','control_interface.py']],
+    stop: "kill -9 $(ps aux | grep control_interface.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'control_interface.py' -c",
     state: 0
   }
 };
