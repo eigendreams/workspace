@@ -54,6 +54,4 @@ if [ ! -z "${ROS_ROOT}" ]; then
   fi
 fi
 
-
-
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/workspace/rosbuild:~/workspace/rosbuild/robot_self_filter
