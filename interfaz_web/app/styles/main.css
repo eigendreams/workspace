@@ -64,6 +64,11 @@ body {
   margin: 10px;
 }
 
+.navbar .btn {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */

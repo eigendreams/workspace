@@ -6,6 +6,7 @@ angular.module('finderApp')
     var ros = new ROSLIB.Ros();
     var connection_active = false;
     var communication_active = false;
+    var serverConnected = false;
     var nodeState;
     var nodes;
     
@@ -15,6 +16,16 @@ angular.module('finderApp')
       $http.get('/api/getNodes').
         success(function(data) {
           nodes = data;
+          // communication_active = true;
+          serverConnected = true;
+          // $timeout.cancel(serverConnectionPromise);
+          // serverConnectionPromise = $timeout(setServerDisconnected, 3000);
+          // $rootScope.$apply();
+          // console.log('Server connected');
+        }).
+        error(function(data) {
+          // console.log('Error en el server');
+          serverConnected = false;
         });
 
       $rootScope.$broadcast('nodesUpdated');
@@ -22,14 +33,21 @@ angular.module('finderApp')
 
     $interval( function () {
       getNodes();
+      // console.log(serverConnected);
     }, 1200);
 
     var promise;
+    var serverConnectionPromise;
     var laptopBattery = '0%';
 
     var setDisconnected = function () {
       communication_active = false;
     };
+
+    // var setServerDisconnected = function () {
+    //   serverConnected = false;
+    //   console.log('Server disconnected');
+    // };
 
     var checkLaptopBattery = function () {
       // $http.get('/api/battery').
@@ -57,12 +75,15 @@ angular.module('finderApp')
         $timeout.cancel(promise);
         promise = $timeout(setDisconnected, 3000);
         $rootScope.$apply();
-        // console.log(laptopBattery);
+        console.log(laptopBattery);
       });
     };
 
     return {
       ros: ros,
+      serverConnected: function () {
+        return serverConnected;
+      },
       connect: function (port) {
         ros.close();
         ros.connect('ws://localhost:' + port);
@@ -102,6 +123,10 @@ angular.module('finderApp')
       },
       getLaptopBattery: function () {
         return laptopBattery;
+      },
+      isServerConnected: function () { 
+        return serverConnected;
+        // return true;
       },
       node: {
         start : function (node) {

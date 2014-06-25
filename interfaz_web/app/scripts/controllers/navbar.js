@@ -9,6 +9,7 @@ angular.module('finderApp')
     $scope.state = 'Disconnected';
     $scope.isConnected = false;
     $scope.isCommunicated = false;
+    // $scope.isServerConnnected = Ros.isServerConnnected;
     // $scope.laptopBattery = '0%';
     // Ros.connect(9090);
 
@@ -32,6 +33,7 @@ angular.module('finderApp')
     $scope.getState = Ros.getState;
     $scope.getLaptopBattery = Ros.getLaptopBattery;
     $scope.laptopBattery = '0%';
+    $scope.serverConnected = true;
 
     $scope.$watch('getState()', function(newVal) {
       // console.log("New Data", newVal);
@@ -42,6 +44,13 @@ angular.module('finderApp')
       // console.log("New Data", newVal);
       $scope.laptopBattery = newVal;
     });
+
+    $scope.$on('nodesUpdated', function() {
+        // console.log('nodes actualizado desde home');
+        // $scope.serverConnected = Ros.isServerConnnected();
+        // console.log('El servidor esta: '+Ros.serverConnected());
+        $scope.serverConnected = Ros.serverConnected();
+      });
 
     $scope.rosDisconnect = function () { Ros.disconnect(); };
     $scope.rosConnect = function () { Ros.connect(9090); };

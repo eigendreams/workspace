@@ -50,9 +50,11 @@
 
 	      
 		  <ul class="nav navbar-nav">
+		  	<li>
+		  		<button type="button" class="btn navbar-btn" ng-class="{'btn-success':(serverConnected),'btn-danger':(!serverConnected)}">Server</button>
+		  	</li>
 		    <li class="btn-group">
-				  <button type="button" class="btn navbar-btn dropdown-toggle" data-toggle="dropdown" ng-class='{"btn-success": (state == "Connected"), "btn-danger": (state == "Uncommunicated"), "btn-default": (state == "Disconnected")}'>
-				    {{state}} <span class="caret"></span>
+				  <button type="button" class="btn navbar-btn dropdown-toggle" data-toggle="dropdown" ng-class='{"btn-success": (state == "Connected"), "btn-danger": (state == "Uncommunicated"), "btn-default": (state == "Disconnected")}'>Ros <span class="caret"></span>
 				  </button>
 				  <ul class="dropdown-menu" role="menu">
 				  	<li><a href="" ng-click="rosConnect()">Connect</a></li>

@@ -4,6 +4,7 @@ angular.module('finderApp')
   .controller('HomeCtrl', function ($scope, $interval, $rootScope, $http, Auth, $location, Ros) {
     
     $scope.nodes = Ros.node.getNodes();
+    // $scope.serverConnected = Ros.serverConnected;
 
     $scope.startNode = function (node) {
         Ros.node.start(node);
