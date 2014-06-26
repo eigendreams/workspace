@@ -34,7 +34,7 @@ body {
 /* Customize container */
 @media (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 1000px;
   }
 }
 .container-narrow > hr {
@@ -62,6 +62,18 @@ body {
 /* button margin */
 .row .btn {
   margin: 10px;
+}
+
+.center {
+  text-align: center;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
 }
 
 .navbar .btn {

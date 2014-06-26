@@ -4,6 +4,8 @@ angular.module('finderApp')
   .controller('HomeCtrl', function ($scope, $interval, $rootScope, $http, Auth, $location, Ros) {
     
     $scope.nodes = Ros.node.getNodes();
+    $scope.serverIP = Ros.getServerIP();
+    $scope.videoQuality = 30;
     // $scope.serverConnected = Ros.serverConnected;
 
     $scope.startNode = function (node) {
@@ -23,6 +25,15 @@ angular.module('finderApp')
         else {
             // console.log("Stop node");
             Ros.node.stop(node);
+        }
+    };
+
+    $scope.toggleVideoQuality = function () {
+        if ($scope.videoQuality==80) {
+            $scope.videoQuality = 15;
+        }
+        else {
+            $scope.videoQuality = 80;
         }
     };
 
