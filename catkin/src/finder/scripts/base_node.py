@@ -25,12 +25,12 @@ class Base_node:
 
         # PID control parameters
         self.kp = 10.
-        self.ki = 10.
+        self.ki = 1.
         self.kd = 0.
         self.km = 0.
         self.umbral = 0.1
         self.range = 50. # Maximo pwm permitido
-        self.kierr = 1.2
+        self.kierr = 0.6
         self.kimax = 100.
         self.kisum = 0.
         self.error = 0.
