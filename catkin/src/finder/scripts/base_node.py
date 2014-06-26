@@ -29,7 +29,7 @@ class Base_node:
         self.kd = 0
         self.km = 0
         self.umbral = 0.1
-        self.range = 100 # Maximo pwm permitido
+        self.range = 50 # Maximo pwm permitido
         self.kierr = 1.2
         self.kimax = 100
         self.kisum = 0
@@ -57,6 +57,7 @@ class Base_node:
         self.baseAngPub = rospy.Publisher("base_ang", Float32)
         self.baseVelPub = rospy.Publisher("base_vel", Float32)
         self.baseLecSub = rospy.Subscriber("base_lec", Int16, self.baseLecCb)
+        self.baseLecSub = rospy.Subscriber("base_debug", Int16, self.baseDbgCb)
         self.baseDesSub = rospy.Subscriber("base_des", Float32, self.baseDesCb)
 
 
@@ -133,18 +134,22 @@ class Base_node:
         self.base_des = self.constrain(self.base_des, )
 
 
+    def baseDbgCb(self, data):
+
+        self.base_out = data.data
+
     def baseLecCb(self, data):
         
         self.base_lec = data.data
         self.angCalc()
-        self.pid()
+        #self.pid()
 
 
     def baseDesCb(self, data):
 
         self.base_des = data.data
         self.angCalc()
-        self.pid()
+        #self.pid()
 
 
     def update(self):

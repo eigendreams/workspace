@@ -22,6 +22,7 @@ class Control_interface:
                             'btn_stick_left':9, 'btn_stick_right':10}
         
         self.basePub    = rospy.Publisher("base_des", Float32)
+        self.baseDebug  = rospy.Publisher("base_debug", Int16)
         self.armPub     = rospy.Publisher("arm_des", Float32)
         self.forearmPub = rospy.Publisher("forearm_des", Float32)
         self.wristPub   = rospy.Publisher("wrist_des", Float32)
@@ -122,6 +123,7 @@ class Control_interface:
     def motorArmUpdate(self):
 
         self.basePub.publish(self.base_rate)
+        self.baseDebug.publish(int(self.base_rate * 20))
         # print "base: " + str(self.base_rate)
 
 
