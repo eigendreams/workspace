@@ -29,11 +29,11 @@ angular.module('finderApp')
     };
 
     $scope.toggleVideoQuality = function () {
-        if ($scope.videoQuality==30) {
-            $scope.videoQuality = 50;
+        if ($scope.videoQuality==80) {
+            $scope.videoQuality = 15;
         }
         else {
-            $scope.videoQuality = 30;
+            $scope.videoQuality = 80;
         }
     };
 
