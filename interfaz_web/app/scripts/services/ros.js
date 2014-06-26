@@ -106,7 +106,7 @@ angular.module('finderApp')
         var listener = new ROSLIB.Topic({
           ros : ros,
           name : outTopics[i],
-          messageType : 'std_msgs/Int32'
+          messageType : 'std_msgs/Int16'
         });
 
         topics[outTopics[i]] = listener;
@@ -147,8 +147,9 @@ angular.module('finderApp')
       },
       topics : topics,
       connect: function (port) {
+	console.log("Tratando de conectarse");
         ros.close();
-        ros.connect('ws://localhost:' + port);
+        ros.connect('ws://finder-think:' + port);
         init();
         // connection_active = true;
         rosConnectionActive = true;

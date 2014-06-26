@@ -17,7 +17,7 @@ var nodes = {
     state: "1"
   },
   rosalive : {
-    start: ['rostopic', ['pub','/alive','std_msgs/Int32','1','-r','1','__name:=rosalive']],
+    start: ['rostopic', ['pub','/alive','std_msgs/Int16','1','-r','1','__name:=rosalive']],
     stop: "kill -9 $(ps aux | grep alive | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'alive' -c",
     state: "1"

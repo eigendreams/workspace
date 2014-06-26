@@ -115,14 +115,14 @@ class Control_interface:
         self.leftPub.publish(left_des)
         self.rightPub.publish(right_des)
 
-        print "left: " + str(left_des)
-        print "right: " + str(right_des)
+        # print "left: " + str(left_des)
+        # print "right: " + str(right_des)
 
 
     def motorArmUpdate(self):
 
         self.basePub.publish(self.base_rate)
-        print "base: " + str(self.base_rate)
+        # print "base: " + str(self.base_rate)
 
 
     def motorTractionArmUpdate(self):
@@ -173,10 +173,10 @@ class Control_interface:
         self.brPub.publish(self.br_rate)
         self.blPub.publish(self.bl_rate * -1)                          
 
-        print "fr: " + str(self.fr_rate)
-        print "fl: " + str(self.fl_rate)
-        print "br: " + str(self.br_rate)
-        print "bl: " + str(self.bl_rate)
+        # print "fr: " + str(self.fr_rate)
+        # print "fl: " + str(self.fl_rate)
+        # print "br: " + str(self.br_rate)
+        # print "bl: " + str(self.bl_rate)
         
         
     def spin(self):

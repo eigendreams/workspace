@@ -195,7 +195,7 @@ class Bl_node:
         if (abs(self.bl_vel_des) < 0.2):
             # self.bl_ang_des = self.constrain(self.bl_ang_des, 0, 1000)
             self.pid_pos()
-            print "angdes " + str(self.bl_ang_des)
+            # print "angdes " + str(self.bl_ang_des)
         else:
             self.bl_ang_des = self.bl_ang
             self.pid_vel()
@@ -208,7 +208,7 @@ class Bl_node:
         if (abs(self.bl_vel_des) < 0.2):
             # self.bl_ang_des = self.constrain(self.bl_ang_des, 0, 1000)
             self.pid_pos()
-            print "angdes " + str(self.bl_ang_des)
+            # print "angdes " + str(self.bl_ang_des)
         else:
             self.bl_ang_des = self.bl_ang
             self.pid_vel()
