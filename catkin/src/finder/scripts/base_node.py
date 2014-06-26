@@ -53,6 +53,8 @@ class Base_node:
 
         self.init_time = rospy.get_time()
 
+        self.ticks = 0
+
         self.baseOutPub = rospy.Publisher("base_out", Int16)
         self.baseAngPub = rospy.Publisher("base_ang", Float32)
         self.baseVelPub = rospy.Publisher("base_vel", Float32)
@@ -128,9 +130,15 @@ class Base_node:
         self.base_ang_lap_lst = self.base_ang
         self.base_ang = 2 * pi * self.base_ang_lap + self.base_ang_abs
 
+        if (self.ticks < 10):
+            if (self.base_ang < -3):
+                self.base_ang += 2 * pi
+
         """MAP VEL OUT"""
         self.base_vel = self.base_ang - self.base_ang_lap_lst
         """MAP VEL OUT"""
+
+        self.ticks += 1
 
 
     def desCalc(self, data):
