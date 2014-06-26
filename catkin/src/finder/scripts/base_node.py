@@ -53,11 +53,11 @@ class Base_node:
 
         self.init_time = rospy.get_time()
 
-        #self.baseOutPub = rospy.Publisher("base_out", Int16)
+        self.baseOutPub = rospy.Publisher("base_out", Int16)
         self.baseAngPub = rospy.Publisher("base_ang", Float32)
         self.baseVelPub = rospy.Publisher("base_vel", Float32)
         self.baseLecSub = rospy.Subscriber("base_lec", Int16, self.baseLecCb)
-        self.baseLecSub = rospy.Subscriber("base_debug", Int16, self.baseDbgCb)
+        #self.baseLecSub = rospy.Subscriber("base_debug", Int16, self.baseDbgCb)
         self.baseDesSub = rospy.Subscriber("base_des", Float32, self.baseDesCb)
 
 
