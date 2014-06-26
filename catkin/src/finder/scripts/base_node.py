@@ -53,7 +53,7 @@ class Base_node:
 
         self.init_time = rospy.get_time()
 
-        self.baseOutPub = rospy.Publisher("base_out", Int16)
+        #self.baseOutPub = rospy.Publisher("base_out", Int16)
         self.baseAngPub = rospy.Publisher("base_ang", Float32)
         self.baseVelPub = rospy.Publisher("base_vel", Float32)
         self.baseLecSub = rospy.Subscriber("base_lec", Int16, self.baseLecCb)
@@ -142,14 +142,14 @@ class Base_node:
         
         self.base_lec = data.data
         self.angCalc()
-        #self.pid()
+        self.pid()
 
 
     def baseDesCb(self, data):
 
         self.base_des = data.data
         self.angCalc()
-        #self.pid()
+        self.pid()
 
 
     def update(self):
