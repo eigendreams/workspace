@@ -24,7 +24,7 @@ class Base_node:
         self.base_offset = 245
 
         # PID control parameters
-        self.kp = 100
+        self.kp = 10
         self.ki = 10
         self.kd = 0
         self.km = 0
