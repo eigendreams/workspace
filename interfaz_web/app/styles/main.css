@@ -64,6 +64,18 @@ body {
   margin: 10px;
 }
 
+.center {
+  text-align: center;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
 .navbar .btn {
   margin-left: 10px;
   margin-right: 10px;

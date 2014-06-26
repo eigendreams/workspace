@@ -3,10 +3,13 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
+    // var serverIP = "192.168.88.253";
+    var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
     var serverConnected = false;
+    var serverConnectionPromise;
     var nodeState;
     var nodes;
     var outTopics = [
@@ -33,15 +36,17 @@ angular.module('finderApp')
           nodes = data;
           // communication_active = true;
           serverConnected = true;
-          // $timeout.cancel(serverConnectionPromise);
-          // serverConnectionPromise = $timeout(setServerDisconnected, 3000);
+          $timeout.cancel(serverConnectionPromise);
+          serverConnectionPromise = $timeout( function () {
+            serverConnected = false;
+          }, 3000);
           // $rootScope.$apply();
           // console.log('Server connected');
-        }).
-        error(function(data) {
-          // console.log('Error en el server');
-          serverConnected = false;
-        });
+        })
+        // error(function(data) {
+        //   // console.log('Error en el server');
+        //   serverConnected = false;
+        // });
 
       $rootScope.$broadcast('nodesUpdated');
     };
@@ -118,7 +123,7 @@ angular.module('finderApp')
       var listenerAlive = new ROSLIB.Topic({
         ros : ros,
         name : '/alive',
-        messageType : 'std_msgs/Int32'
+        messageType : 'std_msgs/Int16'
       });
 
       listenerAlive.subscribe(function (message) {
@@ -142,14 +147,17 @@ angular.module('finderApp')
 
     return {
       ros: ros,
+      getServerIP: function () { 
+        return serverIP; 
+      },
       serverConnected: function () {
         return serverConnected;
       },
       topics : topics,
       connect: function (port) {
-	console.log("Tratando de conectarse");
+        console.log("Tratando de conectarse");
         ros.close();
-        ros.connect('ws://finder-think:' + port);
+        ros.connect('ws://' + serverIP + ':' + port);
         init();
         // connection_active = true;
         rosConnectionActive = true;

@@ -30,17 +30,22 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-6">
-      <img style="" class="img-responsive" src="http://192.168.88.253:8080/stream?topic=/usb_cam_1/image_raw?quality=10">
+    <div class="col-md-6 no-padding center">
+      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_1/image_raw?quality={{videoQuality}}">
     </div>
-    <div class="col-md-6">
-      <img style="" class="img-responsive" src="http://192.168.88.253:8080/stream?topic=/usb_cam_2/image_raw?quality=10">
+    <div class="col-md-6 no-padding center">
+      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_2/image_raw?quality={{videoQuality}}">
     </div>
-    <div class="col-md-6">
-      <img style="" class="img-responsive" src="http://192.168.88.253:8080/stream?topic=/usb_cam_3/image_raw?quality=10">
+    <div class="col-md-6 no-padding center">
+      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_3/image_raw?quality={{videoQuality}}">
     </div>
-    <div class="col-md-6">
-      <img style="" class="img-responsive" src="http://192.168.88.253:8080/stream?topic=/usb_cam_4/image_raw?quality=10">
+    <div class="col-md-6 no-padding center">
+      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_4/image_raw?quality={{videoQuality}}">
+    </div>
+    <div class="col-md-12 center">
+      <div style="" class="btn btn-primary" ng-click="toggleVideoQuality()">Recargar video</div>
+      <!-- <div style="" class="btn btn-default" ng-click="toggleNode(node)">{{node}}</div> -->
+      <!-- Calidad: <input type="text" ng-model=""/> -->
     </div>
     <!-- <div class="col-md-6">
       <img style="" class="img-responsive" src="http://localhost:8080/stream?topic=/usb_cam_2/image_raw?quality=50">
