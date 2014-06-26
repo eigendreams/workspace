@@ -24,32 +24,32 @@ class Base_node:
         self.base_offset = 245
 
         # PID control parameters
-        self.kp = 10
-        self.ki = 10
-        self.kd = 0
-        self.km = 0
-        self.umbral = 0.1
-        self.range = 50 # Maximo pwm permitido
-        self.kierr = 1.2
-        self.kimax = 100
-        self.kisum = 0
-        self.error = 0
+        self.kp = 10.
+        self.ki = 10.
+        self.kd = 0.
+        self.km = 0.
+        self.umbral = 0.1.
+        self.range = 50. # Maximo pwm permitido
+        self.kierr = 1.2.
+        self.kimax = 100.
+        self.kisum = 0.
+        self.error = 0.
 
         # topic variables
-        self.base_lec = 0
-        self.base_ang = 0
-        self.base_des = 0
-        self.base_vel = 0
-        self.base_out = 0
+        self.base_lec = 0.
+        self.base_ang = 0.
+        self.base_des = 0.
+        self.base_vel = 0.
+        self.base_out = 0.
 
         # helper variables
-        self.base_ang_tmp = 0
-        self.base_ang_rng = 0
-        self.base_lec_dst = 0
-        self.base_ang_lst = 0
-        self.base_ang_chg = 0
-        self.base_ang_abs = 0
-        self.base_ang_lap = 0
+        self.base_ang_tmp = 0.
+        self.base_ang_rng = 0.
+        self.base_lec_dst = 0.
+        self.base_ang_lst = 0.
+        self.base_ang_chg = 0.
+        self.base_ang_abs = 0.
+        self.base_ang_lap = 0.
 
         self.init_time = rospy.get_time()
 
@@ -83,7 +83,7 @@ class Base_node:
     def pid(self):
 
         if (abs(self.base_des - self.base_ang) < self.umbral):
-           self.error = 0.
+            self.error = 0.
         else:
             self.error = self.base_des - self.base_ang
 
