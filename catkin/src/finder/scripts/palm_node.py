@@ -17,6 +17,7 @@ class Palm_node:
         rospy.loginfo("palm_node starting with name %s", self.nodename) 
         self.rate = rospy.get_param("param_global_rate", 10)
         self.init_time = rospy.get_time()
+        self.palm_des = 0
         self.palmOutPub = rospy.Publisher("palm_out", Int16)
         self.palmDesSub = rospy.Subscriber("palm_des", Float32, self.palmDesCb)
 
