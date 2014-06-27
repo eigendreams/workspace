@@ -33,7 +33,7 @@ TalonClass ANTEBRAZO(2, 50);
 // Pin 9 for standard servo control (fifth DOF)
 // SimpleServoClass(pin, val) // sense == sign(val), max_angle == abs(val) (from -90 to +90)
 Servo servoobj;
-SimpleServoClass PALMA(&servoobj, 100);
+//SimpleServoClass PALMA(&servoobj, 100);
 
 // Pins 13, 12, 11 for SPI single reads of magnetic encoders (second, third and fourth DOFs) in software emulation mode
 // The CS pin must be specified at each constructor of the EncoderClaIP Address:ss, pin 10 is best left ALONE in the UNO!
@@ -75,37 +75,41 @@ void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
 void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
-void alive_cb(const std_msgs::Int16& dmsg) {
+/*void alive_cb(const std_msgs::Int16& dmsg) {
   milisLastMsg = millis();
   timedOut = false;
-}
+}*/
+
 ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
 ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
 ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
-ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
+//ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
 
 std_msgs::Int16 base_lec_msg;
 std_msgs::Int16 arm_lec_msg;
 std_msgs::Int16 forearm_lec_msg;
 std_msgs::Int16 wrist_lec_msg;
-std_msgs::Int16 palm_lec_msg;
-std_msgs::Int16 gripper_lec_msg;
+//std_msgs::Int16 palm_lec_msg;
+//std_msgs::Int16 gripper_lec_msg;
 ros::Publisher base_lec_pub("base_lec", &base_lec_msg);
 ros::Publisher arm_lec_pub("arm_lec", &arm_lec_msg);
 ros::Publisher forearm_lec_pub("forearm_lec", &forearm_lec_msg);
 ros::Publisher wrist_lec_pub("wrist_lec", &wrist_lec_msg);
-ros::Publisher palm_lec_pub("palm_lec", &palm_lec_msg);
-ros::Publisher gripper_lec_pub("gripper_lec", &gripper_lec_msg);
+//ros::Publisher palm_lec_pub("palm_lec", &palm_lec_msg);
+//ros::Publisher gripper_lec_pub("gripper_lec", &gripper_lec_msg);
 
 void setup() {
 	BASE.begin();
 	MUNNIECA.begin();
+	pinMode(7, OUTPUT);
+	pinMode(8, OUTPUT);
+	pinMode(9, OUTPUT);
 	BRAZO.attach(7);
 	ANTEBRAZO.attach(8);
-	PALMA.attach(10);
+	servoobj.attach(9);
 
 	// Select encoders as digital
 	pinMode(A0, OUTPUT);
@@ -119,17 +123,17 @@ void setup() {
 	nh.subscribe(forearm_out_sub);
 	nh.subscribe(wrist_out_sub);
 	nh.subscribe(palm_out_sub);
-	nh.subscribe(gripper_out_sub);
-	nh.subscribe(alive_sub);
+	//nh.subscribe(gripper_out_sub);
+	//nh.subscribe(alive_sub);
 	nh.advertise(base_lec_pub);
 	nh.advertise(arm_lec_pub);
 	nh.advertise(forearm_lec_pub);
 	nh.advertise(wrist_lec_pub);
-	nh.advertise(palm_lec_pub);
-	nh.advertise(gripper_lec_pub);
+	//nh.advertise(palm_lec_pub);
+	//nh.advertise(gripper_lec_pub);
 
 	// Comm at 1 Mhz and ENC initialization
-	Dynamixelobj.begin(1000000UL, 2);
+	Dynamixelobj.begin(56000UL, 2);
 	AS5043obj.begin();
 }
 
@@ -138,12 +142,16 @@ void loop() {
 
 	unsigned long milisNow = millis();
 
+	servoobj.write(palm_out * 5 + 1500);
+
 	// 20 Hz operation
 	if (milisNow - milisLast >= 100) {
 
+		milisLast = milisNow;
+
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-	    if (milisNow - milisLastMsg >= 3500) {
+	    /*if (milisNow - milisLastMsg >= 100000) {
 	      base_out = 0;
 	      arm_out = 0;
 	      forearm_out = 0;
@@ -151,36 +159,36 @@ void loop() {
 	      palm_out = 0;
 	      gripper_out = 0;
 	      timedOut = true;
-	    }
+	    }*/
 
 	    // Obten los valores absolutos de los encoders
 	    base_lec = ENCBASE.read();
 	    arm_lec = ENCBRAZO.read();
 	    forearm_lec = ENCANTEBRAZO.read();
 	    wrist_lec = ENCMUNNIECA.read();
-	    palm_lec = PALMA.read();
-	    gripper_lec = DYNAMIXEL.read();
+	    //palm_lec = PALMA.read();
+	    //gripper_lec = DYNAMIXEL.read();
 
 		BASE.write(base_out);
 		BRAZO.write(arm_out);
 		ANTEBRAZO.write(forearm_out);
 		MUNNIECA.write(wrist_out);
-		PALMA.write(palm_out);
+		//servoobj.write(palm_out * 5 + 1500);
 		DYNAMIXEL.write(gripper_out);
 
 		base_lec_msg.data = base_lec;
 		arm_lec_msg.data = arm_lec;
 		forearm_lec_msg.data = forearm_lec;
 		wrist_lec_msg.data = wrist_lec;
-		palm_lec_msg.data = palm_lec;
-		gripper_lec_msg.data = gripper_lec;
+		//palm_lec_msg.data = palm_lec;
+		//gripper_lec_msg.data = gripper_lec;
 
 		base_lec_pub.publish(&base_lec_msg); delay(1);
 		arm_lec_pub.publish(&arm_lec_msg); delay(1);
 		forearm_lec_pub.publish(&forearm_lec_msg); delay(1);
 		wrist_lec_pub.publish(&wrist_lec_msg); delay(1);
-		palm_lec_pub.publish(&palm_lec_msg); delay(1);
-		gripper_lec_pub.publish(&gripper_lec_msg); delay(1);
+		//palm_lec_pub.publish(&palm_lec_msg); delay(1);
+		//gripper_lec_pub.publish(&gripper_lec_msg); delay(1);
 	}
 }
 
