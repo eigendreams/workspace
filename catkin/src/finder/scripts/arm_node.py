@@ -135,7 +135,7 @@ class Arm_node:
 
     def armLecCb(self, data):
         
-        self.arm_lec = data.data
+        self.arm_lec = -data.data
         self.angCalc()
         self.pid()
 
