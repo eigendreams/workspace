@@ -138,8 +138,6 @@ class Base_node:
         self.base_vel = self.base_ang - self.base_ang_lap_lst
         """MAP VEL OUT"""
 
-        self.ticks += 1
-
 
     def desCalc(self, data):
 
@@ -155,6 +153,7 @@ class Base_node:
         self.base_lec = data.data
         self.angCalc()
         self.pid()
+        self.ticks += 1
 
 
     def baseDesCb(self, data):
