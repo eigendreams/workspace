@@ -45,7 +45,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.leftOut.value = message.data;
             topics.leftOut.active = false;
-            topics.leftOut.topic.unsubscribe();
+            // topics.leftOut.topic.unsubscribe();
           });
         }
       },
@@ -58,7 +58,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.rightOut.value = message.data;
             topics.rightOut.active = false;
-            topics.rightOut.topic.unsubscribe();
+            // topics.rightOut.topic.unsubscribe();
           });
         }
       },
@@ -71,7 +71,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.brOut.value = message.data;
             topics.brOut.active = false;
-            topics.brOut.topic.unsubscribe();
+            // topics.brOut.topic.unsubscribe();
           });
         }
       },
@@ -84,7 +84,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.blOut.value = message.data;
             topics.blOut.active = false;
-            topics.blOut.topic.unsubscribe();
+            // topics.blOut.topic.unsubscribe();
           });
         }
       },
@@ -97,7 +97,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.frOut.value = message.data;
             topics.frOut.active = false;
-            topics.frOut.topic.unsubscribe();
+            // topics.frOut.topic.unsubscribe();
           });
         }
       },
@@ -110,7 +110,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.flOut.value = message.data;
             topics.flOut.active = false;
-            topics.flOut.topic.unsubscribe();
+            // topics.flOut.topic.unsubscribe();
           });
         }
       },
@@ -123,7 +123,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.baseOut.value = message.data;
             topics.baseOut.active = false;
-            topics.baseOut.topic.unsubscribe();
+            // topics.baseOut.topic.unsubscribe();
           });
         }
       },
@@ -136,7 +136,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.armOut.value = message.data;
             topics.armOut.active = false;
-            topics.armOut.topic.unsubscribe();
+            // topics.armOut.topic.unsubscribe();
           });
         }
       },
@@ -149,7 +149,7 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.baseDes.value = message.data;
             topics.baseDes.active = false;
-            topics.baseDes.topic.unsubscribe();
+            // topics.baseDes.topic.unsubscribe();
           });
         }
       }
@@ -197,9 +197,11 @@ angular.module('finderApp')
           name : topics[key].name,
           messageType : topics[key].type
         });
+
+        topics[key].subscribe();
       }
 
-      topics.alive.subscribe();
+      // topics.alive.subscribe();
 
     };
 
