@@ -20,7 +20,7 @@ class Control_interface:
                             'right_stick_ver':4, 'RT':5, 'cross_hor':6, 'cross_ver':7}
         self.buttons_names  = {'A':0, 'B':1, 'X':2, 'Y':3, 'LB':4, 'RB':5, 'back':6, 'start':7, 'power':8, 
                             'btn_stick_left':9, 'btn_stick_right':10}
-        
+
         self.basePub    = rospy.Publisher("base_des", Float32)
         #self.baseDebug  = rospy.Publisher("base_debug", Int16)
         self.armPub     = rospy.Publisher("arm_des", Float32)
@@ -38,6 +38,9 @@ class Control_interface:
         self.flResetPub = rospy.Publisher("fl_reset", Int16)
         self.brResetPub = rospy.Publisher("br_reset", Int16)
         self.blResetPub = rospy.Publisher("bl_reset", Int16)
+
+        self.offsetPub  = rospy.Publisher("offset", Int16)
+        self.offset_val = 0
 
         self.base_des = 0    
         
@@ -70,8 +73,7 @@ class Control_interface:
         self.fast_traction = False
 
         # THIS MUST BE AT THE END!!!
-        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)
-        
+        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)        
 
     def joyCb(self, data):
 		
@@ -99,6 +101,8 @@ class Control_interface:
 
         self.fast_traction = data.buttons[self.buttons_names['btn_stick_left']]
         self.fast_arms = data.buttons[self.buttons_names['btn_stick_right']]
+
+        self.offset_val = data.buttons[self.buttons_names['Y']]
 
         
     def motorTractionUpdate(self):
@@ -188,6 +192,9 @@ class Control_interface:
             self.motorTractionUpdate()
             self.motorArmUpdate()
             self.motorTractionArmUpdate()
+
+            self.offsetPub.publish(self.offset_val)
+
             r.sleep()
             
 

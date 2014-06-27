@@ -58,7 +58,7 @@ class Arm_node:
         self.armVelPub = rospy.Publisher("arm_vel", Float32)
         self.armLecSub = rospy.Subscriber("arm_lec", Int16, self.armLecCb)
         self.armDesSub = rospy.Subscriber("arm_des", Float32, self.armDesCb)
-
+        self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
 
     def map(self, x, in_min, in_max, out_min, out_max):
 
@@ -96,6 +96,18 @@ class Arm_node:
             self.kisum = 0.
 
         self.arm_out = self.constrain(self.kp * self.error + self.kisum - self.kd * (self.arm_ang - self.arm_ang_lst) + self.km * self.arm_des, -self.range, self.range)
+
+    def offsetCb(self):
+
+        self.arm_offset  = self.arm_lec
+        
+        self.arm_ang_tmp = 0
+        self.arm_ang_lst = 0
+        self.arm_ang_abs = 0
+
+        self.arm_ang = 0
+        self.arm_ang_lap =  0
+        self.arm_ang_lap_lst = 0
 
 
     def angCalc(self):
@@ -143,7 +155,7 @@ class Arm_node:
     def armDesCb(self, data):
 
         self.arm_des = data.data
-        self.angCalc()
+        #self.angCalc()
         self.pid()
 
 
