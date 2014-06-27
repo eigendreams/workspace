@@ -89,7 +89,7 @@ class Base_node:
         else:
             self.error = self.base_des - self.base_ang
 
-        print "error " + str(self.error)
+        #print "error " + str(self.error)
 
         if (abs(self.base_des - self.base_ang) < self.kierr):
             if (abs(self.base_des - self.base_ang) < self.umbral):
@@ -100,7 +100,7 @@ class Base_node:
         else:
             self.kisum = 0.
 
-        print "kisum " + str(self.kisum)
+        #print "kisum " + str(self.kisum)
 
         self.base_out = self.constrain(self.kp * self.error + self.kisum - self.kd * (self.base_ang - self.base_ang_lst) + self.km * self.base_des, -self.range, self.range)
 

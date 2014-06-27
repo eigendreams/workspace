@@ -25,7 +25,7 @@ class Forearm_node:
 
         # PID control parameters
         self.kp = 100
-        self.ki = 10
+        self.ki = 1
         self.kd = 0
         self.km = 0
         self.umbral = 0.1
