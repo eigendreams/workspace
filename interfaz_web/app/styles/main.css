@@ -1,6 +1,6 @@
 /* Space out content a bit */
 body {
-  padding-top: 100px;
+  padding-top: 70px;
   padding-bottom: 20px;
 }
 
@@ -61,6 +61,10 @@ body {
 
 /* button margin */
 .row .btn {
+  margin: 10px;
+}
+
+.p-home .btn-group {
   margin: 10px;
 }
 

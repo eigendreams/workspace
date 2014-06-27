@@ -1,33 +1,50 @@
 'use strict';
 
 angular.module('finderApp')
-  .controller('HomeCtrl', function ($scope, $interval, $rootScope, $http, Auth, $location, Ros) {
+  .controller('HomeCtrl', function ($scope, $interval, $timeout, $rootScope, $http, Auth, $location, Ros) {
     
     $scope.nodes = Ros.node.getNodes();
     $scope.serverIP = Ros.getServerIP();
     $scope.videoQuality = 30;
     $scope.topics = Ros.topic.getNames();
+    $scope.rosState = Ros.getRosState();
+    $scope.rosDisconnect = Ros.disconnect;
+    $scope.rosConnect = Ros.connect;
     // $scope.serverConnected = Ros.serverConnected;
 
-    $scope.startNode = function (node) {
-        Ros.node.start(node);
-      };
 
-    $scope.stopNode = function (node) {
-        Ros.node.stop(node);
-      };
+    $scope.toggleRos = function () {
+        if ($scope.rosState === 'Disconnected') {
+            Ros.connect();
+        } else {
+            Ros.disconnect();
+        }
+    };
 
     $scope.toggleNode = function (node) {
-        // console.log($scope.nodes[node]);
         if($scope.nodes[node] == '0') {
-            // console.log("Start Node");
             Ros.node.start(node);
         }
         else {
-            // console.log("Stop node");
             Ros.node.stop(node);
         }
     };
+
+    $scope.startNodes = function (nodes) {
+        // for (var i=0; i<nodes.length-1; i++) {
+            // console.log(nodes[i]);
+            Ros.node.start('roscore');
+            $timeout( function () {
+                Ros.node.start('rosbridge');
+                $timeout( function () {
+                    Ros.node.start('rosalive');
+                    $timeout( function () {
+                        Ros.connect();
+                    }, 2000);
+                }, 2000);
+            }, 4000);
+        // }
+    }
 
     $scope.toggleVideoQuality = function () {
         if ($scope.videoQuality==80) {
@@ -39,13 +56,14 @@ angular.module('finderApp')
     };
 
     $scope.$on('nodesUpdated', function() {
-        // console.log('nodes actualizado desde home');
         $scope.nodes = Ros.node.getNodes();
-        // Ros.topic.updateData('rightOut');
-        // console.log(Ros.topic.getData('rightOut'));
-        // $scope.topics.rightOut = Ros.topic.getData('rightOut');
-        // console.log($scope.topics);
-      });
+        // $scope.rosState = Ros.getRosState();
+    });
+
+    $scope.$on('rosStateChanged', function() {
+        $scope.rosState = Ros.getRosState();
+        console.log("Cambió ros " + $scope.rosState);
+    });
 
     $interval(function () {
         // if(Ros.getState() === 'Connected') {

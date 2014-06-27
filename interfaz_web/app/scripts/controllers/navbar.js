@@ -47,7 +47,7 @@ angular.module('finderApp')
     });
 
     $scope.rosDisconnect = function () { Ros.disconnect(); };
-    $scope.rosConnect = function () { Ros.connect(9090); };
+    $scope.rosConnect = function () { Ros.connect(); };
 
     // $scope.checkLaptopBattery = function () { 
     //   $http.get('/api/battery').

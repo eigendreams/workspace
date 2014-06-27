@@ -12,15 +12,37 @@ angular.module('finderApp')
     var serverConnectionPromise;
     var nodeState;
     var nodes;
+    var rosCommunicationPromise;
+    var serverConnectionPromise;
 
     var topics = {
+      alive: {
+        name: '/alive',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            if (rosCommunicationActive === false) {
+              rosCommunicationActive = true;
+              $rootScope.$broadcast('rosStateChanged');
+            }
+            // rosCommunicationActive = true;
+            $timeout.cancel(rosCommunicationPromise);
+            rosCommunicationPromise = $timeout( function () {
+              rosCommunicationActive = false;
+              $rootScope.$broadcast('rosStateChanged');
+            }, 3000);
+          });
+        }
+      },
       leftOut: {
         name: '/left_out',
         type: 'std_msgs/Int16',
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.leftOut.value = message.data;
             topics.leftOut.active = false;
             topics.leftOut.topic.unsubscribe();
@@ -33,7 +55,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.rightOut.value = message.data;
             topics.rightOut.active = false;
             topics.rightOut.topic.unsubscribe();
@@ -46,7 +68,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.brOut.value = message.data;
             topics.brOut.active = false;
             topics.brOut.topic.unsubscribe();
@@ -59,7 +81,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.blOut.value = message.data;
             topics.blOut.active = false;
             topics.blOut.topic.unsubscribe();
@@ -72,7 +94,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.frOut.value = message.data;
             topics.frOut.active = false;
             topics.frOut.topic.unsubscribe();
@@ -85,7 +107,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.flOut.value = message.data;
             topics.flOut.active = false;
             topics.flOut.topic.unsubscribe();
@@ -98,7 +120,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.baseOut.value = message.data;
             topics.baseOut.active = false;
             topics.baseOut.topic.unsubscribe();
@@ -111,7 +133,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.armOut.value = message.data;
             topics.armOut.active = false;
             topics.armOut.topic.unsubscribe();
@@ -124,7 +146,7 @@ angular.module('finderApp')
         value: 0,
         active: false,
         subscribe: function () {
-          this.topic.subscribe(function (message) {
+          this.topic.subscribe( function (message) {
             topics.baseDes.value = message.data;
             topics.baseDes.active = false;
             topics.baseDes.topic.unsubscribe();
@@ -137,10 +159,15 @@ angular.module('finderApp')
       $http.get('/api/getNodes').
         success(function(data) {
           nodes = data;
-          serverConnected = true;
+
+          if (serverConnected === false) {
+            serverConnected = true;
+            $rootScope.$broadcast('serverStateChanged');
+          }
           $timeout.cancel(serverConnectionPromise);
           serverConnectionPromise = $timeout( function () {
             serverConnected = false;
+            $rootScope.$broadcast('serverStateChanged');
           }, 3000);
         })
       $rootScope.$broadcast('nodesUpdated');
@@ -161,14 +188,6 @@ angular.module('finderApp')
       getNodes();
     }, 1200);
 
-    var promise;
-    var serverConnectionPromise;
-    var laptopBattery = '0%';
-
-    var setDisconnected = function () {
-      rosCommunicationActive = false;
-    };
-
     var init = function () {
 
       for (var topic in topics) {
@@ -178,22 +197,9 @@ angular.module('finderApp')
           name : topics[key].name,
           messageType : topics[key].type
         });
-
-        // topics[key].subscribe();
-        // console.log(topics[key].topic);
       }
 
-      var listenerAlive = new ROSLIB.Topic({
-        ros : ros,
-        name : '/alive',
-        messageType : 'std_msgs/Int16'
-      });
-
-      listenerAlive.subscribe(function (message) {
-        rosCommunicationActive = true;
-        $timeout.cancel(promise);
-        promise = $timeout(setDisconnected, 3000);
-      });
+      topics.alive.subscribe();
 
     };
 
@@ -202,17 +208,25 @@ angular.module('finderApp')
       getServerIP: function () { 
         return serverIP; 
       },
-      connect: function (port) {
+      connect: function () {
         ros.close();
-        ros.connect('ws://' + serverIP + ':' + port);
-        rosConnectionActive = true;
+        ros.connect('ws://' + serverIP + ':9090');
+        if (rosConnectionActive === false) {
+          rosConnectionActive = true;
+          $rootScope.$broadcast('rosStateChanged');
+        }
+        // rosConnectionActive = true;
         init();
         // connection_active = true;
       },
       disconnect: function () {
         ros.close();
         // connection_active = true;
-        rosConnectionActive = false;
+        if (rosConnectionActive === true) {
+          rosConnectionActive = false;
+          $rootScope.$broadcast('rosStateChanged');
+        }
+        // rosConnectionActive = false;
       },
       getRosState: function () {
         var state = '';
@@ -242,11 +256,13 @@ angular.module('finderApp')
         start : function (node) {
           $http.post('/api/startNode', {node: node}).
             success(function(data) {
+              getNodes();
           });
         },
         stop : function (node) {
           $http.post('/api/stopNode', {node: node}).
             success(function(data) {
+              getNodes();
             });
         },
         getNodes : function () {

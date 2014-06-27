@@ -1,7 +1,7 @@
-<div ng-include="'partials/navbar'"></div>
+<div class="" ng-include="'partials/navbar'"></div>
 
 
-<div class="container btn-container">
+<div class="container p-home btn-container">
   <!-- <div class="row">
     <div ng-repeat="">
       <div class="text-center col-md-4">
@@ -16,6 +16,73 @@
     </div>
   </div>
   <div class="row"> -->
+  <!-- <div class="panel panel-default">
+    <div class="panel-heading">
+      Nodes
+    </div>
+    <div class="panel-body"> -->
+      <!-- <div class="center col-md-12">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+        </div>
+      </div> -->
+      <div class="center col-md-12">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.roscore==='0'),'btn-success':(nodes.roscore!=='0')}" ng-click="toggleNode('roscore')">Roscore</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosbridge==='0'),'btn-success':(nodes.rosbridge!=='0')}" ng-click="toggleNode('rosbridge')">Rosbridge</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosalive==='0'),'btn-success':(nodes.rosalive!=='0')}" ng-click="toggleNode('rosalive')">Rosalive</button>
+          <button type="button" class="btn" ng-class='{"btn-success": (rosState == "Connected"), "btn-danger": (rosState == "Uncommunicated"), "btn-default": (rosState == "Disconnected")}' ng-click="toggleRos()">Ros Client</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+        </div>
+      </div>
+      <div class="col-md-6"> 
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Rosarduino1</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Rosarduino2</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Rosarduino3</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Left</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Right</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Fr</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Fl</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Br</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Bl</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Base</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Arm</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Forearm</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Fl</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Wrist</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Gripper</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Mjpeg Server</button>
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Cam</button>
+          <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
+          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+        </div>
+      </div>
+  <!--   </div>
+  </div> -->
   <div class="row">
     <div ng-repeat="(node, state) in nodes">
       <div class="text-center col-md-3">
