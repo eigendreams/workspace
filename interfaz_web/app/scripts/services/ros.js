@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    // var serverIP = "192.168.88.253";
-    var serverIP = "localhost";
+    var serverIP = "192.168.88.251";
+    // var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -152,6 +152,58 @@ angular.module('finderApp')
             // topics.baseDes.topic.unsubscribe();
           });
         }
+      },
+      irOut: {
+        name: '/ir_out',
+        type: 'std_msgs/String',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.irOut.value = message.data;
+            topics.irOut.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
+      },
+      co2: {
+        name: '/co2',
+        type: 'std_msgs/Int8',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.co2.value = message.data;
+            topics.co2.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
+      },
+      pitch: {
+        name: '/pitch',
+        type: 'std_msgs/Int8',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.pitch.value = message.data;
+            topics.pitch.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
+      },
+      roll: {
+        name: '/roll',
+        type: 'std_msgs/Int8',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.roll.value = message.data;
+            topics.roll.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
       }
     };
 
@@ -159,6 +211,7 @@ angular.module('finderApp')
       $http.get('/api/getNodes').
         success(function(data) {
           nodes = data;
+          // console.log(data);
 
           if (serverConnected === false) {
             serverConnected = true;

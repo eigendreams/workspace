@@ -10,6 +10,41 @@ angular.module('finderApp')
     $scope.rosState = Ros.getRosState();
     $scope.rosDisconnect = Ros.disconnect;
     $scope.rosConnect = Ros.connect;
+        
+
+    $scope.listenerGroup = {
+        groupOne : {
+            baseDes: 0, 
+            leftOut: 0, 
+            rightOut: 0,
+            frOut: 0,
+            flOut: 0,
+            brOut: 0,
+            blOut: 0,
+            baseOut: 0
+        },
+        groupSensor : {
+            irOut: 0,
+            co2: 0,
+            pitch: 0,
+            roll: 0
+        }
+    }
+
+    $scope.activeListener = {
+        groupSensor: false,
+        groupOne: false
+    };
+
+    $scope.setActiveListener = function (selection) {
+        for (var item in $scope.activeListener) {
+            if (item == selection) {
+                $scope.activeListener[item] = true;
+            } else {
+                $scope.activeListener[item] = false;
+            }
+        }
+    };
     // $scope.serverConnected = Ros.serverConnected;
 
 
@@ -71,19 +106,26 @@ angular.module('finderApp')
             // Ros.topic.updateData('rightOut');
             // Ros.topic.updateData('rightOut');
         // console.log($scope.topics);
-        for (var topic in $scope.topics) {
-            // console.log(topic);
-            // Ros.topic.updateData(topic);
-            if (topic == 'baseDes') {
-                $scope.topics[topic] = Ros.topic.getData(topic).toFixed(2);
-            } else {
-                $scope.topics[topic] = Ros.topic.getData(topic);
-                // console.log($scope.topics[topic]);
+
+        for (var listenerGroup in $scope.activeListener) {
+            if ($scope.activeListener[listenerGroup]) {
+                for (var topic in $scope.listenerGroup[listenerGroup]) {
+                    // console.log(topic);
+                    // Ros.topic.updateData(topic);
+                    if (topic == 'baseDes') {
+                        $scope.listenerGroup[listenerGroup][topic] = Ros.topic.getData(topic).toFixed(2);
+                    } else {
+                        $scope.listenerGroup[listenerGroup][topic] = Ros.topic.getData(topic);
+                        // console.log($scope.topics[topic]);
+                    }
+                    
+                }
             }
-            
         }
+
+                
         // }
         
-    }, 300);
+    }, 100);
 
   });

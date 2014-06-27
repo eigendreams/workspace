@@ -27,7 +27,85 @@
           <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
         </div>
       </div> -->
-      <div class="center col-md-12">
+      <!-- <div class="col-md-1">
+        <p>Hola</p>
+      </div> -->
+      <div class="col-md-8 well well-sm">
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Comunicación</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.roscore==='0'),'btn-success':(nodes.roscore!=='0')}" ng-click="toggleNode('roscore')">Roscore</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosbridge==='0'),'btn-success':(nodes.rosbridge!=='0')}" ng-click="toggleNode('rosbridge')">Rosbridge</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosalive==='0'),'btn-success':(nodes.rosalive!=='0')}" ng-click="toggleNode('rosalive')">Rosalive</a>
+          <a class="btn" ng-class='{"btn-success": (rosState == "Connected"), "btn-danger": (rosState == "Uncommunicated"), "btn-default": (rosState == "Disconnected")}' ng-click="toggleRos()">Ros Client</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</a>
+          <a class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Arduinos</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Arduino 1</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Arduino 2</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Arduino 3</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Motores Base</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosleftnode==='0'),'btn-success':(nodes.rosleftnode!=='0')}" ng-click="toggleNode('rosleftnode')">Left</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosrightnode==='0'),'btn-success':(nodes.rosrightnode!=='0')}" ng-click="toggleNode('rosrightnode')">Right</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosbrnode==='0'),'btn-success':(nodes.rosbrnode!=='0')}" ng-click="toggleNode('rosbrnode')">Arm br</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosblnode==='0'),'btn-success':(nodes.rosblnode!=='0')}" ng-click="toggleNode('rosblnode')">Arm bl</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosfrnode==='0'),'btn-success':(nodes.rosfrnode!=='0')}" ng-click="toggleNode('rosfrnode')">Arm fr</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosflnode==='0'),'btn-success':(nodes.rosflnode!=='0')}" ng-click="toggleNode('rosflnode')">Arm fl</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Motores Brazo</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosbasenode==='0'),'btn-success':(nodes.rosbasenode!=='0')}" ng-click="toggleNode('rosbasenode')">Base</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosarmnode==='0'),'btn-success':(nodes.rosarmnode!=='0')}" ng-click="toggleNode('rosarmnode')">Arm</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosforearmnode==='0'),'btn-success':(nodes.rosforearmnode!=='0')}" ng-click="toggleNode('rosforearmnode')">Forearm</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.roswristnode==='0'),'btn-success':(nodes.roswristnode!=='0')}" ng-click="toggleNode('roswristnode')">Wrist</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rospalmnode==='0'),'btn-success':(nodes.rospalmnode!=='0')}" ng-click="toggleNode('rospalmnode')">Palm</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosgrippernode==='0'),'btn-success':(nodes.rosgrippernode!=='0')}" ng-click="toggleNode('rosgrippernode')">Gripper</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Video</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosmjpegserver==='0'),'btn-success':(nodes.rosmjpegserver!=='0')}" ng-click="toggleNode('rosmjpegserver')">Mjpeg Server</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.roscam==='0'),'btn-success':(nodes.roscam!=='0')}" ng-click="toggleNode('roscam')">Camaras</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Control</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.roscontrol==='0'),'btn-success':(nodes.roscontrol!=='0')}" ng-click="toggleNode('roscontrol')">Nodo de control</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      <div class="">
+        <div class="btn-group">
+          <!-- <a class="btn">Hola</a> -->
+          <a class="btn btn-info btn-group-title" ng-click="startNodes()">Sensores</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosbatterymonitor==='0'),'btn-success':(nodes.rosbatterymonitor!=='0')}" ng-click="toggleNode('rosbatterymonitor')">Monitor de batería</a>
+          <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
+        </div>
+      </div>
+      </div>
+      <!-- <div class="center col-md-12">
         <div class="btn-group">
           <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Start</button>
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.roscore==='0'),'btn-success':(nodes.roscore!=='0')}" ng-click="toggleNode('roscore')">Roscore</button>
@@ -56,7 +134,7 @@
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Br</button>
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Bl</button>
           <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
-          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button>
         </div>
       </div>
       <div class="col-md-7">
@@ -69,7 +147,7 @@
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Wrist</button>
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Gripper</button>
           <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
-          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button>
         </div>
       </div>
       <div class="col-md-5">
@@ -78,25 +156,60 @@
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino1==='0'),'btn-success':(nodes.rosarduino1!=='0')}" ng-click="toggleNode('rosarduino1')">Mjpeg Server</button>
           <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino2==='0'),'btn-success':(nodes.rosarduino2!=='0')}" ng-click="toggleNode('rosarduino2')">Cam</button>
           <button type="button" class="btn btn-default" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Kill</button>
-          <!-- <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button> -->
+          <button type="button" class="btn" ng-class="{'btn-default':(nodes.rosarduino3==='0'),'btn-success':(nodes.rosarduino3!=='0')}" ng-click="toggleNode('rosarduino3')">Base</button>
         </div>
-      </div>
-  <!--   </div>
+      </div> -->
+    <!-- </div>
   </div> -->
-  <div class="row">
+  <!-- <div class="row">
     <div ng-repeat="(node, state) in nodes">
       <div class="text-center col-md-3">
         <div style="width: 150px" class="btn" ng-class="{'btn-default':(state==='0'),'btn-success':(state!=='0')}" ng-click="toggleNode(node)">{{node}}</div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- <div class="jumbotron"> -->
-    <div class="row center">
+    <!-- <div class="row center">
       <div ng-repeat="(topic, value) in topics">
         <div class="text-center col-md-2">
           <div class="btn btn-default">{{topic}}: {{value}}</div>
         </div>
       </div>
+    </div> -->
+    <div class="container col-md-4">
+      <!-- <ul class="list-group">
+        <li class="list-group-item" ng-repeat="(topic, value) in topics">
+          <span class="badge">{{value}}</span>
+          {{topic}}
+        </li>
+      </ul> -->
+      <ul class="nav nav-pils">
+        <!-- <li class="active"><a href="">Monitor</a></li> -->
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="">
+            Selecciona <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="" ng-click="setActiveListener('groupOne')">Salida del pwm</a></li>
+            <li><a href="" ng-click="setActiveListener('groupSensor')">Sensores</a></li>
+            <!-- <li><a href="">Valor deseado</a></li> -->
+            <li role="presentation" class="divider"></li>
+            <li><a href="">Desactivar</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="list-group" ng-hide="!activeListener.groupOne">
+        <li class="list-group-item" ng-repeat="(topic, value) in listenerGroup.groupOne">
+          <span class="badge">{{value}}</span>
+          {{topic}}
+        </li>
+      </ul>
+      <ul class="list-group" ng-hide="!activeListener.groupSensor">
+        <li class="list-group-item" ng-repeat="(topic, value) in listenerGroup.groupSensor">
+          <span class="badge">{{value}}</span>
+          {{topic}}
+        </li>
+      </ul>
     </div>
   <!-- </div> -->
   <div class="row">

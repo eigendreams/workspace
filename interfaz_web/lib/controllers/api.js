@@ -46,6 +46,36 @@ var nodes = {
     evalState: "ps aux | grep -v grep | egrep 'base_node.py' -c",
     state: 0
   },
+  rosarmnode : {
+    start: ['rosrun',['finder','arm_node.py']],
+    stop: "kill -9 $(ps aux | grep arm_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'arm_node.py' -c",
+    state: 0
+  },
+  rosforearmnode : {
+    start: ['rosrun',['finder','forearm_node.py']],
+    stop: "kill -9 $(ps aux | grep forearm_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'forearm_node.py' -c",
+    state: 0
+  },
+  roswristnode : {
+    start: ['rosrun',['finder','wrist_node.py']],
+    stop: "kill -9 $(ps aux | grep wrist_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'wrist_node.py' -c",
+    state: 0
+  },
+  rospalmnode : {
+    start: ['rosrun',['finder','palm_node.py']],
+    stop: "kill -9 $(ps aux | grep palm_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'palm_node.py' -c",
+    state: 0
+  },
+  rosgrippernode : {
+    start: ['rosrun',['finder','gripper_node.py']],
+    stop: "kill -9 $(ps aux | grep gripper_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'gripper_node.py' -c",
+    state: 0
+  },
   rosleftnode : {
     start: ['rosrun',['finder','left_node.py']],
     stop: "kill -9 $(ps aux | grep left_node.py | grep -v grep | awk '{print $2}')",
