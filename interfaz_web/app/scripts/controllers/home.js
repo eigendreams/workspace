@@ -73,7 +73,7 @@ angular.module('finderApp')
         // console.log($scope.topics);
         for (var topic in $scope.topics) {
             // console.log(topic);
-            Ros.topic.updateData(topic);
+            // Ros.topic.updateData(topic);
             if (topic == 'baseDes') {
                 $scope.topics[topic] = Ros.topic.getData(topic).toFixed(2);
             } else {
