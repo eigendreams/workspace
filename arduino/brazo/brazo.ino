@@ -46,8 +46,8 @@ AS5043Class AS5043obj(13, 12, 11);
 // Pins A1...A3 as CS for SPI read of each sensor, positive sense, sampling size of 1
 // EncoderClass(AS5043Class, pin_csn, min, max, val), as before
 EncoderClass ENCBASE(&AS5043obj, A0, 485, 1004, -100);
-EncoderClass ENCBRAZO(&AS5043obj, A1, 350, 820, -100);
-EncoderClass ENCANTEBRAZO(& AS5043obj, A2, 550, 90, -100);
+EncoderClass ENCBRAZO(&AS5043obj, A2, 350, 820, -100);
+EncoderClass ENCANTEBRAZO(& AS5043obj, A1, 550, 90, -100);
 EncoderClass ENCMUNNIECA(A3, 350, 895, 100, 100);
 
 // The incoming 6 DOF int16 information from ROS
@@ -75,10 +75,10 @@ void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
 void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
-/*void alive_cb(const std_msgs::Int16& dmsg) {
+void alive_cb(const std_msgs::Int16& dmsg) {
   milisLastMsg = millis();
   timedOut = false;
-}*/
+}
 
 ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
 ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
@@ -86,7 +86,7 @@ ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
-//ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
+ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
 
 std_msgs::Int16 base_lec_msg;
 std_msgs::Int16 arm_lec_msg;
@@ -124,7 +124,7 @@ void setup() {
 	nh.subscribe(wrist_out_sub);
 	nh.subscribe(palm_out_sub);
 	//nh.subscribe(gripper_out_sub);
-	//nh.subscribe(alive_sub);
+	nh.subscribe(alive_sub);
 	nh.advertise(base_lec_pub);
 	nh.advertise(arm_lec_pub);
 	nh.advertise(forearm_lec_pub);
@@ -151,7 +151,7 @@ void loop() {
 
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-	    /*if (milisNow - milisLastMsg >= 100000) {
+	    if (milisNow - milisLastMsg >= 3500) {
 	      base_out = 0;
 	      arm_out = 0;
 	      forearm_out = 0;
@@ -159,7 +159,7 @@ void loop() {
 	      palm_out = 0;
 	      gripper_out = 0;
 	      timedOut = true;
-	    }*/
+	    }
 
 	    // Obten los valores absolutos de los encoders
 	    base_lec = ENCBASE.read();
