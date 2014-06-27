@@ -58,6 +58,19 @@ class Wrist_node:
         self.wristVelPub = rospy.Publisher("wrist_vel", Float32)
         self.wristLecSub = rospy.Subscriber("wrist_lec", Int16, self.wristLecCb)
         self.wristDesSub = rospy.Subscriber("wrist_des", Float32, self.wristDesCb)
+        self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
+
+    def offsetCb(self):
+
+        self.wrist_offset  = self.base_lec
+        
+        self.wrist_ang_tmp = 0
+        self.wrist_ang_lst = 0
+        self.wrist_ang_abs = 0
+
+        self.wrist_ang = 0
+        self.wrist_ang_lap =  0
+        self.wrist_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):

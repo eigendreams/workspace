@@ -91,6 +91,20 @@ class Fr_node:
         self.frResetSub = rospy.Subscriber("fr_reset", Int16, self.frResetCb)
         self.frLecSub = rospy.Subscriber("fr_lec", Int16, self.frLecCb)
         self.frDesSub = rospy.Subscriber("fr_des", Float32, self.frDesCb)
+        self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
+        
+
+    def offsetCb(self):
+
+        self.fr_offset  = self.base_lec
+        
+        self.fr_ang_tmp = 0
+        self.fr_ang_lst = 0
+        self.fr_ang_abs = 0
+
+        self.fr_ang = 0
+        self.fr_ang_lap =  0
+        self.fr_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):
