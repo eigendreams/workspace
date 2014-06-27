@@ -162,7 +162,7 @@ exports.startNode = function (req, res) {
 	var node_name = req.body.node;
 
 	var spawn = require('child_process').spawn,
-		node = spawn(nodes[node_name].start[0],nodes[node_name].start[1]);
+      node = spawn(nodes[node_name].start[0],nodes[node_name].start[1]);
 
 	node.stdout.on('data', function (data) {
 		console.log("Node: " + node);
@@ -176,7 +176,7 @@ exports.startNode = function (req, res) {
 
 	node.on('exit', function (code) {
 		console.log("Node: " + node);
-	    console.log('child process exited with code ' + code);
+    console.log('child process exited with code ' + code);
 	});
 
 	return res.json(true);

@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    var serverIP = "192.168.88.253";
-    // var serverIP = "localhost";
+    // var serverIP = "192.168.88.253";
+    var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -12,42 +12,137 @@ angular.module('finderApp')
     var serverConnectionPromise;
     var nodeState;
     var nodes;
-    var outTopics = [
-      '/left_out',
-      '/right_out',
-      '/fr_out',
-      '/fl_out',
-      '/br_out',
-      '/bl_out',
-      '/base_out',
-      '/arm_out',
-      '/forearm_out',
-      '/wrist_out',
-      '/palm_out',
-      '/gripper_out'
-    ];
 
-    var topics = {};
-    
+    var topics = {
+      leftOut: {
+        name: '/left_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.leftOut.value = message.data;
+            topics.leftOut.active = false;
+            topics.leftOut.topic.unsubscribe();
+          });
+        }
+      },
+      rightOut: {
+        name: '/right_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.rightOut.value = message.data;
+            topics.rightOut.active = false;
+            topics.rightOut.topic.unsubscribe();
+          });
+        }
+      },
+      brOut: {
+        name: '/br_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.brOut.value = message.data;
+            topics.brOut.active = false;
+            topics.brOut.topic.unsubscribe();
+          });
+        }
+      },
+      blOut: {
+        name: '/bl_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.blOut.value = message.data;
+            topics.blOut.active = false;
+            topics.blOut.topic.unsubscribe();
+          });
+        }
+      },
+      frOut: {
+        name: '/fr_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.frOut.value = message.data;
+            topics.frOut.active = false;
+            topics.frOut.topic.unsubscribe();
+          });
+        }
+      },
+      flOut: {
+        name: '/fl_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.flOut.value = message.data;
+            topics.flOut.active = false;
+            topics.flOut.topic.unsubscribe();
+          });
+        }
+      },
+      baseOut: {
+        name: '/base_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.baseOut.value = message.data;
+            topics.baseOut.active = false;
+            topics.baseOut.topic.unsubscribe();
+          });
+        }
+      },
+      armOut: {
+        name: '/arm_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.armOut.value = message.data;
+            topics.armOut.active = false;
+            topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
+      baseDes: {
+        name: '/base_des',
+        type: 'std_msgs/Float32',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe(function (message) {
+            topics.baseDes.value = message.data;
+            topics.baseDes.active = false;
+            topics.baseDes.topic.unsubscribe();
+          });
+        }
+      }
+    };
 
     var getNodes = function () {
       $http.get('/api/getNodes').
         success(function(data) {
           nodes = data;
-          // communication_active = true;
           serverConnected = true;
           $timeout.cancel(serverConnectionPromise);
           serverConnectionPromise = $timeout( function () {
             serverConnected = false;
           }, 3000);
-          // $rootScope.$apply();
-          // console.log('Server connected');
         })
-        // error(function(data) {
-        //   // console.log('Error en el server');
-        //   serverConnected = false;
-        // });
-
       $rootScope.$broadcast('nodesUpdated');
     };
 
@@ -64,11 +159,6 @@ angular.module('finderApp')
 
     $interval( function () {
       getNodes();
-      // getTopics();
-      // ros.getTopics( function (topics) {
-      //     console.log(topics);
-      //   });
-      // console.log(serverConnected);
     }, 1200);
 
     var promise;
@@ -79,46 +169,19 @@ angular.module('finderApp')
       rosCommunicationActive = false;
     };
 
-    // var setServerDisconnected = function () {
-    //   serverConnected = false;
-    //   console.log('Server disconnected');
-    // };
-
-    var checkLaptopBattery = function () {
-      // $http.get('/api/battery').
-      //   success(function(data) {
-      //     // $scope.post = data.post;
-      //     // console.log(data);
-      //     laptopBattery = data;
-      //   });
-    };
-
-    // var createTopic = function (topic) {
-
-    //   var listener = new ROSLIB.Topic({
-    //     ros : ros,
-    //     name : topic,
-    //     messageType : 'std_msgs/Int32'
-    //   });
-
-    // }
-
     var init = function () {
 
-      topics = {};
-
-      for (var i=0; i<outTopics.length; i++) {
-        var listener = new ROSLIB.Topic({
+      for (var topic in topics) {
+        var key = topic;
+        topics[key].topic = new ROSLIB.Topic({
           ros : ros,
-          name : outTopics[i],
-          messageType : 'std_msgs/Int16'
+          name : topics[key].name,
+          messageType : topics[key].type
         });
 
-        topics[outTopics[i]] = listener;
+        // topics[key].subscribe();
+        // console.log(topics[key].topic);
       }
-
-      console.log(topics);
-
 
       var listenerAlive = new ROSLIB.Topic({
         ros : ros,
@@ -127,22 +190,11 @@ angular.module('finderApp')
       });
 
       listenerAlive.subscribe(function (message) {
-        //console.log('Se recibió un mensaje de alive con el dato ' + listenerAlive.name + " " + message.data);
-        // console.log("Connected");
-        // checkLaptopBattery();
-
         rosCommunicationActive = true;
         $timeout.cancel(promise);
         promise = $timeout(setDisconnected, 3000);
-        // $rootScope.$apply();
-        // console.log(laptopBattery);
       });
 
-      console.log("A punto de pedir topicos");
-
-      // ros.getTopics( function (topics) {
-      //     console.log(topics);
-      //   });
     };
 
     return {
@@ -150,32 +202,19 @@ angular.module('finderApp')
       getServerIP: function () { 
         return serverIP; 
       },
-      serverConnected: function () {
-        return serverConnected;
-      },
-      topics : topics,
       connect: function (port) {
-        console.log("Tratando de conectarse");
         ros.close();
         ros.connect('ws://' + serverIP + ':' + port);
+        rosConnectionActive = true;
         init();
         // connection_active = true;
-        rosConnectionActive = true;
       },
       disconnect: function () {
         ros.close();
         // connection_active = true;
         rosConnectionActive = false;
       },
-      isConnected: function () {
-        return rosConnectionActive;
-        // return false;
-      },
-      isCommunicated: function () {
-        return rosCommunicationActive;
-        // return false;
-      },
-      getState: function () {
+      getRosState: function () {
         var state = '';
         if(rosConnectionActive) {
           // console.log(communication_active);
@@ -192,12 +231,12 @@ angular.module('finderApp')
 
         return state;
       },
-      getLaptopBattery: function () {
-        return laptopBattery;
-      },
-      isServerConnected: function () { 
-        return serverConnected;
-        // return true;
+      getServerState: function () { 
+        if (serverConnected) {
+          return 'Connected';
+        } else {
+          return 'Disconnected';
+        }
       },
       node: {
         start : function (node) {
@@ -212,6 +251,49 @@ angular.module('finderApp')
         },
         getNodes : function () {
           return nodes;
+        }
+      },
+      topic: {
+        updateData: function (topic) {
+          if (rosCommunicationActive) {
+            // if (topics[topic].active === false) {
+              topics[topic].topic.unsubscribe();
+              topics[topic].topic = new ROSLIB.Topic({
+                ros : ros,
+                name : topics[topic].name,
+                messageType : topics[topic].type
+              });
+              topics[topic].active = true;
+              topics[topic].subscribe();
+            // } else {
+            //   console.log("Listener todavía activo");
+            // }
+          } else {
+            console.log("No hay comunicación con Ros");
+          }
+        },
+        getData: function (topic) {
+          return topics[topic].value;
+        },
+        getNames: function () {
+          var topicNames = {};
+          for (var key in topics) {
+            topicNames[key] = 0;
+          }
+          return topicNames;
+        },
+        unsubscribe: function (topic) {
+          // topics[topic].unsubscribe();
+          if (rosCommunicationActive) {
+            topics[topic].topic.unsubscribe();
+          } else {
+            console.log("No hay comunicación con ros");
+          }
+          // topics[topic].topic = new ROSLIB.Topic({
+          //   ros : ros,
+          //   name : topics[topic].name,
+          //   messageType : topics[topic].type
+          // });
         }
       }
     };

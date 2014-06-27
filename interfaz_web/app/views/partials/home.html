@@ -18,29 +18,32 @@
   <div class="row"> -->
   <div class="row">
     <div ng-repeat="(node, state) in nodes">
-      <!-- <div class="text-center col-md-4">
-        <div class="btn btn-warning" ng-click="startNode(node)">Iniciar {{node}}</div>
-      </div>
-      <div class="text-center col-md-4">
-        <div class="btn btn-warning" ng-click="stopNode(node)">Detener {{node}}</div>
-      </div> -->
-      <div class="text-center col-md-4">
+      <div class="text-center col-md-3">
         <div style="width: 150px" class="btn" ng-class="{'btn-default':(state==='0'),'btn-success':(state!=='0')}" ng-click="toggleNode(node)">{{node}}</div>
       </div>
     </div>
   </div>
+  <!-- <div class="jumbotron"> -->
+    <div class="row center">
+      <div ng-repeat="(topic, value) in topics">
+        <div class="text-center col-md-2">
+          <div class="btn btn-default">{{topic}}: {{value}}</div>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
   <div class="row">
     <div class="col-md-6 no-padding center">
-      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_1/image_raw?quality={{videoQuality}}">
+      <img style="" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_1/image_raw?quality={{videoQuality}}">
     </div>
     <div class="col-md-6 no-padding center">
-      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_2/image_raw?quality={{videoQuality}}">
+      <img style="" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_2/image_raw?quality={{videoQuality}}">
     </div>
     <div class="col-md-6 no-padding center">
-      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_3/image_raw?quality={{videoQuality}}">
+      <img style="" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_3/image_raw?quality={{videoQuality}}">
     </div>
     <div class="col-md-6 no-padding center">
-      <img style="" class="img-responsive" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_4/image_raw?quality={{videoQuality}}">
+      <img style="" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_4/image_raw?quality={{videoQuality}}">
     </div>
     <div class="col-md-12 center">
       <div style="" class="btn btn-primary" ng-click="toggleVideoQuality()">Recargar video</div>

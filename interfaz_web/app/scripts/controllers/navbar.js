@@ -30,27 +30,21 @@ angular.module('finderApp')
     //   }
     // }, 1000);
 
-    $scope.getState = Ros.getState;
-    $scope.getLaptopBattery = Ros.getLaptopBattery;
-    $scope.laptopBattery = '0%';
+    $scope.getRosState = Ros.getRosState;
     $scope.serverConnected = true;
 
-    $scope.$watch('getState()', function(newVal) {
+    $scope.$watch('getRosState()', function(newVal) {
       // console.log("New Data", newVal);
-      $scope.state = newVal;
-    });
-
-    $scope.$watch('getLaptopBattery()', function(newVal) {
-      // console.log("New Data", newVal);
-      $scope.laptopBattery = newVal;
+      $scope.rosState = newVal;
     });
 
     $scope.$on('nodesUpdated', function() {
-        // console.log('nodes actualizado desde home');
-        // $scope.serverConnected = Ros.isServerConnnected();
-        // console.log('El servidor esta: '+Ros.serverConnected());
-        $scope.serverConnected = Ros.serverConnected();
-      });
+      // console.log('nodes actualizado desde home');
+      // $scope.serverConnected = Ros.isServerConnnected();
+      // console.log('El servidor esta: '+Ros.serverConnected());
+      $scope.serverState = Ros.getServerState();
+      // console.log($scope.serverState);
+    });
 
     $scope.rosDisconnect = function () { Ros.disconnect(); };
     $scope.rosConnect = function () { Ros.connect(9090); };

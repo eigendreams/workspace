@@ -68,6 +68,10 @@ body {
   text-align: center;
 }
 
+.margin-center {
+  margin: 0 auto;
+}
+
 .no-margin {
   margin: 0;
 }
