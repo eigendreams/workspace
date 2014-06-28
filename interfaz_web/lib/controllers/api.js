@@ -14,145 +14,145 @@ var nodes = {
     start: ['rosrun',['rosbridge_server','rosbridge_websocket']],
     stop: "kill -9 $(ps aux | grep rosbridge | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'rosbridge' -c",
-    state: "1"
+    state: "0"
   },
   rosalive : {
     start: ['rostopic', ['pub','/alive','std_msgs/Int16','1','-r','1','__name:=rosalive']],
     stop: "kill -9 $(ps aux | grep alive | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'alive' -c",
-    state: "1"
+    state: "0"
   },
   rosarduino1 : {
     start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM0','__name:=ardu1']],
     stop: "kill -9 $(ps aux | grep ardu1 | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ardu1' -c",
-    state: 0
+    state: "0"
   },
   rosarduino2 : {
     start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM1','__name:=ardu2']],
     stop: "kill -9 $(ps aux | grep ardu2 | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ardu2' -c",
-    state: 0
+    state: "0"
   },
   rosarduino3 : {
     start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM2','__name:=ardu3']],
     stop: "kill -9 $(ps aux | grep ardu3 | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ardu3' -c",
-    state: 0
+    state: "0"
   },
   rosarduino4 : {
     start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM3','__name:=ardu4']],
     stop: "kill -9 $(ps aux | grep ardu4 | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ardu4' -c",
-    state: 0
+    state: "0"
   },
   rosbasenode : {
     start: ['rosrun',['finder','base_node.py']],
     stop: "kill -9 $(ps aux | grep base_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'base_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosarmnode : {
     start: ['rosrun',['finder','arm_node.py']],
-    stop: "kill -9 $(ps aux | grep arm_node.py | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'arm_node.py' -c",
-    state: 0
+    stop: "kill -9 $(ps aux | grep '/arm_node.py' | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep '/arm_node.py' -c",
+    state: "0"
   },
   rosforearmnode : {
     start: ['rosrun',['finder','forearm_node.py']],
     stop: "kill -9 $(ps aux | grep forearm_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'forearm_node.py' -c",
-    state: 0
+    state: "0"
   },
   roswristnode : {
     start: ['rosrun',['finder','wrist_node.py']],
     stop: "kill -9 $(ps aux | grep wrist_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'wrist_node.py' -c",
-    state: 0
+    state: "0"
   },
   rospalmnode : {
     start: ['rosrun',['finder','palm_node.py']],
     stop: "kill -9 $(ps aux | grep palm_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'palm_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosgrippernode : {
     start: ['rosrun',['finder','gripper_node.py']],
     stop: "kill -9 $(ps aux | grep gripper_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'gripper_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosleftnode : {
     start: ['rosrun',['finder','left_node.py']],
     stop: "kill -9 $(ps aux | grep left_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'left_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosrightnode : {
     start: ['rosrun',['finder','right_node.py']],
     stop: "kill -9 $(ps aux | grep right_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'right_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosfrnode : {
     start: ['rosrun',['finder','fr_node.py']],
     stop: "kill -9 $(ps aux | grep fr_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'fr_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosflnode : {
     start: ['rosrun',['finder','fl_node.py']],
     stop: "kill -9 $(ps aux | grep fl_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'fl_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosbrnode : {
     start: ['rosrun',['finder','br_node.py']],
     stop: "kill -9 $(ps aux | grep br_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'br_node.py' -c",
-    state: 0
+    state: "0"
   },
   rosblnode : {
     start: ['rosrun',['finder','bl_node.py']],
     stop: "kill -9 $(ps aux | grep bl_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'bl_node.py' -c",
-    state: 0
+    state: "0"
   },
   roscam : {
     start: ['roslaunch',['finder','cam_launch_test.launch']],
     stop: "kill -9 $(ps aux | grep cam | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'cam' -c",
-    state: 0
+    state: "0"
   },
   rosmjpegserver : {
     start: ['rosrun',['mjpeg_server','mjpeg_server']],
     stop: "kill -9 $(ps aux | grep mjpeg_server | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'mjpeg_server' -c",
-    state: 0
+    state: "0"
   },
   rosbatterymonitor : {
     start: ['rosrun',['finder','battery_monitor.py']],
     stop: "kill -9 $(ps aux | grep battery_monitor | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'battery_monitor' -c",
-    state: 0
+    state: "0"
   },
   rosapi : {
     start: ['rosrun',['rosapi','rosapi']],
     stop: "kill -9 $(ps aux | grep rosapi | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'rosapi' -c",
-    state: 0
+    state: "0"
   },
   roscontrol : {
     start: ['rosrun',['finder','control_interface.py']],
     stop: "kill -9 $(ps aux | grep control_interface.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'control_interface.py' -c",
-    state: 0
+    state: "0"
   },
   rosirnode : {
     start: ['rosrun',['finder','ir_node.py']],
     stop: "kill -9 $(ps aux | grep ir_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ir_node.py' -c",
-    state: 0
+    state: "0"
   }
 };
 

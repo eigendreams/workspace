@@ -101,7 +101,7 @@ angular.module('finderApp')
 
     $scope.$on('nodesUpdated', function() {
         $scope.nodes = Ros.node.getNodes();
-	console.log($scope.nodes);
+    	// console.log($scope.nodes);
         // $scope.rosState = Ros.getRosState();
     });
 

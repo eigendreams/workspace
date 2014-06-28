@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    var serverIP = "192.168.88.253";
-    // var serverIP = "localhost";
+    // var serverIP = "192.168.88.253";
+    var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -208,12 +208,20 @@ angular.module('finderApp')
       irOut: {
         name: '/ir_out',
         type: 'std_msgs/String',
-        value: 0,
+        value: [[],[],[],[]],
         active: false,
         subscribe: function () {
           this.topic.subscribe( function (message) {
             topics.irOut.value = message.data;
             topics.irOut.active = false;
+            for (var element in data) {
+              console.log(element);
+
+            }
+            topics.irOut.value = [[],[],[],[]];
+            for (var i=0; i<data.length; i++) {
+              topics.irOut.value[i%4][i%16] = data[i];
+            }
             // topics.baseDes.topic.unsubscribe();
           });
         }
@@ -272,10 +280,16 @@ angular.module('finderApp')
           }
           $timeout.cancel(serverConnectionPromise);
           serverConnectionPromise = $timeout( function () {
+            for (var node in nodes) {
+              nodes[node] = '0';
+            }
             serverConnected = false;
             $rootScope.$broadcast('serverStateChanged');
           }, 3000);
-        })
+        }).
+        error(function(data) {
+          console.log("Error de conexión"); 
+        });
       $rootScope.$broadcast('nodesUpdated');
     };
 
