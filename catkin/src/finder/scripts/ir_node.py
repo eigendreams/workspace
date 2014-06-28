@@ -11,7 +11,7 @@ from std_msgs.msg import UInt8
 from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import MultiArrayDimension
 from std_msgs.msg import MultiArrayLayout
-from finder import int16_64
+from finder.msg import int16_64
 
 class IR_Node():
     
