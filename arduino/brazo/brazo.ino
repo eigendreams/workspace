@@ -27,13 +27,15 @@ SimpleDriverClass MUNNIECA(6, 4, 2, 100);
 
 // Pins 7 for Talon control (second DOF) and 8 for Talon control (third DOF)
 // TalonClass(pin, umbral, val) // sense == sign(val), max_angle == abs(val)
-TalonClass BRAZO(2, 50);
-TalonClass ANTEBRAZO(2, 50);
+//TalonClass BRAZO(2, 50);
+//TalonClass ANTEBRAZO(2, 50);
 
 // Pin 9 for standard servo control (fifth DOF)
 // SimpleServoClass(pin, val) // sense == sign(val), max_angle == abs(val) (from -90 to +90)
-Servo servoobj;
-//SimpleServoClass PALMA(&servoobj, 100);
+Servo brazo_servo;
+Servo antebrazo_servo;
+Servo gripper_servo;
+//SimpleServoClass PALMA(&gripper_servo, 100);
 
 // Pins 13, 12, 11 for SPI single reads of magnetic encoders (second, third and fourth DOFs) in software emulation mode
 // The CS pin must be specified at each constructor of the EncoderClaIP Address:ss, pin 10 is best left ALONE in the UNO!
@@ -102,14 +104,19 @@ ros::Publisher wrist_lec_pub("wrist_lec", &wrist_lec_msg);
 //ros::Publisher gripper_lec_pub("gripper_lec", &gripper_lec_msg);
 
 void setup() {
+
 	BASE.begin();
 	MUNNIECA.begin();
-	pinMode(7, OUTPUT);
-	pinMode(8, OUTPUT);
-	pinMode(9, OUTPUT);
-	BRAZO.attach(7);
-	ANTEBRAZO.attach(8);
-	servoobj.attach(9);
+
+	//pinMode(7, OUTPUT);
+	//pinMode(8, OUTPUT);
+	//pinMode(9, OUTPUT);
+
+	brazo_servo.attach(7);
+	//antebrazo_servo.attach(8);
+	//BRAZO.attach(7);
+	//ANTEBRAZO.attach(8);
+	//gripper_servo.attach(9);
 
 	// Select encoders as digital
 	pinMode(A0, OUTPUT);
@@ -123,8 +130,10 @@ void setup() {
 	nh.subscribe(forearm_out_sub);
 	nh.subscribe(wrist_out_sub);
 	nh.subscribe(palm_out_sub);
-	//nh.subscribe(gripper_out_sub);
+	nh.subscribe(gripper_out_sub);
+
 	nh.subscribe(alive_sub);
+
 	nh.advertise(base_lec_pub);
 	nh.advertise(arm_lec_pub);
 	nh.advertise(forearm_lec_pub);
@@ -133,7 +142,7 @@ void setup() {
 	//nh.advertise(gripper_lec_pub);
 
 	// Comm at 1 Mhz and ENC initialization
-	Dynamixelobj.begin(56000UL, 2);
+	//Dynamixelobj.begin(56000UL, 2);
 	AS5043obj.begin();
 }
 
@@ -142,7 +151,10 @@ void loop() {
 
 	unsigned long milisNow = millis();
 
-	servoobj.write(palm_out * 5 + 1500);
+	brazo_servo.write(arm_out * 5 + 1500);
+	//antebrazo_servo.write(forearm_out * 5 + 1500);
+	//gripper_servo.write(palm_out * 5 + 1500);
+
 
 	// 20 Hz operation
 	if (milisNow - milisLast >= 100) {
@@ -151,7 +163,7 @@ void loop() {
 
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-	    if (milisNow - milisLastMsg >= 3500) {
+	    if (milisNow - milisLastMsg >= 5000) {
 	      base_out = 0;
 	      arm_out = 0;
 	      forearm_out = 0;
@@ -169,12 +181,17 @@ void loop() {
 	    //palm_lec = PALMA.read();
 	    //gripper_lec = DYNAMIXEL.read();
 
-		BASE.write(base_out);
-		BRAZO.write(arm_out);
-		ANTEBRAZO.write(forearm_out);
-		MUNNIECA.write(wrist_out);
-		//servoobj.write(palm_out * 5 + 1500);
-		DYNAMIXEL.write(gripper_out);
+		// BASE.write(base_out);
+		//BRAZO.write(arm_out);
+		//ANTEBRAZO.write(forearm_out);
+		// MUNNIECA.write(wrist_out);
+		//gripper_servo.write(palm_out * 5 + 1500);
+		//DYNAMIXEL.write(gripper_out);
+
+		brazo_servo.write(arm_out * 5 + 1500);
+		//antebrazo_servo.write(forearm_out * 5 + 1500);
+		//gripper_servo.write(palm_out * 5 + 1500);
+
 
 		base_lec_msg.data = base_lec;
 		arm_lec_msg.data = arm_lec;

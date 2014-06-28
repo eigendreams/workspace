@@ -11,6 +11,7 @@ from std_msgs.msg import UInt8
 from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import MultiArrayDimension
 from std_msgs.msg import MultiArrayLayout
+from finder import int16_64
 
 class IR_Node():
     
@@ -34,7 +35,7 @@ class IR_Node():
         self.databuffer = [0 for x in range(64)]
 
         self.irPub = rospy.Publisher("ir_out", String)
-        self.irSub = rospy.Subscriber("ws", UInt8MultiArray, self.plotfcn)
+        self.irSub = rospy.Subscriber("ir_data", int16_64, self.plotfcn)
 
     def plotfcn(self, data):
 
@@ -44,7 +45,7 @@ class IR_Node():
         self.asccibuffer = "";
 
         for i in range(64):
-            self.asccibuffer += chr(self.databuffer[i])
+            self.asccibuffer += chr((self.databuffer[i] + 50)/16)
 
         #print (str(self.databuffer).strip('[]'))
         #print self.asccibuffer

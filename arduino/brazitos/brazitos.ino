@@ -8,18 +8,15 @@
 #include "i2cmaster.h"
 #include "MLX90620_registers.h"
 #include "finder/int16_64.h"
-
-int ir_req;
-void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
-ros::Subscriber<std_msgs::Int16> ir_req_sub("ir_req", ir_req_cb);
-
+#include "finder/uint8_64.h"
+//int ir_req;
+//void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
+//ros::Subscriber<std_msgs::Int16> ir_req_sub("ir_req", ir_req_cb);
 finder::int16_64 ir_data;
 ros::Publisher ir_pub("ir_data", &ir_data);
-
 int refreshRate = 16; //Set this value to your desired refresh frequency
 int conta = 0;
 byte loopCount = 0; //Used in main loop
-
 void setConfiguration(int irRefreshRateHZ)
 {
   byte Hz_LSB;
@@ -212,7 +209,7 @@ void setup() {
   setConfiguration(refreshRate); //Configure the MLX sensor with the user's choice of refresh rate
   //calculate_TA(); //Calculate the current Tambient
   nh.advertise(ir_pub); delay(1);
-  nh.subscribe(ir_req_sub); delay(1);
+  //nh.subscribe(ir_req_sub); delay(1);
   //////////////////////////////////////////////////////////////////////////////
 
   MTFR.attach(3);
@@ -285,10 +282,10 @@ void loop() {
     }
     readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
     //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
-    //conta++;
-    if(ir_req)//conta >= 10)
+    conta++;
+    if(conta >= 10)//ir_req)//conta >= 10)
     {
-      ir_req = 0;
+      //ir_req = 0;
       //conta = 0;
       ir_pub.publish(&ir_data);
     }

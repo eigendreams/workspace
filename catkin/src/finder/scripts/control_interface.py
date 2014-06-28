@@ -72,6 +72,9 @@ class Control_interface:
         self.fast_arms = False
         self.fast_traction = False
 
+        self.testdata = 0
+        self.testpub = rospy.Publisher("arm_out", Int16)
+
         # THIS MUST BE AT THE END!!!
         self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)        
 
@@ -104,6 +107,8 @@ class Control_interface:
 
         self.offset_val = data.buttons[self.buttons_names['Y']]
 
+        self.testdata   = data.axes[self.axes_names['left_stick_ver']] * 100
+
         
     def motorTractionUpdate(self):
 		       
@@ -119,6 +124,8 @@ class Control_interface:
 
         self.leftPub.publish(left_des)
         self.rightPub.publish(right_des)
+
+        self.testpub.publish(self.testdata)
 
         # print "left: " + str(left_des)
         # print "right: " + str(right_des)

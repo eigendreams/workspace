@@ -20,7 +20,9 @@
 #endif
  
 /* I2C clock in Hz */
-#define SCL_CLOCK 400000L
+#define SCL_CLOCK 50000L
+
+int loopCountTWI;
 
 
 /*************************************************************************
@@ -80,9 +82,12 @@ void i2c_start_wait(unsigned char address)
 {
     uint8_t   twst;
 
+    loopCountTWI = 0;
 
     while ( 1 )
     {
+    	loopCountTWI++;
+
 	    // send START condition
 	    TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);
     
@@ -91,7 +96,12 @@ void i2c_start_wait(unsigned char address)
     
     	// check value of TWI Status Register. Mask prescaler bits.
     	twst = TW_STATUS & 0xF8;
-    	if ( (twst != TW_START) && (twst != TW_REP_START)) continue;
+    	if ( (twst != TW_START) && (twst != TW_REP_START)) {
+    		if (loopCountTWI < 10) {
+    			continue;
+    		}
+
+    	};
     
     	// send device address
     	TWDR = address;
@@ -110,7 +120,13 @@ void i2c_start_wait(unsigned char address)
 	        // wait until stop condition is executed and bus released
 	        delay(1);//while(TWCR & (1<<TWSTO));
 	        
-    	    continue;
+	        if (loopCountTWI < 10) {
+	        	continue;
+	        }
+	        else {
+	        	break;
+	        }
+    	    //continue;
     	}
     	//if( twst != TW_MT_SLA_ACK) return 1;
     	break;
