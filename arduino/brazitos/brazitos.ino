@@ -11,7 +11,7 @@
 
 int ir_req;
 void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
-ros::Subscriber<std_msgs::Int16> ir_request_sub("ir_req", ir_req_cb);
+ros::Subscriber<std_msgs::Int16> ir_req_sub("ir_req", ir_req_cb);
 
 finder::int16_64 ir_data;
 ros::Publisher ir_pub("ir_data", &ir_data);
@@ -212,6 +212,7 @@ void setup() {
   setConfiguration(refreshRate); //Configure the MLX sensor with the user's choice of refresh rate
   //calculate_TA(); //Calculate the current Tambient
   nh.advertise(ir_pub); delay(1);
+  nh.subscribe(ir_req_sub); delay(1);
   //////////////////////////////////////////////////////////////////////////////
 
   MTFR.attach(3);
