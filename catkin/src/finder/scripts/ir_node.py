@@ -40,7 +40,12 @@ class IR_Node():
     def plotfcn(self, data):
 
         for i in range(64):
-            self.databuffer[i] = data.data[i]
+            if (data.data[i] < -50):
+                self.databuffer[i] = 0
+            elif (data.data[i] > 255 * 16 -50):
+                self.databuffer[i] = 0
+            else:
+                self.databuffer[i] = data.data[i]
 
         self.asccibuffer = "";
 
