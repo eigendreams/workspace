@@ -1,14 +1,17 @@
 #include "ros.h"
 #include "std_msgs/Int16.h"
-#include "std_msgs/Empty.h"
 #include "Servo.h"
 #include "Talon.h"
 #include "Encoder.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <i2cmaster.h>
+#include "i2cmaster.h"
 #include "MLX90620_registers.h"
 #include "finder/int16_64.h"
+
+int ir_req;
+void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
+ros::Subscriber<std_msgs::Int16> ir_request_sub("ir_req", ir_req_cb);
 
 finder::int16_64 ir_data;
 ros::Publisher ir_pub("ir_data", &ir_data);
@@ -281,10 +284,11 @@ void loop() {
     }
     readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
     //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
-    conta++;
-    if(conta >= 10)
+    //conta++;
+    if(ir_req)//conta >= 10)
     {
-      conta = 0;
+      ir_req = 0;
+      //conta = 0;
       ir_pub.publish(&ir_data);
     }
     //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app
