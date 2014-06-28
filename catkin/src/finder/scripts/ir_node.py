@@ -7,6 +7,8 @@ from numpy import array
 from std_msgs.msg import String
 from std_msgs.msg import Int16
 from std_msgs.msg import Int16MultiArray
+from std_msgs.msg import UInt8
+from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import MultiArrayDimension
 from std_msgs.msg import MultiArrayLayout
 
@@ -32,12 +34,12 @@ class IR_Node():
         self.databuffer = [0 for x in range(64)]
 
         self.irPub = rospy.Publisher("ir_out", String)
-        self.irSub = rospy.Subscriber("ws", Int16MultiArray, self.plotfcn)
+        self.irSub = rospy.Subscriber("ws", UInt8MultiArray, self.plotfcn)
 
     def plotfcn(self, data):
 
         for i in range(64):
-            self.databuffer[i] = (data.data[i] + 50) /  64
+            self.databuffer[i] = data.data[i]
 
         self.asccibuffer = "";
 

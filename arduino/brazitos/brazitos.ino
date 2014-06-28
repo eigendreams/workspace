@@ -8,15 +8,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <i2cmaster.h>
 #include "MLX90620_registers.h"
-#include "std_msgs/Int16MultiArray.h"
+#include "std_msgs/UInt8MultiArray.h"
 #include "std_msgs/MultiArrayLayout.h"
 #include "std_msgs/MultiArrayDimension.h"
 std_msgs::MultiArrayDimension dimws;
-std_msgs::Int16MultiArray ws;
+std_msgs::UInt8MultiArray ws;
 ros::Publisher ir_pub("ws", &ws);
 int refreshRate = 16; //Set this value to your desired refresh frequency
 int conta=0;
-int irData[64];     //Contains the raw IR data from the sensor
+uint8_t irData[64];     //Contains the raw IR data from the sensor
 byte loopCount = 0; //Used in main loop
 void setConfiguration(int irRefreshRateHZ)
 {
@@ -96,7 +96,7 @@ void readIR_MLX90620()
   {
     byte pixelDataLow = i2c_readAck();
     byte pixelDataHigh = i2c_readAck();
-    irData[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
+    irData[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 8);
   }
 
   i2c_stop();
