@@ -40,6 +40,12 @@ var nodes = {
     evalState: "ps aux | grep -v grep | egrep 'ardu3' -c",
     state: 0
   },
+  rosarduino4 : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM3','__name:=ardu4']],
+    stop: "kill -9 $(ps aux | grep ardu4 | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'ardu4' -c",
+    state: 0
+  },
   rosbasenode : {
     start: ['rosrun',['finder','base_node.py']],
     stop: "kill -9 $(ps aux | grep base_node.py | grep -v grep | awk '{print $2}')",
@@ -141,6 +147,12 @@ var nodes = {
     stop: "kill -9 $(ps aux | grep control_interface.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'control_interface.py' -c",
     state: 0
+  },
+  rosirnode : {
+    start: ['rosrun',['finder','ir_node.py']],
+    stop: "kill -9 $(ps aux | grep ir_node.py | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'ir_node.py' -c",
+    state: 0
   }
 };
 
@@ -195,17 +207,20 @@ exports.startNode = function (req, res) {
       node = spawn(nodes[node_name].start[0],nodes[node_name].start[1]);
 
 	node.stdout.on('data', function (data) {
-		console.log("Node: " + node);
+		console.log("Node: ");
+		console.log(node);
 	  console.log('stdout: ' + data);
 	});
 
 	node.stderr.on('data', function (data) {
-		console.log("Node: " + node);
+		console.log("Node: ");
+		console.log(node);
 	  console.log('stderr: ' + data);
 	});
 
 	node.on('exit', function (code) {
-		console.log("Node: " + node);
+		console.log("Node: ");
+		console.log(node);
     console.log('child process exited with code ' + code);
 	});
 
