@@ -21,17 +21,17 @@ class Wrist_node:
         self.wrist_enc_ana = False
         self.wrist_enc_max = 1006
         self.wrist_ang_def = 0
-        self.wrist_offset = 745
+        self.wrist_offset = 800
 
         # PID control parameters
-        self.kp = 100
-        self.ki = 10
+        self.kp = 25
+        self.ki = 5
         self.kd = 0
         self.km = 0
         self.umbral = 0.1
-        self.range = 100 # Maximo pwm permitido
-        self.kierr = 1.2
-        self.kimax = 100
+        self.range = 40 # Maximo pwm permitido
+        self.kierr = 0.6
+        self.kimax = 40
         self.kisum = 0
         self.error = 0
 
@@ -60,17 +60,18 @@ class Wrist_node:
         self.wristDesSub = rospy.Subscriber("wrist_des", Float32, self.wristDesCb)
         self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
 
-    def offsetCb(self):
+    def offsetCb(self, data):
 
-        self.wrist_offset  = self.base_lec
-        
-        self.wrist_ang_tmp = 0
-        self.wrist_ang_lst = 0
-        self.wrist_ang_abs = 0
+        if (data.data):
+            self.wrist_offset  = self.wrist_lec
+            
+            self.wrist_ang_tmp = 0
+            self.wrist_ang_lst = 0
+            self.wrist_ang_abs = 0
 
-        self.wrist_ang = 0
-        self.wrist_ang_lap =  0
-        self.wrist_ang_lap_lst = 0
+            self.wrist_ang = 0
+            self.wrist_ang_lap =  0
+            self.wrist_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):
@@ -101,7 +102,8 @@ class Wrist_node:
 
         if (abs(self.wrist_des - self.wrist_ang) < self.kierr):
             if (abs(self.wrist_des - self.wrist_ang) < self.umbral):
-                self.kisum = 0.;
+                pass
+                #self.kisum = 0.;
             else:
                 self.kisum += self.ki * self.error
                 self.kisum = self.constrain(self.kisum, -self.kimax, self.kimax)
@@ -119,7 +121,7 @@ class Wrist_node:
         else:
             self.wrist_ang_tmp = self.wrist_lec - self.wrist_offset
 
-        self.wrist_ang_tmp = self.map(self.wrist_ang_tmp, 0., self.wrist_enc_max, 2 * pi, 0.)
+        self.wrist_ang_tmp = self.map(self.wrist_ang_tmp, 0., self.wrist_enc_max, 0, 2* pi)
         self.wrist_ang_lst = self.wrist_ang_abs
         self.wrist_ang_abs = self.wrist_ang_tmp
         """MAP FIRST"""

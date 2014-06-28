@@ -63,17 +63,18 @@ class Base_node:
         self.baseDesSub = rospy.Subscriber("base_des", Float32, self.baseDesCb)
         self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
 
-    def offsetCb(self):
+    def offsetCb(self, data):
 
-        self.base_offset  = self.base_lec
-        
-        self.base_ang_tmp = 0
-        self.base_ang_lst = 0
-        self.base_ang_abs = 0
+        if (data.data == 1):
+            self.base_offset  = self.base_lec
+            
+            self.base_ang_tmp = 0
+            self.base_ang_lst = 0
+            self.base_ang_abs = 0
 
-        self.base_ang = 0
-        self.base_ang_lap =  0
-        self.base_ang_lap_lst = 0
+            self.base_ang = 0
+            self.base_ang_lap =  0
+            self.base_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):

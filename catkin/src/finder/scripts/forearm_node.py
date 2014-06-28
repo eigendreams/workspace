@@ -21,7 +21,7 @@ class Forearm_node:
         self.forearm_enc_ana = False
         self.forearm_enc_max = 1023
         self.forearm_ang_def = 0
-        self.forearm_offset = 745
+        self.forearm_offset = 529
 
         # PID control parameters
         self.kp = 100
@@ -58,6 +58,20 @@ class Forearm_node:
         self.forearmVelPub = rospy.Publisher("forearm_vel", Float32)
         self.forearmLecSub = rospy.Subscriber("forearm_lec", Int16, self.forearmLecCb)
         self.forearmDesSub = rospy.Subscriber("forearm_des", Float32, self.forearmDesCb)
+        self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
+
+    def offsetCb(self, data):
+
+        if (data.data == 1):
+            self.forearm_offset  = self.forearm_lec
+            
+            self.forearm_ang_tmp = 0
+            self.forearm_ang_lst = 0
+            self.forearm_ang_abs = 0
+
+            self.forearm_ang = 0
+            self.forearm_ang_lap =  0
+            self.forearm_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):
