@@ -37,13 +37,19 @@ class IR_Node():
         self.irPub = rospy.Publisher("ir_out", String)
         self.irSub = rospy.Subscriber("ir_data", int16_64, self.plotfcn)
 
+        self.bad_flag = False;
+
     def plotfcn(self, data):
+
+        self.bad_flag = False;
 
         for i in range(64):
             if (data.data[i] < -50):
                 self.databuffer[i] = 0
+                self.bad_flag = True
             elif (data.data[i] > 255 * 16 -50):
                 self.databuffer[i] = 0
+                self.bad_flag = True
             else:
                 self.databuffer[i] = data.data[i]
 
@@ -55,7 +61,8 @@ class IR_Node():
         #print (str(self.databuffer).strip('[]'))
         #print self.asccibuffer
 
-        self.irPub.publish(self.asccibuffer);
+        if not (self.bad_flag):
+            self.irPub.publish(self.asccibuffer);
 
 # Invocación del constructor. Básicamente, si este archivo fuera a ejecutarse como "top level", el
 # intérprete le asignaría el "nombre" (protegido) __main__ y ejecutaría las siguientes lineas como
