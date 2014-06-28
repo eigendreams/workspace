@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+    <param name="bitrate" value="192"/>
+    <param name="dst" value="appsink"/>
+    <param name="device" value="hw:1,0"/>
+    <param name="topic" value="audio"/>
+    <!-- <param name="src" value="pulsesrc"/>  -->
+  </node>
+<!--
+  <node name="audio_capture_2" pkg="audio_capture" type="audio_capture" output="screen">
+    <param name="bitrate" value="192"/>
+    <param name="dst" value="appsink"/>
+    <param name="device" value="hw:2,0"/>
+    <param name="topic" value="audio_1"/>      -->
+    <!-- <param name="src" value="pulsesrc"/>  -->
+<!--</node>
+-->
+  <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video1" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam_1" />
+    <param name="io_method" value="mmap"/>
+  </node>
+<!--
+  <node name="usb_cam_2" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video2" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam_2" />
+    <param name="io_method" value="mmap"/>
+  </node> 
+-->
+</launch>
