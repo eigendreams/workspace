@@ -24,7 +24,7 @@ class Wrist_node:
         self.wrist_offset = 800
 
         # PID control parameters
-        self.kp = 25
+        self.kp = 25   
         self.ki = 5
         self.kd = 0
         self.km = 0

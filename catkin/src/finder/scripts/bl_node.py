@@ -93,17 +93,19 @@ class Bl_node:
         self.blDesSub = rospy.Subscriber("bl_des", Float32, self.blDesCb)
         self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
 
-    def offsetCb(self):
+    def offsetCb(self, data):
 
-        self.bl_offset  = self.base_lec
-        
-        self.bl_ang_tmp = 0
-        self.bl_ang_lst = 0
-        self.bl_ang_abs = 0
+        if(data.data == 1):
 
-        self.bl_ang = 0
-        self.bl_ang_lap =  0
-        self.bl_ang_lap_lst = 0
+            self.bl_offset  = self.bl_lec
+            
+            self.bl_ang_tmp = 0
+            self.bl_ang_lst = 0
+            self.bl_ang_abs = 0
+
+            self.bl_ang = 0
+            self.bl_ang_lap =  0
+            self.bl_ang_lap_lst = 0
 
 
     def map(self, x, in_min, in_max, out_min, out_max):
