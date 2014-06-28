@@ -98,7 +98,7 @@ class Fr_node:
 
         if(data.data == 1):
 
-            self.fr_offset  = self.base_lec
+            self.fr_offset  = self.fr_lec
             
             self.fr_ang_tmp = 0
             self.fr_ang_lst = 0

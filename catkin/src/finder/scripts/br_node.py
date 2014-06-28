@@ -97,7 +97,7 @@ class Br_node:
 
         if (data.data == 1):
 
-            self.br_offset  = self.base_lec
+            self.br_offset  = self.br_lec
             
             self.br_ang_tmp = 0
             self.br_ang_lst = 0

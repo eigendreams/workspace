@@ -97,7 +97,7 @@ class Fl_node:
 
         if(data.data == 1):
 
-            self.fl_offset  = self.base_lec
+            self.fl_offset  = self.fl_lec
             
             self.fl_ang_tmp = 0
             self.fl_ang_lst = 0
