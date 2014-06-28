@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    // var serverIP = "192.168.88.253";
-    var serverIP = "localhost";
+    var serverIP = "192.168.88.253";
+    // var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -214,15 +214,22 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.irOut.value = message.data;
             topics.irOut.active = false;
-            for (var element in data) {
-              console.log(element);
+            //for (var element in message.data) {
+              //console.log(element);
 
-            }
+            //}
+            var index = -1;
             topics.irOut.value = [[],[],[],[]];
-            for (var i=0; i<data.length; i++) {
-              topics.irOut.value[i%4][i%16] = data[i];
+            for (var i=0; i<message.data.length; i++) {
+              if (i%16 === 0) {
+                index++;
+              } 
+              topics.irOut.value[index][i%16] = message.data[i].charCodeAt(0);
+              //console.log(index);
+              //console.log(mes);
             }
-            // topics.baseDes.topic.unsubscribe();
+            console.log(topics.irOut.value);
+            //topics.baseDes.topic.unsubscribe();
           });
         }
       },
