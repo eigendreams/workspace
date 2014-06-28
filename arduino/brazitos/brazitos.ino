@@ -96,7 +96,7 @@ void readIR_MLX90620()
   {
     byte pixelDataLow = i2c_readAck();
     byte pixelDataHigh = i2c_readAck();
-    irData[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 8);
+    irData[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 4);
   }
 
   i2c_stop();
@@ -276,25 +276,25 @@ void loop() {
     bl_lec_pub.publish(&bl_lec_msg); delay(1);
 
     milisLast = milisNow;
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  if(loopCount++ == 16) //Tambient changes more slowly than the pixel readings. Update TA only every 16 loops.
-  { 
-    //calculate_TA(); //Calculate the new Tambient
-    if(checkConfig_MLX90620()) //Every 16 readings check that the POR flag is not set
-    {
-      setConfiguration(refreshRate); //Re-write the configuration bytes to the MLX
+  
+    //////////////////////////////////////////////////////////////////////////////
+    if(loopCount++ == 16) //Tambient changes more slowly than the pixel readings. Update TA only every 16 loops.
+    { 
+      //calculate_TA(); //Calculate the new Tambient
+      if(checkConfig_MLX90620()) //Every 16 readings check that the POR flag is not set
+      {
+        setConfiguration(refreshRate); //Re-write the configuration bytes to the MLX
+      }
+      loopCount = 0; //Reset count*/
     }
-    loopCount = 0; //Reset count*/
+    readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
+    //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
+    conta++;
+    if(conta>20){
+      conta=0;
+      ir_pub.publish(&ws);
+    }
+    //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app
+    //////////////////////////////////////////////////////////////////////////////
   }
-  readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
-  //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
-  conta++;
-  if(conta>20){
-    conta=0;
-    ir_pub.publish(&ws);
-  }
-  //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app
-  //////////////////////////////////////////////////////////////////////////////
 }
