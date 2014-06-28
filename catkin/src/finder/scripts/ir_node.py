@@ -44,7 +44,7 @@ class IR_Node():
         for i in range(64):
             self.asccibuffer += chr(self.databuffer[i])
 
-        print (str(self.databuffer).strip('[]'))
+        #print (str(self.databuffer).strip('[]'))
         #print self.asccibuffer
 
         self.irPub.publish(self.asccibuffer);
