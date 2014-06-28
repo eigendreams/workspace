@@ -4,19 +4,20 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs tf joy message_gen
 
 #catkin_python_setup()
 
-#add_message_files(
-#	FILES
-#	TwoWheelInt16.msg
-#	FourArmsInt16.msg
-#)
-#generate_messages(
-#	DEPENDENCIES
-#	std_msgs
-#)
+add_message_files(
+	FILES
+	uint8_64.msg
+	int16_64.msg
+)
+
+generate_messages(
+	DEPENDENCIES
+	std_msgs
+)
 
 catkin_package(
 	INCLUDE_DIRS scripts
-	#CATKIN_DEPENDS message_runtime
+	CATKIN_DEPENDS message_runtime
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

@@ -8,16 +8,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <i2cmaster.h>
 #include "MLX90620_registers.h"
-#include "std_msgs/UInt8MultiArray.h"
-#include "std_msgs/MultiArrayLayout.h"
-#include "std_msgs/MultiArrayDimension.h"
-std_msgs::MultiArrayDimension dimws;
-std_msgs::UInt8MultiArray ws;
-ros::Publisher ir_pub("ws", &ws);
+#include "finder/int16_64.h"
+
+finder::int16_64 ir_data;
+ros::Publisher ir_pub("ir_data", &ir_data);
+
 int refreshRate = 16; //Set this value to your desired refresh frequency
-int conta=0;
-uint8_t irData[64];     //Contains the raw IR data from the sensor
+int conta = 0;
 byte loopCount = 0; //Used in main loop
+
 void setConfiguration(int irRefreshRateHZ)
 {
   byte Hz_LSB;
@@ -96,7 +95,8 @@ void readIR_MLX90620()
   {
     byte pixelDataLow = i2c_readAck();
     byte pixelDataHigh = i2c_readAck();
-    irData[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 4);
+    //ir_data.data[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 4);
+    ir_data.data[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
   }
 
   i2c_stop();
@@ -200,14 +200,6 @@ void setup() {
   nh.initNode();
 
   //////////////////////////////////////////////////////////////////////////////
-  ws.layout.dim_length = 1;
-  ws.data_length = 64;
-  ws.layout.dim = &dimws;
-  ws.layout.dim[0].label = "ws";
-  ws.layout.dim[0].size = 64;
-  ws.layout.dim[0].stride = 64;
-  ws.layout.data_offset = 0;
-  ws.data = &irData[0];
   i2c_init(); //Init the I2C pins
   //PORTC = (1 << PORTC4) | (1 << PORTC5); //Enable pull-ups
   pinMode(A4, INPUT_PULLUP);
@@ -293,7 +285,7 @@ void loop() {
     if(conta >= 10)
     {
       conta = 0;
-      ir_pub.publish(&ws);
+      ir_pub.publish(&ir_data);
     }
     //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app
     //////////////////////////////////////////////////////////////////////////////
