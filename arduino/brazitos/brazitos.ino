@@ -278,7 +278,7 @@ void loop() {
     milisLast = milisNow;
   
     //////////////////////////////////////////////////////////////////////////////
-    if(loopCount++ == 16) //Tambient changes more slowly than the pixel readings. Update TA only every 16 loops.
+    if(loopCount++ == 10) //Tambient changes more slowly than the pixel readings. Update TA only every 16 loops.
     { 
       //calculate_TA(); //Calculate the new Tambient
       if(checkConfig_MLX90620()) //Every 16 readings check that the POR flag is not set
@@ -290,8 +290,9 @@ void loop() {
     readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
     //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
     conta++;
-    if(conta>20){
-      conta=0;
+    if(conta >= 10)
+    {
+      conta = 0;
       ir_pub.publish(&ws);
     }
     //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app
