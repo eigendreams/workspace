@@ -205,22 +205,20 @@ exports.startNode = function (req, res) {
 
 	var spawn = require('child_process').spawn,
       node = spawn(nodes[node_name].start[0],nodes[node_name].start[1]);
+	node.name = node_name;
 
 	node.stdout.on('data', function (data) {
-		console.log("Node: ");
-		console.log(node);
+		console.log("Node: " + node.name);
 	  console.log('stdout: ' + data);
 	});
 
 	node.stderr.on('data', function (data) {
-		console.log("Node: ");
-		console.log(node);
+		console.log("Node: " + node.name);
 	  console.log('stderr: ' + data);
 	});
 
 	node.on('exit', function (code) {
-		console.log("Node: ");
-		console.log(node);
+		console.log("Node: " + node.name);
     console.log('child process exited with code ' + code);
 	});
 
@@ -235,18 +233,18 @@ exports.stopNode = function (req, res) {
 	});
 
 	node.stdout.on('data', function (data) {
-		console.log("Node: " + node);
-	  console.log('stdout: ' + data);
+//		console.log("Node: " + node);
+//	  console.log('stdout: ' + data);
 	});
 
 	node.stderr.on('data', function (data) {
-		console.log("Node: " + node);
-	  console.log('stderr: ' + data);
+//		console.log("Node: " + node);
+//	  console.log('stderr: ' + data);
 	});
 
 	node.on('exit', function (code) {
-		console.log("Node: " + node);
-	    console.log('child process exited with code ' + code);
+//		console.log("Node: " + node);
+//	    console.log('child process exited with code ' + code);
 	});
 
 	return res.json(true);

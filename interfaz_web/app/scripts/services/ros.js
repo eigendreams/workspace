@@ -140,6 +140,58 @@ angular.module('finderApp')
           });
         }
       },
+      forearmOut: {
+        name: '/forearm_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.forearmOut.value = message.data;
+            topics.forearmOut.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
+      wristOut: {
+        name: '/wrist_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.wristOut.value = message.data;
+            topics.wristOut.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
+      palmOut: {
+        name: '/palm_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.palmOut.value = message.data;
+            topics.palmOut.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
+      gripperOut: {
+        name: '/gripper_out',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.gripperOut.value = message.data;
+            topics.gripperOut.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
       baseDes: {
         name: '/base_des',
         type: 'std_msgs/Float32',
@@ -204,7 +256,8 @@ angular.module('finderApp')
             // topics.baseDes.topic.unsubscribe();
           });
         }
-      }
+      },
+
     };
 
     var getNodes = function () {

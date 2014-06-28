@@ -28,12 +28,21 @@ angular.module('finderApp')
             co2: 0,
             pitch: 0,
             roll: 0
+        },
+        groupArm : {
+            baseOut: 0,
+            armOut: 0,
+            forearmOut: 0,
+            wristOut: 0,
+            palmOut: 0,
+            gripperOut: 0
         }
     }
 
     $scope.activeListener = {
         groupSensor: false,
-        groupOne: false
+        groupOne: false,
+        groupArm: false
     };
 
     $scope.setActiveListener = function (selection) {

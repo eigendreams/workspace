@@ -192,11 +192,12 @@
             Selecciona <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="" ng-click="setActiveListener('groupOne')">Salida del pwm</a></li>
-            <li><a href="" ng-click="setActiveListener('groupSensor')">Sensores</a></li>
+            <li><a href="" ng-click="setActiveListener('groupOne')">Traction Outs</a></li>
+            <li><a href="" ng-click="setActiveListener('groupSensor')">Sensors</a></li>
+            <li><a href="" ng-click="setActiveListener('groupArm')">Arm Outs</a></li>
             <!-- <li><a href="">Valor deseado</a></li> -->
             <li role="presentation" class="divider"></li>
-            <li><a href="">Desactivar</a></li>
+            <li><a href="" ng-click="setActiveListener('')">Desactivar</a></li>
           </ul>
         </li>
       </ul>
@@ -208,6 +209,12 @@
       </ul>
       <ul class="list-group" ng-hide="!activeListener.groupSensor">
         <li class="list-group-item" ng-repeat="(topic, value) in listenerGroup.groupSensor">
+          <span class="badge">{{value}}</span>
+          {{topic}}
+        </li>
+      </ul>
+      <ul class="list-group" ng-hide="!activeListener.groupArm">
+        <li class="list-group-item" ng-repeat="(topic, value) in listenerGroup.groupArm">
           <span class="badge">{{value}}</span>
           {{topic}}
         </li>
