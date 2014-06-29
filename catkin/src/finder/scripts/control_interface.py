@@ -140,8 +140,8 @@ class Control_interface:
         left_des = self.constrain(left_des,-100,100)
         right_des = self.constrain(right_des,-100,100)
 
-        self.leftPub.publish(left_des)
-        self.rightPub.publish(right_des)
+        self.leftPub.publish(-left_des)
+        self.rightPub.publish(-right_des)
 
         # self.testpub1.publish(self.testdata1)
         # self.testpub2.publish(self.testdata2)
