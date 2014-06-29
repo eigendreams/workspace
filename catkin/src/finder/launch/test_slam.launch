@@ -6,7 +6,7 @@
   <include file="$(find finder)/launch/mapping_default_test.launch"/> 
   <include file="$(find finder)/launch/geotiff_mapper_test.launch"/> 
 
-  <include file="$(find finder)/launch/qrcode_detection_test.launch"/>
-  <include file="$(find finder)/launch/object_tracker_test.launch"/> 
+  <!--<include file="$(find finder)/launch/qrcode_detection_test.launch"/>
+  <include file="$(find finder)/launch/object_tracker_test.launch"/> -->
 
 </launch>
