@@ -125,7 +125,7 @@ class Control_interface:
         self.forearm_des   = data.axes[self.axes_names['right_stick_ver']] * 1
 
         self.arm_out   = data.axes[self.axes_names['left_stick_ver']] * 100
-        self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * 100
+        self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * -100
 
         
     def motorTractionUpdate(self):
