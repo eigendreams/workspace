@@ -11,6 +11,10 @@ angular.module('finderApp')
     $scope.rosDisconnect = Ros.disconnect;
     $scope.rosConnect = Ros.connect;
     $scope.termalsensorData = [[1,50,100,250],[1,50,100,47],[14,27,67,146],[113,232,43,49]];
+    $scope.video1 = 1;
+    $scope.video2 = 2;
+    $scope.video3 = 3;
+    $scope.video4 = 4;
         
 
     $scope.listenerGroup = {
@@ -27,7 +31,8 @@ angular.module('finderApp')
         groupSensor : {
             co2: 0,
             pitch: 0,
-            roll: 0
+            roll: 0,
+            batteryLevel: 0
         },
         groupArm : {
             baseOut: 0,
@@ -124,7 +129,7 @@ angular.module('finderApp')
         // console.log($scope.topics);
 
         for (var listenerGroup in $scope.activeListener) {
-            if ($scope.activeListener[listenerGroup]) {
+            //if ($scope.activeListener[listenerGroup]) {
                 for (var topic in $scope.listenerGroup[listenerGroup]) {
                     // console.log(topic);
                     // Ros.topic.updateData(topic);
@@ -136,7 +141,7 @@ angular.module('finderApp')
                     }
                     
                 }
-            }
+            //}
         }
 
         $scope.termalsensorData = Ros.topic.getData('irOut');

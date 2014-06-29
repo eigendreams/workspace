@@ -95,7 +95,6 @@
           <!-- <a class="btn">Hola</a> -->
           <a class="btn btn-info btn-group-title" ng-click="startNodes()">Control</a>
           <a class="btn" ng-class="{'btn-default':(nodes.roscontrol!=='1'),'btn-success':(nodes.roscontrol==='1')}" ng-click="toggleNode('roscontrol')">Nodo de control</a>
-          <a class="btn" ng-class="{'btn-default':(nodes.rosirnode!=='1'),'btn-success':(nodes.rosirnode==='1')}" ng-click="toggleNode('rosirnode')">Nodo sensor térmico</a>
           <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
         </div>
       </div>
@@ -104,6 +103,8 @@
           <!-- <a class="btn">Hola</a> -->
           <a class="btn btn-info btn-group-title" ng-click="startNodes()">Sensores</a>
           <a class="btn" ng-class="{'btn-default':(nodes.rosbatterymonitor!=='1'),'btn-success':(nodes.rosbatterymonitor==='1')}" ng-click="toggleNode('rosbatterymonitor')">Monitor de batería</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.rosirnode!=='1'),'btn-success':(nodes.rosirnode==='1')}" ng-click="toggleNode('rosirnode')">Nodo sensor térmico</a>
+          <a class="btn" ng-class="{'btn-default':(nodes.roslasernode!=='1'),'btn-success':(nodes.roslasernode==='1')}" ng-click="toggleNode('roslasernode')">Launcher laser</a>
           <!-- <a class="btn btn-default" ng-click="startNodes()">Kill</a> -->
         </div>
       </div>
@@ -262,7 +263,7 @@
     <div class="col-md-1">
     </div>
   </div>
-  <div class="row" style="margin-top: 20px">
+  <div class="row" style="margin-top: 30px">
     <div class="col-md-4">
       <termalsensor-viewer data="termalsensorData" style="margin: 0 auto">
       </termalsensor-viewer>
@@ -291,20 +292,20 @@
     <div class="col-md-2">
     </div>
   </div>
-  <div class="row" style="margin-top: 20px">
+  <div class="row" style="margin-top: 0px">
     <div class="col-md-4">
       
     </div>
     <div class="col-md-4 no-padding center">
       <img style="min-height: 200px" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video4}}/image_raw?quality={{videoQuality}}">
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" style="margin-top: 30px">
       <slider
         ng-model="videoQuality"
         floor="1"
         ceiling="100"
         step="1"
-        precision="1">
+        precision="1" style="">
       </slider>
     </div>
   </div>

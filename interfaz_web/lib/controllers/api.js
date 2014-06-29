@@ -126,8 +126,8 @@ var nodes = {
   },
   roscam : {
     start: ['roslaunch',['finder','cam_launch_test.launch']],
-    stop: "kill -9 $(ps aux | grep cam | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'cam' -c",
+    stop: "kill -9 $(ps aux | grep '/usb_cam_node' | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep '/usb_cam_node' -c",
     state: "0"
   },
   rosmjpegserver : {
@@ -159,13 +159,27 @@ var nodes = {
     stop: "kill -9 $(ps aux | grep ir_node.py | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'ir_node.py' -c",
     state: "0"
+  },
+  roslasernode : {
+    start: ['roslaunch',['finder','test_slam.launch']],
+    stop: "kill -9 $(ps aux | grep '/laser_node' | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep '/laser_node' -c",
+    state: "0"
   }
 };
 
 var evalState = function (node) {
 	var exec = require('child_process').exec;
 	var proc = exec(nodes[node].evalState, function (error, stdout, stderr) {
-		nodes[node].state = stdout[0];
+                if (node === 'roslasernode') {
+                console.log(node);
+                console.log(stdout[0]);      }              
+                if (stdout[0] !== '0') {
+		    nodes[node].state = '1';
+                }
+                else {
+                    nodes[node].state = '0';
+                }
 	});
 };
 
