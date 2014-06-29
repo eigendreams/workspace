@@ -179,7 +179,7 @@ class Fl_node:
         else:
             self.forearm_ang_tmp = self.forearm_lec - self.forearm_offset
         """
-        
+        self.forearm_ang_tmp = self.forearm_lec        
         self.forearm_ang_tmp = self.map(self.forearm_ang_tmp, 0., 1023., 2*pi, 0.)
         self.forearm_ang_lst = self.forearm_ang_abs
         self.forearm_ang_abs = self.forearm_ang_tmp

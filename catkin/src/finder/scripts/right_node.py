@@ -128,7 +128,7 @@ class Right_node:
         else:
             self.right_ang_tmp = self.right_lec - self.right_offset
         """
-        
+        self.right_ang_tmp = self.right_lec        
         self.right_ang_tmp = self.map(self.right_ang_tmp, 0., 1023., 0, 2*pi)
         self.right_ang_lst = self.right_ang_abs
         self.right_ang_abs = self.right_ang_tmp

@@ -122,7 +122,7 @@ class Wrist_node:
         else:
             self.wrist_ang_tmp = self.wrist_lec - self.wrist_offset
         """
-        
+        self.wrist_ang_tmp = self.wrist_lec        
         self.wrist_ang_tmp = self.map(self.wrist_ang_tmp, 0., self.wrist_enc_max, 0, 2* pi)
         self.wrist_ang_lst = self.wrist_ang_abs
         self.wrist_ang_abs = self.wrist_ang_tmp

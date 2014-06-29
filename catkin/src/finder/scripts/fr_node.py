@@ -181,7 +181,7 @@ class Fr_node:
         else:
             self.fr_ang_tmp = self.fr_lec - self.fr_offset
         """
-
+        self.fr_ang_tmp = self.fr_lec
         self.fr_ang_tmp = self.map(self.fr_ang_tmp, 0., 1023., 2*pi, 0.)
         self.fr_ang_lst = self.fr_ang_abs
         self.fr_ang_abs = self.fr_ang_tmp

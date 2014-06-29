@@ -179,7 +179,7 @@ class Bl_node:
         else:
             self.bl_ang_tmp = self.bl_lec - self.bl_offset
         """
-        
+        self.bl_ang_tmp = self.bl_lec        
         self.bl_ang_tmp = self.map(self.bl_ang_tmp, 0., 1023., 2*pi, 0.)
         self.bl_ang_lst = self.bl_ang_abs
         self.bl_ang_abs = self.bl_ang_tmp

@@ -171,9 +171,6 @@ var nodes = {
 var evalState = function (node) {
 	var exec = require('child_process').exec;
 	var proc = exec(nodes[node].evalState, function (error, stdout, stderr) {
-                if (node === 'roslasernode') {
-                console.log(node);
-                console.log(stdout[0]);      }              
                 if (stdout[0] !== '0') {
 		    nodes[node].state = '1';
                 }

@@ -128,7 +128,7 @@ class Left_node:
         else:
             self.left_ang_tmp = self.left_lec - self.left_offset
         """
-        
+        self.left_ang_tmp = self.left_lec        
         self.left_ang_tmp = self.map(self.left_ang_tmp, 0., 1023., 2*pi, 0.)
         self.left_ang_lst = self.left_ang_abs
         self.left_ang_abs = self.left_ang_tmp

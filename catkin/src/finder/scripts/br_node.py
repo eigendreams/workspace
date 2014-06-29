@@ -179,7 +179,7 @@ class Br_node:
         else:
             self.br_ang_tmp = self.br_lec - self.br_offset
         """
-        
+        self.br_ang_tmp = self.br_lec        
         self.br_ang_tmp = self.map(self.br_ang_tmp, 0., 1023., 2*pi, 0.)
         self.br_ang_lst = self.br_ang_abs
         self.br_ang_abs = self.br_ang_tmp
