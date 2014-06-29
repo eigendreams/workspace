@@ -1,26 +1,27 @@
-<!--<div ng-repeat="element in data">
-	<div ng-repeat="value in element" style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">
+<div ng-repeat="element in data track by $index">
+	<!-- <div ng-repeat="value in element" ng-style="{'display': 'inline-block', 'text-align': 'center', 'height': '20px', 'width': '20px', 'background-color': 'rgb('value','value','value')', 'display': 'inline-block'}"> -->
+  <div ng-repeat="value in element track by $index" ng-style="{'background-color': 'rgb('+value+','+value+','+value+')','display': 'inline-block', 'width': '30px', 'height': '30px', 'text-align': 'center'}">
 	{{value}}
 	</div>
-</div>-->
+</div>
 
-<div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][0]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][1]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][2]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][3]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][4]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][5]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][6]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][7]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][8]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][9]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][10]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][11]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][12]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][13]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][14]}}</div>
-  <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][15]}}</div>
+<!-- <div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][0]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][1]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][2]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][3]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][4]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][5]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][6]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][7]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][8]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][9]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][10]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][11]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][12]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][13]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][14]}}</div>
+  <div ng-style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[0][15]}}</div>
 </div>
 <div>
   <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[1][0]}}</div>
@@ -75,4 +76,4 @@
   <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[3][13]}}</div>
   <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[3][14]}}</div>
   <div style="text-align: center; height: 20px; width: 20px; background-color: rgb({{value}},{{value}},{{value}}); display: inline-block">{{data[3][15]}}</div>
-</div>
+</div> -->

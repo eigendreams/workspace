@@ -4,7 +4,9 @@ angular.module('finderApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ngRoute'
+  'ngRoute',
+  'ngTouch',
+  'vr.directives.slider'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider

@@ -233,8 +233,19 @@
     <div class="col-md-6 no-padding center">
       <img style="" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_4/image_raw?quality={{videoQuality}}">
     </div>
-    <div class="col-md-12 center">
+    <div class="col-md-6 center">
       <div style="" class="btn btn-primary" ng-click="toggleVideoQuality()">Recargar video</div>
+      <!-- <div style="" class="btn btn-default" ng-click="toggleNode(node)">{{node}}</div> -->
+      <!-- Calidad: <input type="text" ng-model=""/> -->
+    </div>
+    <div class="col-md-6 center">
+      <slider
+        ng-model="videoQuality"
+        floor="1"
+        ceiling="100"
+        step="1"
+        precision="1">
+      </slider>
       <!-- <div style="" class="btn btn-default" ng-click="toggleNode(node)">{{node}}</div> -->
       <!-- Calidad: <input type="text" ng-model=""/> -->
     </div>
@@ -250,3 +261,5 @@
 
 <div class="footer">
 </div>
+
+
