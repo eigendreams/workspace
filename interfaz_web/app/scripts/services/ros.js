@@ -208,7 +208,10 @@ angular.module('finderApp')
       irOut: {
         name: '/ir_out',
         type: 'std_msgs/String',
-        value: [[],[],[],[]],
+        value: [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],
         active: false,
         subscribe: function () {
           this.topic.subscribe( function (message) {

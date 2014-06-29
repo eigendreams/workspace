@@ -95,12 +95,16 @@ class Control_interface:
 
         # El lock existe para evitar que el presionar el eje cross_hor y otro boton a eje
         # al mismo tiempo "desborde" el base_rate
-        if not self.lock:
-            if data.axes[self.axes_names['cross_hor']] != 0:
-                self.base_rate += data.axes[self.axes_names['cross_hor']] * -.1
-                self.lock = True
-        if data.axes[self.axes_names['cross_hor']] == 0:
-            self.lock = False;
+        # if not self.lock:
+        #     if data.axes[self.axes_names['cross_hor']] != 0:
+        #         self.base_rate += data.axes[self.axes_names['cross_hor']] * -.1
+        #         self.lock = True
+        # if data.axes[self.axes_names['cross_hor']] == 0:
+        #     self.lock = False;
+        if data.axes[self.axes_names['RT']] != 1:
+            self.base_des = ((data.axes[self.axes_names['RT']] - 1) / 2) 
+        else:
+            self.base_des = ((data.axes[self.axes_names['LT']] - 1) / 2) * -1
 
         # Se reemplazaron por comparaciones para Booleanos (0 es False y 1 es True)
         self.bl_active = data.buttons[self.buttons_names['LB']]
@@ -216,6 +220,7 @@ class Control_interface:
                 # self.forearmPub.publish(self.forearm_des)
                 self.armOutPub.publish(self.arm_out)
                 self.forearmOutPub.publish(self.forearm_out)
+                self.basePub.publish(self.base_des)
             else:
                 self.motorTractionUpdate()
                 self.motorArmUpdate()
