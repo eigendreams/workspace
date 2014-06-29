@@ -4,7 +4,7 @@
 
   <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
     <param name="dst" value="alsasink"/>
-    <param name="topic" value="audio2"/>
+    <param name="topic" value="audio"/>
   </node>
 
 </launch>
