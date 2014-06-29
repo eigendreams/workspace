@@ -41,24 +41,24 @@ class Fl_node:
         #self.base_lec_dir = -100
 
         # PID control parameters
-        self.kp_pos = 100.
+        self.kp_pos = 50
         self.ki_pos = 1.
         self.kd_pos = 0.
         self.km_pos = 0.
         self.umbaseal_pos = 0.1
         self.range_pos = 50. # Maximo pwm permitido
-        self.kierr_pos = 0.6
+        self.kierr_pos = 2
         self.kimax_pos = 50.
         self.kisum_pos = 0.
         self.error_pos = 0.
 
-        self.kp_vel = 100.
+        self.kp_vel = 50
         self.ki_vel = 1.
         self.kd_vel = 0.
         self.km_vel = 0.
-        self.umbaseal_vel = 0.5
+        self.umbaseal_vel = 0.1
         self.range_vel = 50. # Maximo pwm permitido
-        self.kierr_vel = 1.
+        self.kierr_vel = 2
         self.kimax_vel = 50.
         self.kisum_vel = 0.
         self.error_vel = 0.
