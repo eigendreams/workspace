@@ -10,7 +10,7 @@
   -->
 
   <node name="qrcode_test" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection_node qrcode_manager_test">
-    <remap from="image" to="usb_cam_0/image_raw" />
+    <remap from="image" to="usb_cam_1/image_raw" />
   </node>
 
 </launch>

@@ -4,9 +4,16 @@
 
   	<remap from="image_percept" to="worldmodel/image_percept" />
 
+  	<!--
   	<node name="laser_node_13" pkg="hector_qrcode_detection" type="qrcode_detection_node" output="screen">
     	<remap from="image" to="usb_cam_1/image_raw/" />
     	<remap from="image_transport" to="compressed" />
   	</node>
-  	
+  	-->
+
+	<node name="qrcode_test" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection_node qrcode_manager_test">
+		<remap from="image" to="usb_cam_1/image_raw" />
+		<remap from="image_transport" to="compressed" />
+	</node>
+
 </launch>
