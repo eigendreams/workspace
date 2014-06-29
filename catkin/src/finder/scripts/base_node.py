@@ -46,7 +46,7 @@ class Fl_node:
         self.kd_pos = 0.
         self.km_pos = 0.
         self.umbaseal_pos = 0.1
-        self.range_pos = 50. # Maximo pwm permitido
+        self.range_pos = 100. # Maximo pwm permitido
         self.kierr_pos = 2
         self.kimax_pos = 25.
         self.kisum_pos = 0.
@@ -57,7 +57,7 @@ class Fl_node:
         self.kd_vel = 0.
         self.km_vel = 0.
         self.umbaseal_vel = 0.1
-        self.range_vel = 50. # Maximo pwm permitido
+        self.range_vel = 100. # Maximo pwm permitido
         self.kierr_vel = 2
         self.kimax_vel = 25.
         self.kisum_vel = 0.
@@ -220,7 +220,7 @@ class Fl_node:
         self.base_vel_des = data.data
         self.angCalc()
 
-        if (abs(self.base_vel_des) < 0.2):
+        if (abs(self.base_vel_des) < 0.1):
             # self.base_ang_des = self.constrain(self.base_ang_des, 0, 1000)
             self.pid_pos()
             # print "angdes " + str(self.base_ang_des)
