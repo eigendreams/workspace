@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 
 <launch>
-  <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+  <node name="audio_capture_1" pkg="audio_capture" type="audio_capture" output="screen">
     <param name="bitrate" value="192"/>
     <param name="dst" value="appsink"/>
     <param name="device" value="hw:1,0"/>
     <param name="topic" value="audio"/>
     <!-- <param name="src" value="pulsesrc"/>  -->
   </node>
-  <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+  <node name="audio_capture_2" pkg="audio_capture" type="audio_capture" output="screen">
     <param name="bitrate" value="192"/>
     <param name="dst" value="appsink"/>
     <param name="device" value="hw:2,0"/>
     <param name="topic" value="audio"/>
     <!-- <param name="src" value="pulsesrc"/>  -->
   </node>
-  <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+  <node name="audio_capture_3" pkg="audio_capture" type="audio_capture" output="screen">
     <param name="bitrate" value="192"/>
     <param name="dst" value="appsink"/>
     <param name="device" value="hw:3,0"/>
     <param name="topic" value="audio"/>
     <!-- <param name="src" value="pulsesrc"/>  -->
   </node>
-  <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+  <node name="audio_capture_4" pkg="audio_capture" type="audio_capture" output="screen">
     <param name="bitrate" value="192"/>
     <param name="dst" value="appsink"/>
     <param name="device" value="hw:4,0"/>
