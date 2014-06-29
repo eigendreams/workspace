@@ -309,18 +309,19 @@ const float magn_ellipsoid_transform[3][3] = {{0.902, -0.00354, 0.000636}, {-0.0
 #include <Wire.h>
 #include <ros.h>
 #include <std_msgs/Int8.h>
+#include <std_msgs/Int16.h>
 
 ros::NodeHandle nh;
 
 std_msgs::Int8 roll_msg;
 ros::Publisher roll_ang("roll", &roll_msg);
-
 std_msgs::Int8 pitch_msg;
 ros::Publisher pitch_ang("pitch", &pitch_msg);
-
 std_msgs::Int8 co2_msg;
 ros::Publisher co2_val("co2", &co2_msg);
 
+void leds_cb(const std_msgs::Int16& dmsg) { analogWrite(3, dmsg.data);  }
+ros::Subscriber<std_msgs::Int16> leds_sub("leds", leds_cb);
 
 //*************** co2 variables ***************//
 int pinControl = 12; //Pin to enable de resistance
@@ -516,6 +517,7 @@ void setup()
   
   // Init Node
   nh.initNode();
+  nh.subscribe(leds_sub);
   nh.advertise(roll_ang);
   delay(1);
   nh.advertise(pitch_ang);
