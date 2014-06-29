@@ -32,12 +32,13 @@ class IR_Node():
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = rospy.get_param("ir_node_rate", 10)
         # Publicación de la batería como entero
-        self.databuffer = [chr(0) for x in range(64)]
+        # self.databuffer = [chr(0) for x in range(64)]
+        
+        self.bad_flag = False;
 
         self.irPub = rospy.Publisher("ir_out", String)
         self.irSub = rospy.Subscriber("ir_data", uint8_64, self.plotfcn)
 
-        self.bad_flag = False;
 
     def constrain(self, x, min, max):
 
@@ -62,7 +63,7 @@ class IR_Node():
                 self.bad_flag = True
             else:
             """
-            self.databuffer[(i / 16) * 16 + i % 16] = data.data[i]
+            #self.databuffer[(i / 16) * 16 + i % 16] = data.data[i]
             #print(data.data[i])
             self.asccibuffer += data.data[i]#(i % 4) * 16 + i / 4]
 

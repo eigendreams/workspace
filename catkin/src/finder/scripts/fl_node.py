@@ -173,22 +173,25 @@ class Fl_node:
     def angCalc(self):
 
         """MAP FIRST"""
+        """
         if self.fl_lec < self.fl_offset:
             self.fl_ang_tmp = self.fl_lec + 1024 - self.fl_offset
         else:
             self.fl_ang_tmp = self.fl_lec - self.fl_offset
-
+        """
+        
         self.fl_ang_tmp = self.map(self.fl_ang_tmp, 0., 1023., 2*pi, 0.)
+
         self.fl_ang_lst = self.fl_ang_abs
         self.fl_ang_abs = self.fl_ang_tmp
         """MAP FIRST"""
 
         """LAP CALCULATE"""
         # encuentra si el cambio fue de 0 a 2pi
-        if (self.fl_ang_abs > 1.5 * pi and self.fl_ang_lst < 0.5 * pi):
+        if (self.fl_ang_abs > 1.8 * pi and self.fl_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
-        if (self.fl_ang_abs < 0.5 * pi and self.fl_ang_lst > 1.5 * pi):
+        if (self.fl_ang_abs < 0.2 * pi and self.fl_ang_lst > 1.8 * pi):
             self.lap += 1
         
         self.fl_ang_lap_lst = self.fl_ang

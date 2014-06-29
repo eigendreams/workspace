@@ -122,11 +122,13 @@ class Right_node:
     def angCalc(self):
 
         """MAP FIRST"""
+        """
         if self.right_lec < self.right_offset:
             self.right_ang_tmp = self.right_lec + 1024 - self.right_offset
         else:
             self.right_ang_tmp = self.right_lec - self.right_offset
-
+        """
+        
         self.right_ang_tmp = self.map(self.right_ang_tmp, 0., 1023., 0, 2*pi)
         self.right_ang_lst = self.right_ang_abs
         self.right_ang_abs = self.right_ang_tmp
@@ -134,10 +136,10 @@ class Right_node:
 
         """LAP CALCULATE"""
         # encuentra si el cambio fue de 0 a 2pi
-        if (self.right_ang_abs > 1.5 * pi and self.right_ang_lst < 0.5 * pi):
+        if (self.right_ang_abs > 1.8 * pi and self.right_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
-        if (self.right_ang_abs < 0.5 * pi and self.right_ang_lst > 1.5 * pi):
+        if (self.right_ang_abs < 0.2 * pi and self.right_ang_lst > 1.8 * pi):
             self.lap += 1
         
         self.right_ang_lap_lst = self.right_ang

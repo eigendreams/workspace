@@ -173,11 +173,13 @@ class Br_node:
     def angCalc(self):
 
         """MAP FIRST"""
+        """
         if self.br_lec < self.br_offset:
             self.br_ang_tmp = self.br_lec + 1024 - self.br_offset
         else:
             self.br_ang_tmp = self.br_lec - self.br_offset
-
+        """
+        
         self.br_ang_tmp = self.map(self.br_ang_tmp, 0., 1023., 2*pi, 0.)
         self.br_ang_lst = self.br_ang_abs
         self.br_ang_abs = self.br_ang_tmp
@@ -185,10 +187,10 @@ class Br_node:
 
         """LAP CALCULATE"""
         # encuentra si el cambio fue de 0 a 2pi
-        if (self.br_ang_abs > 1.5 * pi and self.br_ang_lst < 0.5 * pi):
+        if (self.br_ang_abs > 1.8 * pi and self.br_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
-        if (self.br_ang_abs < 0.5 * pi and self.br_ang_lst > 1.5 * pi):
+        if (self.br_ang_abs < 0.2 * pi and self.br_ang_lst > 1.8 * pi):
             self.lap += 1
         
         self.br_ang_lap_lst = self.br_ang
