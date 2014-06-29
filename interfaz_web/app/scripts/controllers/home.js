@@ -16,12 +16,6 @@ angular.module('finderApp')
     $scope.video3 = 3;
     $scope.video4 = 4;
 
-    var mapViewer = new ROS2D.Viewer({
-        divID : 'mapViewer',
-        width : 300,
-        height : 250
-    });
-    var gridClient;
 
      
     $scope.$on('rosStateChanged', function() {
@@ -29,16 +23,7 @@ angular.module('finderApp')
         // $scope.serverConnected = Ros.isServerConnnected();
         // console.log('El servidor esta: '+Ros.serverConnected());
         // $scope.serverState = Ros.getServerState();
-        if (Ros.getRosState() === 'Connected') {
-            gridClient = new ROS2D.OccupancyGridClient({
-                ros : Ros.ros,
-                rootObject : mapViewer.scene
-            });
-
-            gridClient.on('change', function(){
-                mapViewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-            });
-        }
+        //}
       // console.log($scope.serverState);
     });   
 
