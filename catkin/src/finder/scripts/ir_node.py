@@ -62,7 +62,7 @@ class IR_Node():
                 self.bad_flag = True
             else:
             """
-            self.databuffer[i] = data.data[i]
+            self.databuffer[(i / 16) * 16 + i % 16] = data.data[i]
             #print(data.data[i])
             self.asccibuffer += data.data[i]
 
