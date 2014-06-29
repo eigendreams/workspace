@@ -1,6 +1,6 @@
-<div ng-repeat="element in data track by $index">
+<div ng-repeat="element in data track by $index" style="display: inline-block">
 	<!-- <div ng-repeat="value in element" ng-style="{'display': 'inline-block', 'text-align': 'center', 'height': '20px', 'width': '20px', 'background-color': 'rgb('value','value','value')', 'display': 'inline-block'}"> -->
-  <div ng-repeat="value in element track by $index" ng-style="{'background-color': 'rgb('+value+','+value+','+value+')','display': 'inline-block', 'width': '30px', 'height': '30px', 'text-align': 'center'}">
+  <div ng-repeat="value in element track by $index" ng-style="{'background-color': 'rgb('+value*4+','+value*4+','+value*4+')', 'width': '30px', 'height': '30px', 'text-align': 'center'}">
 	{{value}}
 	</div>
 </div>

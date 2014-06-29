@@ -34,9 +34,15 @@ angular.module('finderApp')
             baseOut: 0,
             armOut: 0,
             forearmOut: 0,
-            wristOut: 0,
-            palmOut: 0,
-            gripperOut: 0
+            //wristOut: 0,
+            //palmOut: 0,
+            //gripperOut: 0
+            leftOut: 0, 
+            rightOut: 0,
+            frOut: 0,
+            flOut: 0,
+            brOut: 0,
+            blOut: 0
         }
     }
 

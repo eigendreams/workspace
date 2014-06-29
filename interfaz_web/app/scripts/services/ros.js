@@ -208,10 +208,22 @@ angular.module('finderApp')
       irOut: {
         name: '/ir_out',
         type: 'std_msgs/String',
-        value: [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],
+        value: [[0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0]],
         active: false,
         subscribe: function () {
           this.topic.subscribe( function (message) {
@@ -222,12 +234,12 @@ angular.module('finderApp')
 
             //}
             var index = -1;
-            topics.irOut.value = [[],[],[],[]];
+            topics.irOut.value = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
             for (var i=0; i<message.data.length; i++) {
-              if (i%16 === 0) {
+              if (i%4 === 0) {
                 index++;
               } 
-              topics.irOut.value[index][i%16] = message.data[i].charCodeAt(0);
+              topics.irOut.value[15-index][i%4] = message.data[i].charCodeAt(0);
               //console.log(index);
               //console.log(mes);
             }
@@ -330,6 +342,7 @@ angular.module('finderApp')
 
         topics[key].subscribe();
       }
+      // topics.irOut.subscribe();
 
       // topics.alive.subscribe();
 
