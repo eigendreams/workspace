@@ -2,7 +2,7 @@
 
 <launch>
  
-  <!--<include file="$(find finder)/launch/hokuyo_test.launch"/>--> 
+  <include file="$(find finder)/launch/hokuyo_test.launch"/> 
   <include file="$(find finder)/launch/mapping_default_test.launch"/> 
   <include file="$(find finder)/launch/geotiff_mapper_test.launch"/> 
 
