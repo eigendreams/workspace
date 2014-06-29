@@ -42,7 +42,7 @@ class Fl_node:
 
         # PID control parameters
         self.kp_pos = 50
-        self.ki_pos = 1.
+        self.ki_pos = 5.
         self.kd_pos = 0.
         self.km_pos = 0.
         self.umbaseal_pos = 0.1
@@ -53,7 +53,7 @@ class Fl_node:
         self.error_pos = 0.
 
         self.kp_vel = 50
-        self.ki_vel = 1.
+        self.ki_vel = 5.
         self.kd_vel = 0.
         self.km_vel = 0.
         self.umbaseal_vel = 0.1
