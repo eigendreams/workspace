@@ -35,7 +35,7 @@ class IR_Node():
         self.databuffer = [0 for x in range(64)]
 
         self.irPub = rospy.Publisher("ir_out", String)
-        self.irSub = rospy.Subscriber("ir_data", int16_64, self.plotfcn)
+        self.irSub = rospy.Subscriber("ir_data", uint8_64, self.plotfcn)
 
         self.bad_flag = False;
 
