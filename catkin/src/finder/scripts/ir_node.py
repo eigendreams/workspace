@@ -62,6 +62,7 @@ class IR_Node():
             else:
             """
             self.databuffer[i] = data.data[i]
+            print(data.data[i])
 
         self.asccibuffer = "";
 
