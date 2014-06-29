@@ -207,7 +207,7 @@ class Fl_node:
             self.arm_ang_des = 0
 
     def armLecCb(self, data):
-        
+
         self.arm_lec = data.data
         self.angCalc()
 
@@ -221,6 +221,7 @@ class Fl_node:
 
 
     def armDesCb(self, data):
+        
         self.arm_vel_des = data.data
         self.angCalc()
 
