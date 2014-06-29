@@ -15,7 +15,32 @@ angular.module('finderApp')
     $scope.video2 = 2;
     $scope.video3 = 3;
     $scope.video4 = 4;
-        
+
+    var mapViewer = new ROS2D.Viewer({
+        divID : 'mapViewer',
+        width : 300,
+        height : 250
+    });
+    var gridClient;
+
+     
+    $scope.$on('rosStateChanged', function() {
+        // console.log('nodes actualizado desde home');
+        // $scope.serverConnected = Ros.isServerConnnected();
+        // console.log('El servidor esta: '+Ros.serverConnected());
+        // $scope.serverState = Ros.getServerState();
+        if (Ros.getRosState() === 'Connected') {
+            gridClient = new ROS2D.OccupancyGridClient({
+                ros : Ros.ros,
+                rootObject : mapViewer.scene
+            });
+
+            gridClient.on('change', function(){
+                mapViewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+            });
+        }
+      // console.log($scope.serverState);
+    });   
 
     $scope.listenerGroup = {
         groupOne : {

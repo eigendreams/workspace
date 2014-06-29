@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    var serverIP = "192.168.88.247";
-    // var serverIP = "localhost";
+    //var serverIP = "192.168.88.247";
+    var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -14,6 +14,9 @@ angular.module('finderApp')
     var nodes;
     var rosCommunicationPromise;
     var serverConnectionPromise;
+    var mapViewer;
+    var gridClient;
+
 
     var topics = {
       alive: {
@@ -355,6 +358,22 @@ angular.module('finderApp')
 
         topics[key].subscribe();
       }
+
+      var mapViewer = new ROS2D.Viewer({
+        divID : 'mapViewer',
+        width : 300,
+        height : 250
+      });
+
+      // Setup the map client.
+      var gridClient = new ROS2D.OccupancyGridClient({
+        ros : ros,
+        rootObject : mapViewer.scene
+      });
+      // Scale the canvas to fit to the map
+      gridClient.on('change', function(){
+        mapViewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+      });
       // topics.irOut.subscribe();
 
       // topics.alive.subscribe();
