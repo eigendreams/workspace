@@ -43,6 +43,15 @@ std_msgs::Int16 right_lec_msg;
 ros::Publisher left_lec_pub("left_lec", &left_lec_msg);
 ros::Publisher right_lec_pub("right_lec", &right_lec_msg);
 
+std_msgs::Int16 a2_lec;
+std_msgs::Int16 a3_lec;
+std_msgs::Int16 a4_lec;
+std_msgs::Int16 a5_lec;
+ros::Publisher a2_pub("traction_a2_lec", &a2_lec);
+ros::Publisher a3_pub("traction_a3_lec", &a3_lec);
+ros::Publisher a4_pub("traction_a4_lec", &a4_lec);
+ros::Publisher a5_pub("traction_a5_lec", &a5_lec);
+
 void setup() {
 	// Configurando pines
 	pinMode(2, OUTPUT);
@@ -63,6 +72,11 @@ void setup() {
 	nh.subscribe(alive_sub);
 	nh.advertise(left_lec_pub);
 	nh.advertise(right_lec_pub);
+
+	nh.advertise(a2_pub);
+	nh.advertise(a3_pub);
+	nh.advertise(a4_pub);
+	nh.advertise(a5_pub);
 
 	// Inicializa los motores y encoders
 	LEFT.begin();
@@ -98,6 +112,16 @@ void loop() {
 
 		left_lec_pub.publish(&left_lec_msg);
 		right_lec_pub.publish(&right_lec_msg);
+
+		a2_lec.data = analogRead(A2);
+		a3_lec.data = analogRead(A3);
+		a4_lec.data = analogRead(A4);
+		a5_lec.data = analogRead(A5);
+
+		a2_pub.publish(&a2_lec);
+		a3_pub.publish(&a3_lec);
+		a4_pub.publish(&a4_lec);
+		a5_pub.publish(&a5_lec);
 
 		milisLast = milisNow;
 	}
