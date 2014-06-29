@@ -304,7 +304,7 @@ void loop() {
     readIR_MLX90620(); //Get the 64 bytes of raw pixel data into the irData array
     //calculate_TO(); //Run all the large calculations to get the temperature data for each pixel
     conta++;
-    if(conta >= 10)//ir_req)//conta >= 10)
+    if(conta >= 5)//ir_req)//conta >= 10)
     {
       //ir_req = 0;
       conta = 0;
