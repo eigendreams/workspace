@@ -52,6 +52,7 @@ class IR_Node():
         self.bad_flag = False;
 
         for i in range(64):
+            """
             if (data.data[i] < -50):
                 self.databuffer[i] = 0
                 self.bad_flag = True
@@ -59,7 +60,8 @@ class IR_Node():
                 self.databuffer[i] = 0
                 self.bad_flag = True
             else:
-                self.databuffer[i] = data.data[i]
+            """
+            self.databuffer[i] = data.data[i]
 
         self.asccibuffer = "";
 
