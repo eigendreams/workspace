@@ -48,7 +48,7 @@ class Fl_node:
         self.umbaseal_pos = 0.1
         self.range_pos = 50. # Maximo pwm permitido
         self.kierr_pos = 2
-        self.kimax_pos = 50.
+        self.kimax_pos = 25.
         self.kisum_pos = 0.
         self.error_pos = 0.
 
@@ -59,7 +59,7 @@ class Fl_node:
         self.umbaseal_vel = 0.1
         self.range_vel = 50. # Maximo pwm permitido
         self.kierr_vel = 2
-        self.kimax_vel = 50.
+        self.kimax_vel = 25.
         self.kisum_vel = 0.
         self.error_vel = 0.
 
