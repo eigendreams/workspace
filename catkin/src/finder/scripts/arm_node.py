@@ -202,10 +202,12 @@ class Fl_node:
         """MAP VEL OUT"""
 
     def armResetCb(self, data):
+
         if (data.data == 1):
             self.arm_ang_des = 0
 
     def armLecCb(self, data):
+        
         self.arm_lec = data.data
         self.angCalc()
 
