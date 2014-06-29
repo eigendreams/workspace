@@ -11,7 +11,7 @@ from std_msgs.msg import UInt8
 from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import MultiArrayDimension
 from std_msgs.msg import MultiArrayLayout
-from finder.msg import int16_64
+from finder.msg import uint8_64
 
 class IR_Node():
     
@@ -64,7 +64,7 @@ class IR_Node():
         self.asccibuffer = "";
 
         for i in range(64):
-            self.asccibuffer += chr(self.constrain((self.databuffer[i] + 50) / 1, 0, 255))
+            self.asccibuffer += chr(self.databuffer[i])#chr(self.constrain((self.databuffer[i] + 50) / 1, 0, 255))
 
         #print (str(self.databuffer).strip('[]'))
         #print self.asccibuffer

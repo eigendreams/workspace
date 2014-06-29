@@ -21,7 +21,7 @@ ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 //int ir_req;
 //void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
 //ros::Subscriber<std_msgs::Int16> ir_req_sub("ir_req", ir_req_cb);
-finder::int16_64 ir_data;
+finder::uint8_64 ir_data;
 ros::Publisher ir_pub("ir_data", &ir_data);
 int refreshRate = 16; //Set this value to your desired refresh frequency
 int conta = 0;
@@ -104,8 +104,8 @@ void readIR_MLX90620()
   {
     byte pixelDataLow = i2c_readAck();
     byte pixelDataHigh = i2c_readAck();
-    //ir_data.data[i] = (byte)((((int)(pixelDataHigh << 8) | pixelDataLow) + 50) >> 4);
-    ir_data.data[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
+    ir_data.data[i] = (byte)(constrain(((int)(pixelDataHigh << 8) | pixelDataLow) + 50, 0, 255));
+    //ir_data.data[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
   }
 
   i2c_stop();
