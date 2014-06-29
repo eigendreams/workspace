@@ -42,15 +42,15 @@ namespace ros
 {
 #if defined(__AVR_ATmega8__) || defined(__AVR_ATmega168__)
   /* downsize our buffers */
-  typedef NodeHandle_<ArduinoHardware, 6, 6, 60, 60> NodeHandle;
+  typedef NodeHandle_<ArduinoHardware, 10, 10, 150, 150> NodeHandle;
 
 #elif defined(__AVR_ATmega328P__)
 
-  typedef NodeHandle_<ArduinoHardware, 8, 8, 100, 100> NodeHandle;
+  typedef NodeHandle_<ArduinoHardware, 15, 15, 200, 200> NodeHandle;
 
 #elif defined(__AVR_ATmega32U4__)
 
-  typedef NodeHandle_<ArduinoHardware, 15, 15, 150, 150> NodeHandle;
+  typedef NodeHandle_<ArduinoHardware, 25, 25, 280, 280> NodeHandle;
 
 #else
 

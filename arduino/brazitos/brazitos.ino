@@ -5,6 +5,15 @@
 #include "Encoder.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+Servo brazo_servo;
+Servo antebrazo_servo;
+int arm_out = 0;
+int forearm_out = 0;
+void arm_out_cb(const std_msgs::Int16& dmsg) {arm_out = dmsg.data;}
+void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
+ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
+ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
+////////////////////////////////////////////////////////////////////////////////
 #include "i2cmaster.h"
 #include "MLX90620_registers.h"
 #include "finder/int16_64.h"
@@ -200,6 +209,11 @@ void setup() {
   nh.initNode();
 
   //////////////////////////////////////////////////////////////////////////////
+  brazo_servo.attach(7);
+  antebrazo_servo.attach(8);
+  nh.subscribe(arm_out_sub);
+  nh.subscribe(forearm_out_sub);
+  //////////////////////////////////////////////////////////////////////////////
   i2c_init(); //Init the I2C pins
   //PORTC = (1 << PORTC4) | (1 << PORTC5); //Enable pull-ups
   pinMode(A4, INPUT_PULLUP);
@@ -239,6 +253,10 @@ void loop() {
     // Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
     // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
     if (milisNow - milisLastMsg >= 3500) {
+      //////////////////////////////////////////////////////////////////////////
+      arm_out = 0;
+      forearm_out = 0;
+      //////////////////////////////////////////////////////////////////////////
       fr_out = 0;
       fl_out = 0;
       br_out = 0;
@@ -271,6 +289,9 @@ void loop() {
     milisLast = milisNow;
   
     //////////////////////////////////////////////////////////////////////////////
+    brazo_servo.write(arm_out * 5 + 1500);
+    antebrazo_servo.write(forearm_out * 5 + 1500);
+    ////////////////////////////////////////////////////////////////////////////
     if(loopCount++ == 10) //Tambient changes more slowly than the pixel readings. Update TA only every 16 loops.
     { 
       //calculate_TA(); //Calculate the new Tambient
@@ -286,7 +307,7 @@ void loop() {
     if(conta >= 10)//ir_req)//conta >= 10)
     {
       //ir_req = 0;
-      //conta = 0;
+      conta = 0;
       ir_pub.publish(&ir_data);
     }
     //rawPrintTemperatures(); //Print the entire array so it can more easily be read by Processing app

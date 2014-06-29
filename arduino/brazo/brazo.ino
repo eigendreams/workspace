@@ -32,8 +32,8 @@ SimpleDriverClass MUNNIECA(6, 4, 2, 100);
 
 // Pin 9 for standard servo control (fifth DOF)
 // SimpleServoClass(pin, val) // sense == sign(val), max_angle == abs(val) (from -90 to +90)
-Servo brazo_servo;
-Servo antebrazo_servo;
+//Servo brazo_servo;
+//Servo antebrazo_servo;
 Servo gripper_servo;
 //SimpleServoClass PALMA(&gripper_servo, 100);
 
@@ -54,8 +54,8 @@ EncoderClass ENCMUNNIECA(A3, 350, 895, 100, 100);
 
 // The incoming 6 DOF int16 information from ROS
 int base_out = 0;
-int arm_out = 0;
-int forearm_out = 0;
+//int arm_out = 0;
+//int forearm_out = 0;
 int wrist_out= 0;
 int palm_out = 0;
 int gripper_out = 0;
@@ -72,8 +72,8 @@ unsigned long milisLastMsg = 0;
 bool timedOut = false;
 
 void base_out_cb(const std_msgs::Int16& dmsg) {base_out = dmsg.data;}
-void arm_out_cb(const std_msgs::Int16& dmsg) {arm_out = dmsg.data;}
-void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
+//void arm_out_cb(const std_msgs::Int16& dmsg) {arm_out = dmsg.data;}
+//void forearm_out_cb(const std_msgs::Int16& dmsg) {forearm_out = dmsg.data;}
 void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
@@ -83,8 +83,8 @@ void alive_cb(const std_msgs::Int16& dmsg) {
 }
 
 ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
-ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
-ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
+//ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
+//ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
@@ -112,11 +112,11 @@ void setup() {
 	//pinMode(8, OUTPUT);
 	//pinMode(9, OUTPUT);
 
-	brazo_servo.attach(7);
+	//brazo_servo.attach(7);
 	//antebrazo_servo.attach(8);
 	//BRAZO.attach(7);
 	//ANTEBRAZO.attach(8);
-	//gripper_servo.attach(9);
+	gripper_servo.attach(9);
 
 	// Select encoders as digital
 	pinMode(A0, OUTPUT);
@@ -126,8 +126,8 @@ void setup() {
 	nh.initNode();
 
 	nh.subscribe(base_out_sub);
-	nh.subscribe(arm_out_sub);
-	nh.subscribe(forearm_out_sub);
+	//nh.subscribe(arm_out_sub);
+	//nh.subscribe(forearm_out_sub);
 	nh.subscribe(wrist_out_sub);
 	nh.subscribe(palm_out_sub);
 	nh.subscribe(gripper_out_sub);
@@ -151,9 +151,9 @@ void loop() {
 
 	unsigned long milisNow = millis();
 
-	brazo_servo.write(arm_out * 5 + 1500);
+	//brazo_servo.write(arm_out * 5 + 1500);
 	//antebrazo_servo.write(forearm_out * 5 + 1500);
-	//gripper_servo.write(palm_out * 5 + 1500);
+	gripper_servo.write(palm_out * 5 + 1500);
 
 
 	// 20 Hz operation
@@ -163,10 +163,10 @@ void loop() {
 
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 	    // to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
-	    if (milisNow - milisLastMsg >= 5000) {
+	    if (milisNow - milisLastMsg >= 3500) {
 	      base_out = 0;
-	      arm_out = 0;
-	      forearm_out = 0;
+	      //arm_out = 0;
+	      //forearm_out = 0;
 	      wrist_out = 0;		// CHECK THIS ONE!!!
 	      palm_out = 0;
 	      gripper_out = 0;
@@ -188,9 +188,9 @@ void loop() {
 		//gripper_servo.write(palm_out * 5 + 1500);
 		//DYNAMIXEL.write(gripper_out);
 
-		brazo_servo.write(arm_out * 5 + 1500);
+		//brazo_servo.write(arm_out * 5 + 1500);
 		//antebrazo_servo.write(forearm_out * 5 + 1500);
-		//gripper_servo.write(palm_out * 5 + 1500);
+		gripper_servo.write(palm_out * 5 + 1500);
 
 
 		base_lec_msg.data = base_lec;
