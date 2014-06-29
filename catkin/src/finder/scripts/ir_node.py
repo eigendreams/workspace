@@ -66,7 +66,7 @@ class IR_Node():
         self.asccibuffer = "";
 
         for i in range(64):
-            self.asccibuffer += chr(1 * 1)#self.databuffer[i])
+            self.asccibuffer += chr(self.constrain(self.databuffer[i], 0, 255)
 
             #chr(self.constrain((self.databuffer[i] + 50) / 1, 0, 255))
 
