@@ -10,6 +10,7 @@ angular.module('finderApp')
     $scope.rosState = Ros.getRosState();
     $scope.rosDisconnect = Ros.disconnect;
     $scope.rosConnect = Ros.connect;
+    $scope.termalsensorData = [[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]];
         
 
     $scope.listenerGroup = {
@@ -132,6 +133,8 @@ angular.module('finderApp')
                 }
             }
         }
+
+        $scope.termalsensorData = Ros.topic.getData('irOut');
 
                 
         // }
