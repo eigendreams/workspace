@@ -50,6 +50,7 @@ class IR_Node():
     def plotfcn(self, data):
 
         self.bad_flag = False;
+        self.asccibuffer = "";
 
         for i in range(64):
             """
@@ -62,13 +63,13 @@ class IR_Node():
             else:
             """
             self.databuffer[i] = data.data[i]
-            print(data.data[i])
+            #print(data.data[i])
+            self.asccibuffer += data.data[i]
 
-        self.asccibuffer = "";
-
+        """
         for i in range(64):
             self.asccibuffer += chr(self.constrain(self.databuffer[i], 0, 255))
-
+        """
             #chr(self.constrain((self.databuffer[i] + 50) / 1, 0, 255))
 
         #print (str(self.databuffer).strip('[]'))
