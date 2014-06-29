@@ -32,7 +32,7 @@ class IR_Node():
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = rospy.get_param("ir_node_rate", 10)
         # Publicación de la batería como entero
-        self.databuffer = [0 for x in range(64)]
+        self.databuffer = [chr(0) for x in range(64)]
 
         self.irPub = rospy.Publisher("ir_out", String)
         self.irSub = rospy.Subscriber("ir_data", uint8_64, self.plotfcn)
