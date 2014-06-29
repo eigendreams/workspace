@@ -64,7 +64,7 @@ class IR_Node():
             """
             self.databuffer[(i / 16) * 16 + i % 16] = data.data[i]
             #print(data.data[i])
-            self.asccibuffer += data.data[i]
+            self.asccibuffer += data.data[(i / 16) * 16 + i % 16]
 
         """
         for i in range(64):
