@@ -181,12 +181,12 @@ void loop() {
 	    //palm_lec = PALMA.read();
 	    //gripper_lec = DYNAMIXEL.read();
 
-		// BASE.write(base_out);
+		BASE.write(base_out);
 		//BRAZO.write(arm_out);
 		//ANTEBRAZO.write(forearm_out);
-		// MUNNIECA.write(wrist_out);
-		//gripper_servo.write(palm_out * 5 + 1500);
-		//DYNAMIXEL.write(gripper_out);
+		MUNNIECA.write(wrist_out);
+		gripper_servo.write(palm_out * 5 + 1500);
+		DYNAMIXEL.write(gripper_out);
 
 		//brazo_servo.write(arm_out * 5 + 1500);
 		//antebrazo_servo.write(forearm_out * 5 + 1500);
