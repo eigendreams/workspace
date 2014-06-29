@@ -72,14 +72,24 @@ class Control_interface:
         self.fast_arms = False
         self.fast_traction = False
 
-        self.testdata = 0
-        self.testpub = rospy.Publisher("arm_out", Int16)
+        self.arm_out = 0
+        self.forearm_out = 0
+        self.armOutPub = rospy.Publisher("arm_out", Int16)
+        self.forearmOutPub = rospy.Publisher("forearm_out", Int16)
+
+        self.operation_mode = "Navigation"
 
         # THIS MUST BE AT THE END!!!
         self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)        
 
     def joyCb(self, data):
 		
+        if data.buttons[self.buttons_names['A']] == 1:
+            self.operation_mode = "ArmControl"
+        
+        if data.buttons[self.buttons_names['X']] == 1:
+            self.operation_mode = "Navigation"
+
         self.angular_rate   = data.axes[self.axes_names['left_stick_hor']] * 100
         self.linear_rate    = data.axes[self.axes_names['left_stick_ver']] * 100
 
@@ -107,7 +117,11 @@ class Control_interface:
 
         self.offset_val = data.buttons[self.buttons_names['Y']]
 
-        self.testdata   = data.axes[self.axes_names['left_stick_ver']] * 100
+        self.arm_des   = data.axes[self.axes_names['left_stick_ver']] * 1
+        self.forearm_des   = data.axes[self.axes_names['right_stick_ver']] * 1
+
+        self.arm_out   = data.axes[self.axes_names['left_stick_ver']] * 100
+        self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * 100
 
         
     def motorTractionUpdate(self):
@@ -125,7 +139,8 @@ class Control_interface:
         self.leftPub.publish(left_des)
         self.rightPub.publish(right_des)
 
-        self.testpub.publish(self.testdata)
+        # self.testpub1.publish(self.testdata1)
+        # self.testpub2.publish(self.testdata2)
 
         # print "left: " + str(left_des)
         # print "right: " + str(right_des)
@@ -196,11 +211,17 @@ class Control_interface:
 		
         r = rospy.Rate(self.rate)
         while not rospy.is_shutdown():
-            self.motorTractionUpdate()
-            self.motorArmUpdate()
-            self.motorTractionArmUpdate()
+            if self.operation_mode == 'ArmControl':
+                # self.armPub.publish(self.arm_des)
+                # self.forearmPub.publish(self.forearm_des)
+                self.armOutPub.publish(self.arm_out)
+                self.forearmOutPub.publish(self.forearm_out)
+            else:
+                self.motorTractionUpdate()
+                self.motorArmUpdate()
+                self.motorTractionArmUpdate()
 
-            self.offsetPub.publish(self.offset_val)
+                self.offsetPub.publish(self.offset_val)
 
             r.sleep()
             

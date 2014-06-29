@@ -228,8 +228,8 @@ angular.module('finderApp')
               //console.log(index);
               //console.log(mes);
             }
-            console.log(topics.irOut.value);
-            //topics.baseDes.topic.unsubscribe();
+            // console.log(topics.irOut.value);
+            // topics.baseDes.topic.unsubscribe();
           });
         }
       },
