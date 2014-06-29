@@ -25,7 +25,6 @@ angular.module('finderApp')
             baseOut: 0
         },
         groupSensor : {
-            irOut: 0,
             co2: 0,
             pitch: 0,
             roll: 0

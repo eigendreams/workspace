@@ -60,9 +60,9 @@ body {
 }
 
 /* button margin */
-.row .btn {
+/*.row .btn {
   margin: 10px;
-}
+}*/
 
 .p-home .btn-group {
   margin: 10px;
@@ -166,7 +166,7 @@ slider span.bubble {
   font-family: sans-serif;
   text-align:  center;
   text-shadow: none;
-  top:         -1.3em;
+  top:         3.3em;
   cursor:      pointer;
 }
 

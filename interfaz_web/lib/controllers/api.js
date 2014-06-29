@@ -22,28 +22,34 @@ var nodes = {
     evalState: "ps aux | grep -v grep | egrep 'alive' -c",
     state: "0"
   },
-  rosarduino1 : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM0','__name:=ardu1']],
-    stop: "kill -9 $(ps aux | grep ardu1 | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'ardu1' -c",
+  rostractionarduino : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/traction_arduino','__name:=traction_arduino']],
+    stop: "kill -9 $(ps aux | grep traction_arduino | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'traction_arduino' -c",
     state: "0"
   },
-  rosarduino2 : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM1','__name:=ardu2']],
-    stop: "kill -9 $(ps aux | grep ardu2 | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'ardu2' -c",
+  rossensorarduino : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/sensor_arduino','__name:=sensor_arduino']],
+    stop: "kill -9 $(ps aux | grep sensor_arduino | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'sensor_arduino' -c",
     state: "0"
   },
-  rosarduino3 : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM2','__name:=ardu3']],
-    stop: "kill -9 $(ps aux | grep ardu3 | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'ardu3' -c",
+  rostalonarduino : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/talon_arduino','__name:=talon_arduino']],
+    stop: "kill -9 $(ps aux | grep talon_arduino | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'talon_arduino' -c",
     state: "0"
   },
-  rosarduino4 : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM3','__name:=ardu4']],
-    stop: "kill -9 $(ps aux | grep ardu4 | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'ardu4' -c",
+  rosarmarduino : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/arm_arduino','__name:=arm_arduino']],
+    stop: "kill -9 $(ps aux | grep arm_arduino | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'arm_arduino' -c",
+    state: "0"
+  },
+  rosirarduino : {
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ir_arduino','__name:=ir_arduino']],
+    stop: "kill -9 $(ps aux | grep ir_arduino | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'ir_arduino' -c",
     state: "0"
   },
   rosbasenode : {
