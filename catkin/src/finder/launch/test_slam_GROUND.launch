@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+ 
+  <include file="$(find finder)/launch/qrcode_detection_test.launch"/>
+  <include file="$(find finder)/launch/object_tracker_test.launch"/>
+
+</launch>
