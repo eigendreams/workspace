@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+#rostopic pub -r 10 arm_lec std_msgs/Int16 500
+#rostopic pub -r 10 arm_des std_msgs/Float32 1
+
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32

@@ -46,9 +46,9 @@ class Fr_node:
         self.kd_pos = 0
         self.km_pos = 0
         self.umbral_pos = 1
-        self.range_pos = 50 # Maximo pwm permitido
+        self.range_pos = 35 # Maximo pwm permitido
         self.kierr_pos = 2
-        self.kimax_pos = 50
+        self.kimax_pos = 35
         self.kisum_pos = 0
         self.error_pos = 0
 
@@ -57,9 +57,9 @@ class Fr_node:
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 50 # Maximo pwm permitido
+        self.range_vel = 35 # Maximo pwm permitido
         self.kierr_vel = 1
-        self.kimax_vel = 50
+        self.kimax_vel = 35
         self.kisum_vel = 0
         self.error_vel = 0
 
