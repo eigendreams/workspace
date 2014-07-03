@@ -23,6 +23,7 @@ class Wrist_node:
         self.wrist_ang_def = 0
         self.wrist_offset = 146
 
+        """COSTANTES"""
         # PID control parameters
         self.kp = 25
         self.ki = 1
@@ -120,7 +121,7 @@ class Wrist_node:
 
         self.wrist_out = -self.constrain(self.kp * self.error + self.kisum - self.kd * (self.wrist_ang - self.wrist_ang_lst) + self.km * self.wrist_des, -self.range, self.range)
 
-
+    """ANG LEC"""
     def angCalc(self):
 
         self.times += 1
