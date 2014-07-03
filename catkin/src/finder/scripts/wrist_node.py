@@ -24,6 +24,7 @@ class Wrist_node:
         self.wrist_offset = 146
 
         """COSTANTES"""
+        """kevin test"""
         # PID control parameters
         self.kp = 25
         self.ki = 1
