@@ -19,19 +19,19 @@ class Wrist_node:
 
         #TODO cambiar por parametros
         self.wrist_enc_ana = False
-        self.wrist_enc_max = 1006
+        self.wrist_enc_max = 1008
         self.wrist_ang_def = 0
-        self.wrist_offset = 800
+        self.wrist_offset = 146
 
         # PID control parameters
-        self.kp = 25   
-        self.ki = 5
+        self.kp = 25
+        self.ki = 1
         self.kd = 0
         self.km = 0
-        self.umbral = 0.1
+        self.umbral = 0.05
         self.range = 40 # Maximo pwm permitido
         self.kierr = 0.6
-        self.kimax = 40
+        self.kimax = 20
         self.kisum = 0
         self.error = 0
 
@@ -52,6 +52,14 @@ class Wrist_node:
         self.wrist_ang_lap = 0
 
         self.init_time = rospy.get_time()
+
+        self.wrist_offset_internal = 0.
+        self.wrist_ang_tmp_internal = 0      
+        self.wrist_ang_tmp_internal = 0
+        self.wrist_ang_lst_internal = 0
+        self.wrist_ang_abs_internal = 0
+
+        self.times = 0
 
         self.wristOutPub = rospy.Publisher("wrist_out", Int16)
         self.wristAngPub = rospy.Publisher("wrist_ang", Float32)
@@ -76,7 +84,7 @@ class Wrist_node:
 
     def map(self, x, in_min, in_max, out_min, out_max):
 
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+        return (x - in_min) * (out_max - out_min + 0.) / (in_max - in_min + 0.) + out_min
 
 
     def millis(self):
@@ -102,47 +110,68 @@ class Wrist_node:
 
         if (abs(self.wrist_des - self.wrist_ang) < self.kierr):
             if (abs(self.wrist_des - self.wrist_ang) < self.umbral):
-                pass
-                #self.kisum = 0.;
+                #pass
+                self.kisum = 0.;
             else:
                 self.kisum += self.ki * self.error
                 self.kisum = self.constrain(self.kisum, -self.kimax, self.kimax)
         else:
             self.kisum = 0.
 
-        self.wrist_out = self.constrain(self.kp * self.error + self.kisum - self.kd * (self.wrist_ang - self.wrist_ang_lst) + self.km * self.wrist_des, -self.range, self.range)
+        self.wrist_out = -self.constrain(self.kp * self.error + self.kisum - self.kd * (self.wrist_ang - self.wrist_ang_lst) + self.km * self.wrist_des, -self.range, self.range)
 
 
     def angCalc(self):
 
+        self.times += 1
+
+        self.wrist_offset_internal = self.map(self.wrist_offset, 0., self.wrist_enc_max, 0., 2 * pi)
+        print "offset: " + str(self.wrist_offset_internal)
         """MAP FIRST"""
         """
         if self.wrist_lec < self.wrist_offset:
             self.wrist_ang_tmp = self.wrist_lec + self.wrist_enc_max + 1 - self.wrist_offset
         else:
             self.wrist_ang_tmp = self.wrist_lec - self.wrist_offset
-        """
-        self.wrist_ang_tmp = self.wrist_lec        
-        self.wrist_ang_tmp = self.map(self.wrist_ang_tmp, 0., self.wrist_enc_max, 0, 2* pi)
-        self.wrist_ang_lst = self.wrist_ang_abs
-        self.wrist_ang_abs = self.wrist_ang_tmp
+        """      
+        self.wrist_ang_tmp_internal = self.map(self.wrist_lec, 0., self.wrist_enc_max, 0, 2 * pi)
+        print "ang: " + str(self.wrist_ang_tmp_internal)
+        self.wrist_ang_lst_internal = self.wrist_ang_abs_internal
+        self.wrist_ang_abs_internal = self.wrist_ang_tmp_internal
         """MAP FIRST"""
+        """LAP CALCULATE"""
+        if (self.times > 4):
+            # encuentra si el cambio fue de 0 a 2pi
+            if (self.wrist_ang_abs_internal > 1.7 * pi and self.wrist_ang_lst_internal < 0.3 * pi):
+                self.wrist_ang_lap -= 1
+            # encuentra si el cambio fue de 2pi a 0
+            if (self.wrist_ang_abs_internal < 0.3 * pi and self.wrist_ang_lst_internal > 1.7 * pi):
+                self.wrist_ang_lap += 1
 
+        #print "lap: " + str(self.wrist_ang_lap)
         """LAP CALCULATE"""
-        # encuentra si el cambio fue de 0 a 2pi
-        if (self.wrist_ang_abs > 1.8 * pi and self.wrist_ang_lst < 0.2 * pi):
-            self.wrist_ang_lap -= 1
-        # encuentra si el cambio fue de 2pi a 0
-        if (self.wrist_ang_abs < 0.2 * pi and self.wrist_ang_lst > 1.8 * pi):
-            self.wrist_ang_lap += 1
-        """LAP CALCULATE"""
+        # OFF WITH THE INTERNAL STUFF!
+        """EXTERNAL"""
+        """
+        if self.wrist_ang_abs_internal < self.wrist_offset_internal:
+            self.wrist_ang_lst = self.wrist_ang_lst_internal + 2 * pi - self.wrist_offset_internal
+            self.wrist_ang_abs = self.wrist_ang_abs_internal + 2 * pi - self.wrist_offset_internal
+            #self.wrist_ang_tmp = self.wrist_lec + self.wrist_enc_max + 1 - self.wrist_offset
+        else:
+            self.wrist_ang_lst = self.wrist_ang_lst_internal - self.wrist_offset_internal
+            self.wrist_ang_abs = self.wrist_ang_abs_internal - self.wrist_offset_internal
+        """
+        """EXTERNAL"""
+
+        #print "ang_abs: " + str(self.wrist_ang_abs_internal)
 
         self.wrist_ang_lap_lst = self.wrist_ang
-        self.wrist_ang = 2 * pi * self.wrist_ang_lap + self.wrist_ang_abs
-
+        self.wrist_ang = 2 * pi * self.wrist_ang_lap + self.wrist_ang_abs_internal - self.wrist_offset_internal 
         """MAP VEL OUT"""
         self.wrist_vel = self.wrist_ang - self.wrist_ang_lap_lst
         """MAP VEL OUT"""
+
+
 
 
     def desCalc(self, data):
