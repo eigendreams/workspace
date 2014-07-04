@@ -86,6 +86,13 @@ class Fl_node:
         self.init_time = rospy.get_time()
         #self.angInit()
 
+        self.forearm_offset_internal = 0.
+        self.forearm_ang_tmp_internal = 0      
+        self.forearm_ang_lst_internal = 0
+        self.forearm_ang_abs_internal = 0
+
+        self.times = 0
+
         self.init_forearmag = False;
 
         self.forearmResetSub = rospy.Subscriber("forearm_reset", Int16, self.forearmResetCb)
@@ -171,18 +178,32 @@ class Fl_node:
 
 
     def angCalc(self):
-
+        self.times +=1
+        self.forearm_offset_internal = self.map(self.forearm_offset, 0., self.forearm_enc_max, 0., 2 * pi)
         """MAP FIRST"""
         """
         if self.forearm_lec < self.forearm_offset:
             self.forearm_ang_tmp = self.forearm_lec + 1024 - self.forearm_offset
         else:
             self.forearm_ang_tmp = self.forearm_lec - self.forearm_offset
-        """
+        
         self.forearm_ang_tmp = self.forearm_lec        
         self.forearm_ang_tmp = self.map(self.forearm_ang_tmp, 0., 1023., 2*pi, 0.)
         self.forearm_ang_lst = self.forearm_ang_abs
         self.forearm_ang_abs = self.forearm_ang_tmp
+        """
+
+        self.forearm_ang_tmp_internal = self.map(self.forearm_lec, 0., self.forearm_enc_max, 0, 2 * pi)
+        self.forearm_ang_lst_internal = self.forearm_ang_abs_internal
+        self.forearm_ang_abs_internal = self.forearm_ang_tmp_internal
+        if (self.times > 4):
+            # encuentra si el cambio fue de 0 a 2pi
+            if (self.forearm_ang_abs_internal > 1.7 * pi and self.forearm_ang_lst_internal < 0.3 * pi):
+                self.forearm_ang_lap -= 1
+            # encuentra si el cambio fue de 2pi a 0
+            if (self.forearm_ang_abs_internal < 0.3 * pi and self.forearm_ang_lst_internal > 1.7 * pi):
+                self.forearm_ang_lap += 1        
+
         """MAP FIRST"""
 
         """LAP CALCULATE"""
@@ -198,7 +219,7 @@ class Fl_node:
         """LAP CALCULATE"""
 
         """MAP VEL OUT"""
-        self.forearm_vel = 10. * (self.forearm_ang - self.forearm_ang_lap_lst)
+        self.forearm_vel =  (self.forearm_ang - self.forearm_ang_lap_lst)
         """MAP VEL OUT"""
 
     def forearmResetCb(self, data):

@@ -57,7 +57,6 @@ class Wrist_node:
 
         self.wrist_offset_internal = 0.
         self.wrist_ang_tmp_internal = 0      
-        self.wrist_ang_tmp_internal = 0
         self.wrist_ang_lst_internal = 0
         self.wrist_ang_abs_internal = 0
 
@@ -128,7 +127,6 @@ class Wrist_node:
         self.times += 1
 
         self.wrist_offset_internal = self.map(self.wrist_offset, 0., self.wrist_enc_max, 0., 2 * pi)
-        print "offset: " + str(self.wrist_offset_internal)
         """MAP FIRST"""
         """
         if self.wrist_lec < self.wrist_offset:
@@ -137,7 +135,6 @@ class Wrist_node:
             self.wrist_ang_tmp = self.wrist_lec - self.wrist_offset
         """      
         self.wrist_ang_tmp_internal = self.map(self.wrist_lec, 0., self.wrist_enc_max, 0, 2 * pi)
-        print "ang: " + str(self.wrist_ang_tmp_internal)
         self.wrist_ang_lst_internal = self.wrist_ang_abs_internal
         self.wrist_ang_abs_internal = self.wrist_ang_tmp_internal
         """MAP FIRST"""

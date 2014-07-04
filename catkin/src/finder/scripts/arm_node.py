@@ -7,6 +7,7 @@
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
+#from std_msgs.msg import Bool
 from math import *
 
 """
@@ -89,6 +90,14 @@ class Fl_node:
         self.init_time = rospy.get_time()
         #self.angInit()
 
+        self.arm_offset_internal = 0.
+        self.arm_ang_tmp_internal = 0      
+        self.arm_ang_lst_internal = 0
+        self.arm_ang_abs_internal = 0
+
+        self.times = 0
+        
+
         self.init_armag = False;
 
         self.armResetSub = rospy.Subscriber("arm_reset", Int16, self.armResetCb)
@@ -118,7 +127,7 @@ class Fl_node:
 
     def millis(self):
 
-        return 1000 * (rospy.get_time() - self.init_time)
+        return int(1000 * (self.rospy.get_time() - self.init_time))
 
 
     def constrain(self, x, min, max):
@@ -132,7 +141,7 @@ class Fl_node:
 
     def pid_pos(self):
 
-        if (abs(self.arm_ang_des - self.arm_ang) <= self.umarmal_pos):
+        if (abs(self.arm_ang_des - self.arm_ang) < self.umarmal_pos):
            self.error_pos = 0.
         else:
             self.error_pos = self.arm_ang_des - self.arm_ang
@@ -174,6 +183,8 @@ class Fl_node:
 
 
     def angCalc(self):
+        self.times +=1
+        self.arm_offset_internal = self.map(self.arm_offset, 0., self.arm_enc_max, 0., 2 * pi)
 
         """MAP FIRST"""
         """
@@ -182,26 +193,30 @@ class Fl_node:
         else:
             self.arm_ang_tmp = self.arm_lec - self.arm_offset
         """
+
+        self.arm_ang_tmp_internal = self.map(self.arm_lec, 0., self.arm_enc_max, 0, 2 * pi)
+        self.arm_ang_lst_internal = self.arm_ang_abs_internal
+        self.arm_ang_abs_internal = self.arm_ang_tmp_internal
+        if (self.times > 4):
+            # encuentra si el cambio fue de 0 a 2pi
+            if (self.arm_ang_abs_internal > 1.7 * pi and self.arm_ang_lst_internal < 0.3 * pi):
+                self.arm_ang_lap -= 1
+            # encuentra si el cambio fue de 2pi a 0
+            if (self.arm_ang_abs_internal < 0.3 * pi and self.arm_ang_lst_internal > 1.7 * pi):
+                self.arm_ang_lap += 1        
+        """
         self.arm_ang_tmp = self.arm_lec        
         self.arm_ang_tmp = self.map(self.arm_ang_tmp, 0., 1023., 2*pi, 0.)
         self.arm_ang_lst = self.arm_ang_abs
         self.arm_ang_abs = self.arm_ang_tmp
-        """MAP FIRST"""
-
-        """LAP CALCULATE"""
-        # encuentra si el cambio fue de 0 a 2pi
-        if (self.arm_ang_abs > 1.8 * pi and self.arm_ang_lst < 0.2 * pi):
-            self.lap -= 1
-        # encuetra si el cambio due de 2pi a 0
-        if (self.arm_ang_abs < 0.2 * pi and self.arm_ang_lst > 1.8 * pi):
-            self.lap += 1
+        """
         
         self.arm_ang_lap_lst = self.arm_ang
-        self.arm_ang = 2 * pi * self.lap + self.arm_ang_abs
+        self.arm_ang = 2 * pi * self.arm_ang_lap + self.arm_ang_lap_lst
         """LAP CALCULATE"""
 
         """MAP VEL OUT"""
-        self.arm_vel = 10. * (self.arm_ang - self.arm_ang_lap_lst)
+        self.arm_vel = (self.arm_ang - self.arm_ang_lap_lst)
         """MAP VEL OUT"""
 
     def armResetCb(self, data):
