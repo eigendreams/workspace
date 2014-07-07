@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-
+#
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
@@ -85,6 +85,13 @@ class Fr_node:
         # inits
         self.init_time = rospy.get_time()
         #self.angInit()
+
+        self.fr_offset_internal = 0.
+        self.fr_ang_tmp_internal = 0      
+        self.fr_ang_lst_internal = 0
+        self.fr_ang_abs_internal = 0
+
+        self.times = 0
 
         self.init_flag = False;
 
@@ -181,20 +188,35 @@ class Fr_node:
         else:
             self.fr_ang_tmp = self.fr_lec - self.fr_offset
         """
+        """
         self.fr_ang_tmp = self.fr_lec
         self.fr_ang_tmp = self.map(self.fr_ang_tmp, 0., 1023., 2*pi, 0.)
         self.fr_ang_lst = self.fr_ang_abs
         self.fr_ang_abs = self.fr_ang_tmp
+        """
         """MAP FIRST"""
 
         """LAP CALCULATE"""
-        # encuentra si el cambio fue de 0 a 2pi
+        """# encuentra si el cambio fue de 0 a 2pi
         if (self.fr_ang_abs > 1.8 * pi and self.fr_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
         if (self.fr_ang_abs < 0.2 * pi and self.fr_ang_lst > 1.8 * pi):
-            self.lap += 1
-        
+         self.lap += 1
+        """
+
+        self.fr_ang_tmp_internal = self.map(self.fr_lec, 0., self.fr_enc_max, 0, 2 * pi)
+        self.fr_ang_lst_internal = self.fr_ang_abs_internal
+        self.fr_ang_abs_internal = self.fr_ang_tmp_internal
+        if (self.times > 4):
+            # encuentra si el cambio fue de 0 a 2pi
+            if (self.fr_ang_abs_internal > 1.7 * pi and self.fr_ang_lst_internal < 0.3 * pi):
+                self.fr_ang_lap -= 1
+            # encuentra si el cambio fue de 2pi a 0
+            if (self.fr_ang_abs_internal < 0.3 * pi and self.fr_ang_lst_internal > 1.7 * pi):
+                self.fr_ang_lap += 1   
+
+                
         self.fr_ang_lap_lst = self.fr_ang
         self.fr_ang = 2 * pi * self.lap + self.fr_ang_abs
         """LAP CALCULATE"""

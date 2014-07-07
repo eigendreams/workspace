@@ -196,6 +196,8 @@ class Fl_node:
         self.forearm_ang_tmp_internal = self.map(self.forearm_lec, 0., self.forearm_enc_max, 0, 2 * pi)
         self.forearm_ang_lst_internal = self.forearm_ang_abs_internal
         self.forearm_ang_abs_internal = self.forearm_ang_tmp_internal
+
+        """MAP FIRST"""
         if (self.times > 4):
             # encuentra si el cambio fue de 0 a 2pi
             if (self.forearm_ang_abs_internal > 1.7 * pi and self.forearm_ang_lst_internal < 0.3 * pi):
@@ -204,15 +206,7 @@ class Fl_node:
             if (self.forearm_ang_abs_internal < 0.3 * pi and self.forearm_ang_lst_internal > 1.7 * pi):
                 self.forearm_ang_lap += 1        
 
-        """MAP FIRST"""
-
         """LAP CALCULATE"""
-        # encuentra si el cambio fue de 0 a 2pi
-        if (self.forearm_ang_abs > 1.8 * pi and self.forearm_ang_lst < 0.2 * pi):
-            self.lap -= 1
-        # encuetra si el cambio due de 2pi a 0
-        if (self.forearm_ang_abs < 0.2 * pi and self.forearm_ang_lst > 1.8 * pi):
-            self.lap += 1
         
         self.forearm_ang_lap_lst = self.forearm_ang
         self.forearm_ang = 2 * pi * self.lap + self.forearm_ang_abs
