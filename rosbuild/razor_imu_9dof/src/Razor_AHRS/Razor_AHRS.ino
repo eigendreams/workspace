@@ -1,15 +1,14 @@
 /***************************************************************************************************************
-* Razor AHRS Firmware v1.4.2
+* Razor AHRS Firmware v1.4.1
 * 9 Degree of Measurement Attitude and Heading Reference System
 * for Sparkfun "9DOF Razor IMU" (SEN-10125 and SEN-10736)
 * and "9DOF Sensor Stick" (SEN-10183, 10321 and SEN-10724)
 *
 * Released under GNU GPL (General Public License) v3.0
-* Copyright (C) 2013 Peter Bartz [http://ptrbrtz.net]
 * Copyright (C) 2011-2012 Quality & Usability Lab, Deutsche Telekom Laboratories, TU Berlin
 *
-* Infos, updates, bug reports, contributions and feedback:
-*     https://github.com/ptrbrtz/razor-9dof-ahrs
+* Infos, updates, bug reports and feedback:
+*     http://dev.qu.tu-berlin.de/projects/sf-razor-9dof-ahrs
 *
 *
 * History:
@@ -42,8 +41,6 @@
 *     * v1.4.1
 *       * Added output modes to read raw and/or calibrated sensor data in text or binary format.
 *       * Added static magnetometer soft iron distortion compensation
-*     * v1.4.2
-*       * (No core firmware changes)
 *
 * TODOs:
 *   * Allow optional use of EEPROM for storing and reading calibration values.
@@ -158,10 +155,10 @@
 /*****************************************************************/
 // Select your hardware here by uncommenting one line!
 //#define HW__VERSION_CODE 10125 // SparkFun "9DOF Razor IMU" version "SEN-10125" (HMC5843 magnetometer)
-//#define HW__VERSION_CODE 10736 // SparkFun "9DOF Razor IMU" version "SEN-10736" (HMC5883L magnetometer)
+#define HW__VERSION_CODE 10736 // SparkFun "9DOF Razor IMU" version "SEN-10736" (HMC5883L magnetometer)
 //#define HW__VERSION_CODE 10183 // SparkFun "9DOF Sensor Stick" version "SEN-10183" (HMC5843 magnetometer)
 //#define HW__VERSION_CODE 10321 // SparkFun "9DOF Sensor Stick" version "SEN-10321" (HMC5843 magnetometer)
-#define HW__VERSION_CODE 10724 // SparkFun "9DOF Sensor Stick" version "SEN-10724" (HMC5883L magnetometer)
+//#define HW__VERSION_CODE 10724 // SparkFun "9DOF Sensor Stick" version "SEN-10724" (HMC5883L magnetometer)
 
 
 // OUTPUT OPTIONS
@@ -180,6 +177,7 @@
 #define OUTPUT__MODE_SENSORS_CALIB 2 // Outputs calibrated sensor values for all 9 axes
 #define OUTPUT__MODE_SENSORS_RAW 3 // Outputs raw (uncalibrated) sensor values for all 9 axes
 #define OUTPUT__MODE_SENSORS_BOTH 4 // Outputs calibrated AND raw sensor values for all 9 axes
+#define OUTPUT__MODE_CALIBRATE_BOTH_SENSORS_ANGLES 5
 // Output format definitions (do not change)
 #define OUTPUT__FORMAT_TEXT 0 // Outputs data as text
 #define OUTPUT__FORMAT_BINARY 1 // Outputs data as binary float
@@ -220,7 +218,7 @@ boolean output_errors = false;  // true or false
 #define ACCEL_Z_MIN ((float) -250)
 #define ACCEL_Z_MAX ((float) 250)
 
-// Magnetometer (standard calibration mode)
+// Magnetometer (standard calibration)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
 #define MAGN_X_MIN ((float) -600)
 #define MAGN_X_MAX ((float) 600)
@@ -229,7 +227,7 @@ boolean output_errors = false;  // true or false
 #define MAGN_Z_MIN ((float) -600)
 #define MAGN_Z_MAX ((float) 600)
 
-// Magnetometer (extended calibration mode)
+// Magnetometer (extended calibration)
 // Uncommend to use extended magnetometer calibration (compensates hard & soft iron errors)
 //#define CALIBRATION__MAGN_USE_EXTENDED true
 //const float magn_ellipsoid_center[3] = {0, 0, 0};
@@ -244,12 +242,12 @@ boolean output_errors = false;  // true or false
 /*
 // Calibration example:
 
-// "accel x,y,z (min/max) = -277.00/264.00  -256.00/278.00  -299.00/235.00"
-#define ACCEL_X_MIN ((float) -277)
-#define ACCEL_X_MAX ((float) 264)
-#define ACCEL_Y_MIN ((float) -256)
-#define ACCEL_Y_MAX ((float) 278)
-#define ACCEL_Z_MIN ((float) -299)
+// "accel x,y,z (min/max) = -278.00/270.00  -254.00/284.00  -294.00/235.00"
+#define ACCEL_X_MIN ((float) -278)
+#define ACCEL_X_MAX ((float) 270)
+#define ACCEL_Y_MIN ((float) -254)
+#define ACCEL_Y_MAX ((float) 284)
+#define ACCEL_Z_MIN ((float) -294)
 #define ACCEL_Z_MAX ((float) 235)
 
 // "magn x,y,z (min/max) = -511.00/581.00  -516.00/568.00  -489.00/486.00"
@@ -270,10 +268,10 @@ const float magn_ellipsoid_transform[3][3] = {{0.902, -0.00354, 0.000636}, {-0.0
 //const float magn_ellipsoid_center[3] = {72.3360, 23.0954, 53.6261};
 //const float magn_ellipsoid_transform[3][3] = {{0.879685, 0.000540833, -0.0106054}, {0.000540833, 0.891086, -0.0130338}, {-0.0106054, -0.0130338, 0.997494}};
 
-//"gyro x,y,z (current/average) = -40.00/-42.05  98.00/96.20  -18.00/-18.36"
-#define GYRO_AVERAGE_OFFSET_X ((float) -42.05)
-#define GYRO_AVERAGE_OFFSET_Y ((float) 96.20)
-#define GYRO_AVERAGE_OFFSET_Z ((float) -18.36)
+//"gyro x,y,z (current/average) = -32.00/-34.82  102.00/100.41  -16.00/-16.38"
+#define GYRO_AVERAGE_OFFSET_X ((float) -34.82)
+#define GYRO_AVERAGE_OFFSET_Y ((float) 100.41)
+#define GYRO_AVERAGE_OFFSET_Z ((float) -16.38)
 */
 
 
@@ -301,37 +299,10 @@ const float magn_ellipsoid_transform[3][3] = {{0.902, -0.00354, 0.000636}, {-0.0
 // Check if hardware version code is defined
 #ifndef HW__VERSION_CODE
   // Generate compile error
-  #error YOU HAVE TO SELECT THE HARDWARE YOU ARE USING! See "HARDWARE OPTIONS" in "USER SETUP AREA" at top of Razor_AHRS.ino!
+  #error YOU HAVE TO SELECT THE HARDWARE YOU ARE USING! See "HARDWARE OPTIONS" in "USER SETUP AREA" at top of Razor_AHRS.pde (or .ino)!
 #endif
 
-
-
 #include <Wire.h>
-#include <ros.h>
-#include <std_msgs/Int8.h>
-#include <std_msgs/Int16.h>
-#include "finder/float32_12.h"
-
-ros::NodeHandle nh;
-
-finder::float32_12 imu_data;
-ros::Publisher imu_pub("imu_data", &imu_data);
-
-//std_msgs::Int8 roll_msg;
-//ros::Publisher roll_ang("roll", &roll_msg);
-//std_msgs::Int8 pitch_msg;
-//ros::Publisher pitch_ang("pitch", &pitch_msg);
-std_msgs::Int8 co2_msg;
-ros::Publisher co2_val("co2", &co2_msg);
-
-void leds_cb(const std_msgs::Int16& dmsg) { analogWrite(3, dmsg.data);  }
-ros::Subscriber<std_msgs::Int16> leds_sub("leds", leds_cb);
-
-//*************** co2 variables ***************//
-int pinControl = 12; //Pin to enable de resistance
-int pinAlarma = 11; //Pin to read the co2 value 
-//*************** co2 variables ***************//
-
 
 // Sensor calibration scale and offset values
 #define ACCEL_X_OFFSET ((ACCEL_X_MIN + ACCEL_X_MAX) / 2.0f)
@@ -432,7 +403,7 @@ void reset_sensor_fusion() {
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
   pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
-
+	
   // GET ROLL
   // Compensate pitch of gravity vector 
   Vector_Cross_Product(temp1, accel, xAxis);
@@ -508,33 +479,16 @@ void turn_output_stream_off()
 }
 
 // Blocks until another byte is available on serial port
-//char readChar()
-//{
-  //while (Serial.available() < 1) { } // Block
-  //return Serial.read();
-//}
+char readChar()
+{
+  while (Serial.available() < 1) { } // Block
+  return Serial.read();
+}
 
 void setup()
 {
   // Init serial output
-  //Serial.begin(OUTPUT__BAUD_RATE);
-  
-  // Init Node
-  nh.initNode();
-  nh.subscribe(leds_sub);
-  //nh.advertise(roll_ang);
-  //delay(1);
-  //nh.advertise(pitch_ang);
-  delay(1);
-  nh.advertise(co2_val);
-  delay(1);
-  nh.advertise(imu_pub);
-  
-  //*************** co2 setup ***************//
-  pinMode(pinAlarma,INPUT);
-  pinMode(pinControl,OUTPUT);
-  digitalWrite(pinControl,LOW); //Use to heat the sensor
-  //*************** co2 setup ***************//
+  Serial.begin(OUTPUT__BAUD_RATE);
   
   // Init status LED
   pinMode (STATUS_LED_PIN, OUTPUT);
@@ -563,101 +517,105 @@ void setup()
 void loop()
 {
   // Read incoming control messages
-  //if (Serial.available() >= 2)
-  //{
-    //if (Serial.read() == '#') // Start of new control message
-    //{
-      //int command = Serial.read(); // Commands
-      //if (command == 'f') // request one output _f_rame
-        //output_single_on = true;
-      //else if (command == 's') // _s_ynch request
-      //{
+  if (Serial.available() >= 2)
+  {
+    if (Serial.read() == '#') // Start of new control message
+    {
+      int command = Serial.read(); // Commands
+      if (command == 'f') // request one output _f_rame
+        output_single_on = true;
+      else if (command == 's') // _s_ynch request
+      {
         // Read ID
-        //byte id[2];
-        //id[0] = readChar();
-        //id[1] = readChar();
+        byte id[2];
+        id[0] = readChar();
+        id[1] = readChar();
         
         // Reply with synch message
-        //Serial.print("#SYNCH");
-        //Serial.write(id, 2);
-        //Serial.println();
-      //}
-      //else if (command == 'o') // Set _o_utput mode
-      //{
-        //char output_param = readChar();
-        //if (output_param == 'n')  // Calibrate _n_ext sensor
-        //{
-          //curr_calibration_sensor = (curr_calibration_sensor + 1) % 3;
-          //reset_calibration_session_flag = true;
-        //}
-        //else if (output_param == 't') // Output angles as _t_ext
-        //{
+        Serial.print("#SYNCH");
+        Serial.write(id, 2);
+        Serial.println();
+      }
+      else if (command == 'o') // Set _o_utput mode
+      {
+        char output_param = readChar();
+        if (output_param == 'n')  // Calibrate _n_ext sensor
+        {
+          curr_calibration_sensor = (curr_calibration_sensor + 1) % 3;
+          reset_calibration_session_flag = true;
+        }
+        else if (output_param == 't') // Output angles as _t_ext
+        {
           output_mode = OUTPUT__MODE_ANGLES;
           output_format = OUTPUT__FORMAT_TEXT;
-        //}
-        //else if (output_param == 'b') // Output angles in _b_inary format
-        //{
-          //output_mode = OUTPUT__MODE_ANGLES;
-          //output_format = OUTPUT__FORMAT_BINARY;
-        //}
-        //else if (output_param == 'c') // Go to _c_alibration mode
-        //{
-          //output_mode = OUTPUT__MODE_CALIBRATE_SENSORS;
-          //reset_calibration_session_flag = true;
-        //}
-        //else if (output_param == 's') // Output _s_ensor values
-        //{
-          //char values_2param = readChar();
-          //char format_param = readChar();
-          //if (values_param == 'r')  // Output _r_aw sensor values
-            //output_mode = OUTPUT__MODE_SENSORS_RAW;
-          //else if (values_param == 'c')  // Output _c_alibrated sensor values
-            //output_mode = OUTPUT__MODE_SENSORS_CALIB;
-          //else if (values_param == 'b')  // Output _b_oth sensor values (raw and calibrated)
-            //output_mode = OUTPUT__MODE_SENSORS_BOTH;
+        }
+        else if (output_param == 'b') // Output angles in _b_inary format
+        {
+          output_mode = OUTPUT__MODE_ANGLES;
+          output_format = OUTPUT__FORMAT_BINARY;
+        }
+        else if (output_param == 'c') // Go to _c_alibration mode
+        {
+          output_mode = OUTPUT__MODE_CALIBRATE_SENSORS;
+          reset_calibration_session_flag = true;
+        }
+        else if (output_param == 'x') // Go to _c_alibration mode for both sensor and angle comment: Tang
+        {
+          output_mode = OUTPUT__MODE_CALIBRATE_BOTH_SENSORS_ANGLES;
+          reset_calibration_session_flag = true;
+        }
+        else if (output_param == 's') // Output _s_ensor values
+        {
+          char values_param = readChar();
+          char format_param = readChar();
+          if (values_param == 'r')  // Output _r_aw sensor values
+            output_mode = OUTPUT__MODE_SENSORS_RAW;
+          else if (values_param == 'c')  // Output _c_alibrated sensor values
+            output_mode = OUTPUT__MODE_SENSORS_CALIB;
+          else if (values_param == 'b')  // Output _b_oth sensor values (raw and calibrated)
+            output_mode = OUTPUT__MODE_SENSORS_BOTH;
 
-          //if (format_param == 't') // Output values as _t_text
-            //output_format = OUTPUT__FORMAT_TEXT;
-          //else if (format_param == 'b') // Output values in _b_inary format
-            //output_format = OUTPUT__FORMAT_BINARY;
-        //}
-        //else if (output_param == '0') // Disable continuous streaming output
-        //{
-          //turn_output_stream_off();
-          //reset_calibration_session_flag = true;
-        //}
-        //else if (output_param == '1') // Enable continuous streaming output
-        //{
-          //reset_calibration_session_flag = true;
-          //turn_output_stream_on();
-        //}
-        //else if (output_param == 'e') // _e_rror output settings
-        //{
-          //char error_param = readChar();
-          //if (error_param == '0') output_errors = false;
-          //else if (error_param == '1') output_errors = true;
-          //else if (error_param == 'c') // get error count
-          //{
-            //Serial.print("#AMG-ERR:");
-            //Serial.print(num_accel_errors); Serial.print(",");
-            //Serial.print(num_magn_errors); Serial.print(",");
-            //Serial.println(num_gyro_errors);
-          //}
-        //}
-      //}
-//#if OUTPUT__HAS_RN_BLUETOOTH == true
+          if (format_param == 't') // Output values as _t_text
+            output_format = OUTPUT__FORMAT_TEXT;
+          else if (format_param == 'b') // Output values in _b_inary format
+            output_format = OUTPUT__FORMAT_BINARY;
+        }
+        else if (output_param == '0') // Disable continuous streaming output
+        {
+          turn_output_stream_off();
+          reset_calibration_session_flag = true;
+        }
+        else if (output_param == '1') // Enable continuous streaming output
+        {
+          reset_calibration_session_flag = true;
+          turn_output_stream_on();
+        }
+        else if (output_param == 'e') // _e_rror output settings
+        {
+          char error_param = readChar();
+          if (error_param == '0') output_errors = false;
+          else if (error_param == '1') output_errors = true;
+          else if (error_param == 'c') // get error count
+          {
+            Serial.print("#AMG-ERR:");
+            Serial.print(num_accel_errors); Serial.print(",");
+            Serial.print(num_magn_errors); Serial.print(",");
+            Serial.println(num_gyro_errors);
+          }
+        }
+      }
+#if OUTPUT__HAS_RN_BLUETOOTH == true
       // Read messages from bluetooth module
       // For this to work, the connect/disconnect message prefix of the module has to be set to "#".
-      //else if (command == 'C') // Bluetooth "#CONNECT" message (does the same as "#o1")
-        //turn_output_stream_on();
-      //else if (command == 'D') // Bluetooth "#DISCONNECT" message (does the same as "#o0")
-        //turn_output_stream_off();
-//#endif // OUTPUT__HAS_RN_BLUETOOTH == true
-    //}
-    //else
-    //{ 
-    //} // Skip character
-  //}
+      else if (command == 'C') // Bluetooth "#CONNECT" message (does the same as "#o1")
+        turn_output_stream_on();
+      else if (command == 'D') // Bluetooth "#DISCONNECT" message (does the same as "#o0")
+        turn_output_stream_off();
+#endif // OUTPUT__HAS_RN_BLUETOOTH == true
+    }
+    else
+    { } // Skip character
+  }
 
   // Time to read the sensors again?
   if((millis() - timestamp) >= OUTPUT__DATA_INTERVAL)
@@ -690,6 +648,20 @@ void loop()
       
       if (output_stream_on || output_single_on) output_angles();
     }
+    else if (output_mode == OUTPUT__MODE_CALIBRATE_BOTH_SENSORS_ANGLES)  // Output angles
+    {
+      // Apply sensor calibration
+      compensate_sensor_errors();
+    
+      // Run DCM algorithm
+      Compass_Heading(); // Calculate magnetic heading
+      Matrix_update();
+      Normalize();
+      Drift_correction();
+      Euler_angles();
+      
+      if (output_stream_on || output_single_on) output_both_angles_and_sensors_text();
+    }
     else  // Output sensor values
     {      
       if (output_stream_on || output_single_on) output_sensors();
@@ -697,15 +669,15 @@ void loop()
     
     output_single_on = false;
     
-//#if DEBUG__PRINT_LOOP_TIME == true
-    //Serial.print("loop time (ms) = ");
-    //Serial.println(millis() - timestamp);
-//#endif
+#if DEBUG__PRINT_LOOP_TIME == true
+    Serial.print("loop time (ms) = ");
+    Serial.println(millis() - timestamp);
+#endif
   }
-//#if DEBUG__PRINT_LOOP_TIME == true
-  //else
-  //{
-    //Serial.println("waiting...");
-  //}
-//#endif
+#if DEBUG__PRINT_LOOP_TIME == true
+  else
+  {
+    Serial.println("waiting...");
+  }
+#endif
 }

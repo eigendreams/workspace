@@ -169,7 +169,7 @@ class Wrist_node:
         self.wrist_ang_lap_lst = self.wrist_ang
         self.wrist_ang = 2 * pi * self.wrist_ang_lap + self.wrist_ang_abs_internal - self.wrist_offset_internal 
         """MAP VEL OUT"""
-        self.wrist_vel = self.wrist_ang - self.wrist_ang_lap_lst
+        self.wrist_vel = 10 * (self.wrist_ang - self.wrist_ang_lap_lst)
         """MAP VEL OUT"""
 
 
