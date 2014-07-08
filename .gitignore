@@ -13,4 +13,7 @@ ftz/
 **/.cproject
 **/.project
 **/.pydevproject
-**/.*~
+*~
+**~
+*/~
+**/~
