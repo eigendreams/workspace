@@ -10,6 +10,3 @@ ftz/
 **/lib/
 **/devel/
 **/install/
-**/.cproject
-**/.project
-**/.pydevproject
