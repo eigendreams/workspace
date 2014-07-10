@@ -9,15 +9,17 @@ HeatDetection::HeatDetection(){
     image_transport::ImageTransport it(n);
     image_transport::ImageTransport p_it(p_n);
 
-    mappingDefined_ = false;
-    sub_ = it.subscribeCamera("thermal/image", 1, &HeatDetection::imageCallback,this);
+    mappingDefined_ = true;
+    mapping_.minTemp = 30; // CAMBIAR ESTOS PARAMETROS
+    mapping_.maxTemp = 70; // CAMBIAR ESTOS PARAMETROS
 
-    sub_mapping_ = n.subscribe("thermal/mapping",1, &HeatDetection::mappingCallback,this);
-
+    sub_ = it.subscribeCamera("victim_camera/image", 1, &HeatDetection::imageCallback,this);
+    //**//sub_ = it.subscribeCamera("thermal/image", 1, &HeatDetection::imageCallback,this);
+    //**//sub_mapping_ = n.subscribe("thermal/mapping",1, &HeatDetection::mappingCallback,this);
     dyn_rec_server_.setCallback(boost::bind(&HeatDetection::dynRecParamCallback, this, _1, _2));
 
     pub_ = n.advertise<hector_worldmodel_msgs::ImagePercept>("image_percept",20);
-    pub_detection_ = p_it.advertiseCamera("image", 10);
+    //**//pub_detection_ = p_it.advertiseCamera("image", 10);
 }
 
 HeatDetection::~HeatDetection(){}
@@ -32,70 +34,79 @@ void HeatDetection::imageCallback(const sensor_msgs::ImageConstPtr& img, const s
     }else{
 
      //Read image with cvbridge
-     cv_bridge::CvImageConstPtr cv_ptr;
-     cv_ptr = cv_bridge::toCvShare(img, sensor_msgs::image_encodings::MONO8);
-     cv::Mat img_filtered(cv_ptr->image);
+     //**//cv_bridge::CvImageConstPtr cv_ptr;
+     //**//cv_ptr = cv_bridge::toCvShare(img, sensor_msgs::image_encodings::MONO8);
+     //**//cv::Mat img_filtered(cv_ptr->image);
 
-     if ((img_thres_.rows != static_cast<int>(img->height)) || (img_thres_.cols != static_cast<int>(img->width))){
-       img_thres_min_ = cv::Mat (img->height, img->width,CV_8UC1,1);
-       img_thres_max_ = cv::Mat (img->height, img->width,CV_8UC1,1);
-       img_thres_ = cv::Mat (img->height, img->width,CV_8UC1,1);
-    }
+     //**//if ((img_thres_.rows != static_cast<int>(img->height)) || (img_thres_.cols != static_cast<int>(img->width))){
+       //**//img_thres_min_ = cv::Mat (img->height, img->width,CV_8UC1,1);
+       //**//img_thres_max_ = cv::Mat (img->height, img->width,CV_8UC1,1);
+       //**//img_thres_ = cv::Mat (img->height, img->width,CV_8UC1,1);
+    //**//}
 
 
    //Perform thresholding
 
    //Define image thresholds for victim detection
-   int minThreshold = (int)std::max(std::min(((minTempVictim_ - mapping_.minTemp) *(256.0/( mapping_.maxTemp -  mapping_.minTemp))),255.0),0.0);
-   int maxThreshold = (int)std::max(std::min(((maxTempVictim_ - mapping_.minTemp) *(256.0/( mapping_.maxTemp -  mapping_.minTemp))),255.0),0.0);
+   //**//int minThreshold = (int)std::max(std::min(((minTempVictim_ - mapping_.minTemp) *(256.0/( mapping_.maxTemp -  mapping_.minTemp))),255.0),0.0);
+   //**//int maxThreshold = (int)std::max(std::min(((maxTempVictim_ - mapping_.minTemp) *(256.0/( mapping_.maxTemp -  mapping_.minTemp))),255.0),0.0);
 
-   cv::threshold(img_filtered,img_thres_min_,minThreshold,1,cv::THRESH_BINARY);
-   cv::threshold(img_filtered,img_thres_max_,maxThreshold,1,cv::THRESH_BINARY_INV);
+   //**//cv::threshold(img_filtered,img_thres_min_,minThreshold,1,cv::THRESH_BINARY);
+   //**//cv::threshold(img_filtered,img_thres_max_,maxThreshold,1,cv::THRESH_BINARY_INV);
 
    //Element-wise multiplication to obtain an image with respect to both thresholds
-   IplImage img_thres_min_ipl = img_thres_min_;
-   IplImage img_thres_max_ipl = img_thres_max_;
-   IplImage img_thres_ipl = img_thres_;
+   //**//IplImage img_thres_min_ipl = img_thres_min_;
+   //**//IplImage img_thres_max_ipl = img_thres_max_;
+   //**//IplImage img_thres_ipl = img_thres_;
 
-   cvMul(&img_thres_min_ipl, &img_thres_max_ipl, &img_thres_ipl, 255);
+   //**//cvMul(&img_thres_min_ipl, &img_thres_max_ipl, &img_thres_ipl, 255);
 
    //Perform blob detection
-   cv::SimpleBlobDetector::Params params;
-   params.filterByColor = true;
-   params.blobColor = 255;
-   params.minDistBetweenBlobs = minDistBetweenBlobs_;
-   params.filterByArea = true;
-   params.minArea = minAreaVictim_;
-   params.maxArea = img_filtered.rows * img_filtered.cols;
-   params.filterByCircularity = false;
-   params.filterByColor = false;
-   params.filterByConvexity = false;
-   params.filterByInertia = false;
+   //**//cv::SimpleBlobDetector::Params params;
+   //**//params.filterByColor = true;
+   //**//params.blobColor = 255;
+   //**//params.minDistBetweenBlobs = minDistBetweenBlobs_;
+   //**//params.filterByArea = true;
+   //**//params.minArea = minAreaVictim_;
+   //**//params.maxArea = img_filtered.rows * img_filtered.cols;
+   //**//params.filterByCircularity = false;
+   //**//params.filterByColor = false;
+   //**//params.filterByConvexity = false;
+   //**//params.filterByInertia = false;
 
-   cv::SimpleBlobDetector blob_detector(params);
-   std::vector<cv::KeyPoint> keypoints;
-   keypoints.clear();
+   //**//cv::SimpleBlobDetector blob_detector(params);
+   //**//std::vector<cv::KeyPoint> keypoints;
+   //**//keypoints.clear();
 
-   blob_detector.detect(img_thres_,keypoints);
+   //**//blob_detector.detect(img_thres_,keypoints);
 
    //Publish results
    hector_worldmodel_msgs::ImagePercept ip;
 
    ip.header= img->header;
-   ip.info.class_id = perceptClassId_;
-   ip.info.class_support = 1;
    ip.camera_info =  *info;
+   ip.info.class_id = "victim";//perceptClassId_;
+   ip.info.class_support = 1;
 
-   for(unsigned int i=0; i<keypoints.size();i++)
-   {
-       ip.x = keypoints.at(i).pt.x;
-       ip.y = keypoints.at(i).pt.y;
-       pub_.publish(ip);
-       ROS_DEBUG("Heat blob found at image coord: (%f, %f)", ip.x, ip.y);
-   }
+   //**//for(unsigned int i=0; i<keypoints.size();i++)
+   //**//{
+       //**//ip.x = keypoints.at(i).pt.x;
+       //**//ip.y = keypoints.at(i).pt.y;
+       //**//pub_.publish(ip);
+       //**//ROS_DEBUG("Heat blob found at image coord: (%f, %f)", ip.x, ip.y);
+   //**//}
 
+   ip.info.object_support = 1.0;
+   ip.info.name = "victim";
 
-   if(pub_detection_.getNumSubscribers() > 0){
+   ip.x = 0;
+   ip.y = 0;
+   ip.width = 0;
+   ip.height = 0;
+
+   pub_.publish(ip);
+
+   /*if(pub_detection_.getNumSubscribers() > 0){
 
    //Create image with detection frames
        int width = 3;
@@ -149,8 +160,8 @@ void HeatDetection::imageCallback(const sensor_msgs::ImageConstPtr& img, const s
        cvImg.header = img->header;
        cvImg.encoding = sensor_msgs::image_encodings::MONO8;
        pub_detection_.publish(cvImg.toImageMsg(),info);
-    }
-}
+    }*/
+  }
 }
 
 void HeatDetection::mappingCallback(const thermaleye_msgs::Mapping& mapping){

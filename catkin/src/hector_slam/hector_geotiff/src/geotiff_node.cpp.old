@@ -178,6 +178,7 @@ public:
       plugin_vector_[i]->draw(&geotiff_writer_);
     }
 
+
     geotiff_writer_.writeGeotiffImage();
     running_saved_map_num_++;
 

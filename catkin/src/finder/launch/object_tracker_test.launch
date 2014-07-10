@@ -11,8 +11,8 @@
         victim:
           pending_support: 1.0
           active_support: 10.0
-          min_height: -0.5
-          max_height: 0.15
+          min_height: -1
+          max_height: 1
           marker_color: [0.8, 0.0, 0.0]
         qrcode:
           active_support: 1.0
