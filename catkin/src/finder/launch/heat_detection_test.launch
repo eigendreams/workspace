@@ -2,12 +2,10 @@
 
 <launch>
 
-  	<remap from="image_percept" to="worldmodel/image_percept" />
-
-  	
-  	<node name="laser_node_13" pkg="hector_qrcode_detection" type="qrcode_detection_node" output="screen">
-    	<remap from="image" to="usb_cam_0/image_raw/" />
+  	<node name="heat_detection_test" pkg="hector_heat_detection" type="heat_detection" output="screen">
+    	<remap from="victim_camera/image" to="usb_cam_0/image_raw/" />
     	<remap from="image_transport" to="compressed" />
+      <remap from="image_percept" to="/worldmodel/image_percept" />
   	</node>
   	
 

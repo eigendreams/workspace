@@ -9,7 +9,8 @@
     <param name="pixel_format" value="mjpeg" />
     <param name="camera_frame_id" value="base_frame" />
     <param name="io_method" value="mmap"/>
-    <param name="framerate" value="20"/>
+    <rosparam file="$(find finder)/yaml/cam_cal.yml"/>
+    <param name="framerate" value="10"/>
   </node>
 
 </launch>

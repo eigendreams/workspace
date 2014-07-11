@@ -19,7 +19,7 @@ ObjectTracker::ObjectTracker()
   priv_nh.param("frame_id", _frame_id, std::string("map"));
   priv_nh.param("worldmodel_ns", _worldmodel_ns, std::string("worldmodel"));
   priv_nh.param("ageing_threshold", _ageing_threshold, 1.0);
-  priv_nh.param("publish_interval", _publish_interval, 0.0);
+  priv_nh.param("publish_interval", _publish_interval, 1.0);
 
   parameter(_project_objects)   = false;
   parameter(_default_distance)  = 1.0;
@@ -39,6 +39,8 @@ ObjectTracker::ObjectTracker()
   parameter(_marker_color)      = default_color;
 
   Parameters::load();
+
+  ROS_ERROR("1");
 
   ros::NodeHandle worldmodel(_worldmodel_ns);
   imagePerceptSubscriber = worldmodel.subscribe("image_percept", 10, &ObjectTracker::imagePerceptCb, this);
@@ -94,6 +96,8 @@ ObjectTracker::ObjectTracker()
       }
     }
   }*/
+
+  ROS_ERROR("2");
 
   setObjectState = worldmodel.advertiseService("set_object_state", &ObjectTracker::setObjectStateCb, this);
   setObjectName  = worldmodel.advertiseService("set_object_name", &ObjectTracker::setObjectNameCb, this);
@@ -157,6 +161,8 @@ ObjectTracker::ObjectTracker()
   if (_publish_interval > 0.0) {
     publishTimer = nh.createTimer(ros::Duration(_publish_interval), &ObjectTracker::publishModelEvent, this, false, true);
   }
+
+  ROS_ERROR("3");
 }
 
 ObjectTracker::~ObjectTracker()
@@ -176,6 +182,8 @@ void ObjectTracker::sysCommandCb(const std_msgs::StringConstPtr &sysCommand)
 
 void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptConstPtr &percept)
 {
+  ROS_ERROR("imgcb");
+
   hector_worldmodel_msgs::PosePerceptPtr posePercept(new hector_worldmodel_msgs::PosePercept);
   tf::Pose pose;
 
@@ -207,6 +215,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
   ROS_DEBUG("--> Projected 3D ray (OpenCV):   [%f,%f,%f]", direction_cv.x, direction_cv.y, direction_cv.z);
   ROS_DEBUG("--> Projected 3D ray (tf):       [%f,%f,%f]", pose.getOrigin().x(), pose.getOrigin().y(),pose.getOrigin().z());
 
+  ROS_ERROR("imgcb2");
+
   if (percept->distance == 0.0 && parameter(_project_objects, percept->info.class_id)) {
     hector_nav_msgs::GetDistanceToObstacle::Request request;
     hector_nav_msgs::GetDistanceToObstacle::Response response;
@@ -229,6 +239,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
       return;
     }
   }
+
+  ROS_ERROR("imgcb3");
 
   // set variance
   Eigen::Matrix3f covariance(Eigen::Matrix3f::Zero());
@@ -253,6 +265,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
   posePercept->pose.covariance[12] = covariance(2,0);
   posePercept->pose.covariance[13] = covariance(2,1);
   posePercept->pose.covariance[14] = covariance(2,2);
+
+  ROS_ERROR("imgcb4");
 
   // forward to posePercept callback
   posePerceptCb(posePercept);
@@ -434,7 +448,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
   }
 
   // update object state
-  if ((object->getState() == ObjectState::UNKNOWN || object->getState() == ObjectState::INACTIVE) &&  parameter(_pending_support, percept->info.class_id) > 0) {
+  /*if ((object->getState() == ObjectState::UNKNOWN || object->getState() == ObjectState::INACTIVE) &&  parameter(_pending_support, percept->info.class_id) > 0) {
     if (object->getSupport() >= parameter(_pending_support, percept->info.class_id) && (percept->header.stamp - object->getHeader().stamp).toSec() >= parameter(_pending_time, percept->info.class_id)) {
       object->setState(ObjectState::PENDING);
     }
@@ -443,6 +457,10 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
     if (object->getSupport() >= parameter(_active_support, percept->info.class_id) && (percept->header.stamp - object->getHeader().stamp).toSec() >= parameter(_active_time, percept->info.class_id)) {
       object->setState(ObjectState::ACTIVE);
     }
+  }*/
+
+  if ((object->getClassId().c_str() == "victim") || (object->getClassId().c_str() == "qrcode")) {
+    object->setState(ObjectState::ACTIVE);
   }
 
   // set object orientation

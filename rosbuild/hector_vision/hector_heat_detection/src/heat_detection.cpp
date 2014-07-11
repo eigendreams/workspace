@@ -13,13 +13,23 @@ HeatDetection::HeatDetection(){
     mapping_.minTemp = 30; // CAMBIAR ESTOS PARAMETROS
     mapping_.maxTemp = 70; // CAMBIAR ESTOS PARAMETROS
 
+    add_victim_val = 0;
+
     sub_ = it.subscribeCamera("victim_camera/image", 1, &HeatDetection::imageCallback,this);
     //**//sub_ = it.subscribeCamera("thermal/image", 1, &HeatDetection::imageCallback,this);
     //**//sub_mapping_ = n.subscribe("thermal/mapping",1, &HeatDetection::mappingCallback,this);
+    add_victim_sub = n.subscribe("add_victim",1, &HeatDetection::addVictimCb,this);
     dyn_rec_server_.setCallback(boost::bind(&HeatDetection::dynRecParamCallback, this, _1, _2));
 
     pub_ = n.advertise<hector_worldmodel_msgs::ImagePercept>("image_percept",20);
     //**//pub_detection_ = p_it.advertiseCamera("image", 10);
+}
+
+void HeatDetection::addVictimCb(const std_msgs::Int16& data) {
+  if ((add_victim_val == 0) && (data.data == 1)) 
+    add_victim_val = 1;
+  if ((add_victim_val >= 1) && (data.data == 0)) 
+    add_victim_val = 0;
 }
 
 HeatDetection::~HeatDetection(){}
@@ -29,6 +39,9 @@ void HeatDetection::imageCallback(const sensor_msgs::ImageConstPtr& img, const s
 //if(debug_){
 //    ROS_INFO("count: %i", ++image_count_);
 //}
+  if (add_victim_val == 1) {
+    add_victim_val += 1;
+
     if (!mappingDefined_){
         ROS_WARN("Error: Mapping undefined -> cannot perform detection");
     }else{
@@ -161,6 +174,7 @@ void HeatDetection::imageCallback(const sensor_msgs::ImageConstPtr& img, const s
        cvImg.encoding = sensor_msgs::image_encodings::MONO8;
        pub_detection_.publish(cvImg.toImageMsg(),info);
     }*/
+    }
   }
 }
 
