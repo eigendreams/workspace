@@ -34,7 +34,8 @@ body {
 /* Customize container */
 @media (min-width: 768px) {
   .container {
-    max-width: 1000px;
+    /*max-width: 1000px;*/
+    width: 100%;
   }
 }
 .container-narrow > hr {
@@ -65,7 +66,7 @@ body {
 }*/
 
 .p-home .btn-group {
-  margin: 10px;
+  margin: 5px;
 }
 
 .center {
@@ -91,7 +92,32 @@ body {
 
 .btn-group-title {
   cursor: default;
-  width: 150px;
+  width: 100px;
+}
+
+div[robot-viewer] {
+  width: 200px;
+  height: 200px;
+}
+
+div[robot-viewer] canvas{
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.sensor-container .ir-sensor {
+
+}
+
+.complete-height {
+  /*height: 100%;*/
 }
 
 /* Responsive: Portrait tablets and up */
@@ -185,4 +211,37 @@ slider span.bubble.low, slider span.bubble.high {
 
 ::-ms-tooltip {
   display: none;
+}
+
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .map-container {
+    height: 300px;
+  }
+
+  .nodes-container {
+    height: 300px;
+  }
+
+  .sensor-container {
+    height: 300px;
+  }
+
+  .sensor-container .add-victim {
+    width: 100%;
+    /*height: 100%;*/
+    /*text-align: center;*/
+    height: 280px;
+  }
 }

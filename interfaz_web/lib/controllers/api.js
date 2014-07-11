@@ -184,7 +184,7 @@ setInterval( function () {
 	for(var node in nodes) {
 		evalState(node);
 	}
-}, 500);
+}, 2000);
 
 exports.laptopBattery = function(req, res) {
 

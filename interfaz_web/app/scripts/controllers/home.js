@@ -6,15 +6,17 @@ angular.module('finderApp')
     $scope.nodes = Ros.node.getNodes();
     $scope.serverIP = Ros.getServerIP();
     $scope.videoQuality = 30;
+    $scope.videoReset = true;
     $scope.topics = Ros.topic.getNames();
     $scope.rosState = Ros.getRosState();
     $scope.rosDisconnect = Ros.disconnect;
     $scope.rosConnect = Ros.connect;
     $scope.termalsensorData = [[1,50,100,250],[1,50,100,47],[14,27,67,146],[113,232,43,49]];
+    $scope.co2sensorData = 0;
     $scope.video1 = 1;
-    $scope.video2 = 2;
-    $scope.video3 = 3;
-    $scope.video4 = 4;
+    $scope.video2 = 1;
+    $scope.video3 = 1;
+    $scope.video4 = 1;
 
 
      
@@ -44,27 +46,34 @@ angular.module('finderApp')
             roll: 0,
             batteryLevel: 0
         },
-        groupArm : {
-            baseOut: 0,
-            armOut: 0,
-            forearmOut: 0,
-            //wristOut: 0,
-            //palmOut: 0,
-            //gripperOut: 0
+        groupBase : {
             leftOut: 0, 
             rightOut: 0,
             frOut: 0,
             flOut: 0,
             brOut: 0,
             blOut: 0
+        },
+        groupArm : {
+            baseOut: 0,
+            baseDes: 0,
+            armOut: 0,
+            forearmOut: 0,
+            wristOut: 0,
+            palmOut: 0,
+            gripperOut: 0
         }
     }
 
-    $scope.activeListener = {
-        groupSensor: false,
-        groupOne: false,
-        groupArm: false
-    };
+    $scope.sliderConfig = {
+        min: 1,
+        max: 90,
+        step: 2
+    }
+    
+    $scope.setPrice = function(price) {
+        $scope.price = price;    
+    }
 
     $scope.setActiveListener = function (selection) {
         for (var item in $scope.activeListener) {
@@ -132,36 +141,27 @@ angular.module('finderApp')
     });
 
     $interval(function () {
-        // if(Ros.getState() === 'Connected') {
-            // Ros.topic.updateData('rightOut');
-            // Ros.topic.updateData('rightOut');
-            // Ros.topic.updateData('rightOut');
-        // console.log($scope.topics);
 
-        for (var listenerGroup in $scope.activeListener) {
-            //if ($scope.activeListener[listenerGroup]) {
-                for (var topic in $scope.listenerGroup[listenerGroup]) {
-                    // console.log(topic);
-                    // Ros.topic.updateData(topic);
-                    if (topic == 'baseDes') {
-                        $scope.listenerGroup[listenerGroup][topic] = Ros.topic.getData(topic).toFixed(2);
-                    } else {
-                        $scope.listenerGroup[listenerGroup][topic] = Ros.topic.getData(topic);
-                        // console.log($scope.topics[topic]);
-                    }
-                    
+        if ($scope.rosState === 'Connected') {
+            // console.log("Mostando el intervalo");
+
+            for (var topic in $scope.listenerGroup['groupBase']) {
+                $scope.listenerGroup['groupBase'][topic] = Ros.topic.getData(topic);
+            }
+
+            for (var topic in $scope.listenerGroup['groupArm']) {
+                if (topic == 'baseDes') {
+                    $scope.listenerGroup['groupArm'][topic] = Ros.topic.getData(topic).toFixed(2);
+                } else {
+                    $scope.listenerGroup['groupArm'][topic] = Ros.topic.getData(topic);
                 }
-            //}
+                
+            }
+
+            $scope.termalsensorData = Ros.topic.getData('irOut');
+            $scope.co2sensorData = Ros.topic.getData('co2');
         }
 
-        $scope.termalsensorData = Ros.topic.getData('irOut');
-        //$scope.termalsensorData = [[1,2,3,5],[5,4,3,2],[6,7,8,5],[4,2,3,4]];
-        // $scope.termalsensorData = [[1,50,100,250],[1,50,100,47],[14,27,67,146],[113,232,43,49]];
-        // console.log(Ros.topic.getData('irOut'));
-
-                
-        // }
-        
-    }, 100);
+    }, 200);
 
   });
