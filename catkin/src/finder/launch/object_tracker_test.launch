@@ -6,18 +6,20 @@
       <param name="project_objects" type="bool" value="false" />
       <param name="angle_variance" type="double" value="0.121846968"/>
       <param name="publish_interval" type="double" value="1.0" />
+      <param name="default_distance" type="double" value="1.0" />
 
       <rosparam>
         victim:
           pending_support: 1.0
           active_support: 10.0
-          min_height: -0.5
-          max_height: 0.15
+          min_height: -1
+          max_height: 1
           marker_color: [0.8, 0.0, 0.0]
         qrcode:
           active_support: 1.0
           marker_color: [0.0, 0.0, 0.8]
-<!--        verification_services:
+<!--    
+        verification_services:
           - service: victim_verification/verify_victim
             type: object
             class_id: victim

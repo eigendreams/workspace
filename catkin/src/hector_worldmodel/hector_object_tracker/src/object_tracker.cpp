@@ -19,7 +19,7 @@ ObjectTracker::ObjectTracker()
   priv_nh.param("frame_id", _frame_id, std::string("map"));
   priv_nh.param("worldmodel_ns", _worldmodel_ns, std::string("worldmodel"));
   priv_nh.param("ageing_threshold", _ageing_threshold, 1.0);
-  priv_nh.param("publish_interval", _publish_interval, 0.0);
+  priv_nh.param("publish_interval", _publish_interval, 1.0);
 
   parameter(_project_objects)   = false;
   parameter(_default_distance)  = 1.0;
@@ -40,6 +40,8 @@ ObjectTracker::ObjectTracker()
 
   Parameters::load();
 
+  ROS_ERROR("1");
+
   ros::NodeHandle worldmodel(_worldmodel_ns);
   imagePerceptSubscriber = worldmodel.subscribe("image_percept", 10, &ObjectTracker::imagePerceptCb, this);
   posePerceptSubscriber = worldmodel.subscribe("pose_percept", 10, &ObjectTracker::posePerceptCb, this);
@@ -56,7 +58,7 @@ ObjectTracker::ObjectTracker()
   pointDebugPublisher = priv_nh.advertise<geometry_msgs::PointStamped>("point", 10, false);
 
   XmlRpc::XmlRpcValue verification_services;
-  if (priv_nh.getParam("verification_services", verification_services) && verification_services.getType() == XmlRpc::XmlRpcValue::TypeArray) {
+  /*if (priv_nh.getParam("verification_services", verification_services) && verification_services.getType() == XmlRpc::XmlRpcValue::TypeArray) {
     for(int i = 0; i < verification_services.size(); ++i) {
       XmlRpc::XmlRpcValue item = verification_services[i];
       if (!item.hasMember("service")) {
@@ -93,7 +95,9 @@ ObjectTracker::ObjectTracker()
         ROS_INFO("Using %s verification service %s", std::string(item["type"]).c_str(), client.getService().c_str());
       }
     }
-  }
+  }*/
+
+  ROS_ERROR("2");
 
   setObjectState = worldmodel.advertiseService("set_object_state", &ObjectTracker::setObjectStateCb, this);
   setObjectName  = worldmodel.advertiseService("set_object_name", &ObjectTracker::setObjectNameCb, this);
@@ -157,6 +161,8 @@ ObjectTracker::ObjectTracker()
   if (_publish_interval > 0.0) {
     publishTimer = nh.createTimer(ros::Duration(_publish_interval), &ObjectTracker::publishModelEvent, this, false, true);
   }
+
+  ROS_ERROR("3");
 }
 
 ObjectTracker::~ObjectTracker()
@@ -176,6 +182,8 @@ void ObjectTracker::sysCommandCb(const std_msgs::StringConstPtr &sysCommand)
 
 void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptConstPtr &percept)
 {
+  ROS_ERROR("imgcb");
+
   hector_worldmodel_msgs::PosePerceptPtr posePercept(new hector_worldmodel_msgs::PosePercept);
   tf::Pose pose;
 
@@ -207,6 +215,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
   ROS_DEBUG("--> Projected 3D ray (OpenCV):   [%f,%f,%f]", direction_cv.x, direction_cv.y, direction_cv.z);
   ROS_DEBUG("--> Projected 3D ray (tf):       [%f,%f,%f]", pose.getOrigin().x(), pose.getOrigin().y(),pose.getOrigin().z());
 
+  ROS_ERROR("imgcb2");
+
   if (percept->distance == 0.0 && parameter(_project_objects, percept->info.class_id)) {
     hector_nav_msgs::GetDistanceToObstacle::Request request;
     hector_nav_msgs::GetDistanceToObstacle::Response response;
@@ -229,6 +239,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
       return;
     }
   }
+
+  ROS_ERROR("imgcb3");
 
   // set variance
   Eigen::Matrix3f covariance(Eigen::Matrix3f::Zero());
@@ -254,6 +266,8 @@ void ObjectTracker::imagePerceptCb(const hector_worldmodel_msgs::ImagePerceptCon
   posePercept->pose.covariance[13] = covariance(2,1);
   posePercept->pose.covariance[14] = covariance(2,2);
 
+  ROS_ERROR("imgcb4");
+
   // forward to posePercept callback
   posePerceptCb(posePercept);
 }
@@ -272,7 +286,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
 
   // call percept verification
   float support_added_by_percept_verification = 0.0;
-  if (verificationServices.count("percept") > 0) {
+  /*if (verificationServices.count("percept") > 0) {
     hector_worldmodel_msgs::VerifyPercept::Request request;
     hector_worldmodel_msgs::VerifyPercept::Response response;
 
@@ -294,7 +308,10 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
           return;
         }
         if (response.response == response.CONFIRM) {
-          ROS_DEBUG("We got a CONFIRMation for percept of class '%s' from service %s!", percept->info.class_id.c_str(), it->first.getService().c_str());
+          ROS_DEBUG("We got a CONFIRMation for   if (support == 0.0) {
+    ROS_WARN("Ignoring percept with support == 0.0");
+    return;
+  }percept of class '%s' from service %s!", percept->info.class_id.c_str(), it->first.getService().c_str());
           support_added_by_percept_verification = 100.0;
         }
         if (response.response == response.UNKNOWN) {
@@ -305,6 +322,10 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
         return;
       }
     }
+  }*/
+
+  if (percept->info.class_id.c_str() == "victim") {
+      support_added_by_percept_verification = 100.0;
   }
 
   // convert pose in tf
@@ -370,7 +391,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
   float relative_height = pose.getOrigin().z() - cameraTransform.getOrigin().z();
   if (relative_height < parameter(_min_height, percept->info.class_id) || relative_height > parameter(_max_height, percept->info.class_id)) {
     ROS_INFO("Discarding %s percept with height %f", percept->info.class_id.c_str(), relative_height);
-    return;
+    //return;///////////////////////////////////////////////////////////////////TODOCHECK///////////////////////////////
   }
 
   // fix height (assume camera is always at 0.475m)
@@ -403,7 +424,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
   if (object && object->getState() < 0) {
     ROS_DEBUG("Percept was associated to object %s, which has a fixed state", object->getObjectId().c_str());
     model.unlock();
-    return;
+    return;///////////////////////////////////////////////////////////////////TODOCHECK///////////////////////////////
   }
 
   // create new object
@@ -427,7 +448,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
   }
 
   // update object state
-  if ((object->getState() == ObjectState::UNKNOWN || object->getState() == ObjectState::INACTIVE) &&  parameter(_pending_support, percept->info.class_id) > 0) {
+  /*if ((object->getState() == ObjectState::UNKNOWN || object->getState() == ObjectState::INACTIVE) &&  parameter(_pending_support, percept->info.class_id) > 0) {
     if (object->getSupport() >= parameter(_pending_support, percept->info.class_id) && (percept->header.stamp - object->getHeader().stamp).toSec() >= parameter(_pending_time, percept->info.class_id)) {
       object->setState(ObjectState::PENDING);
     }
@@ -436,6 +457,10 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
     if (object->getSupport() >= parameter(_active_support, percept->info.class_id) && (percept->header.stamp - object->getHeader().stamp).toSec() >= parameter(_active_time, percept->info.class_id)) {
       object->setState(ObjectState::ACTIVE);
     }
+  }*/
+
+  if ((object->getClassId().c_str() == "victim") || (object->getClassId().c_str() == "qrcode")) {
+    object->setState(ObjectState::ACTIVE);
   }
 
   // set object orientation
@@ -454,7 +479,7 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
   model.unlock();
 
   // call object verification
-  if (verificationServices.count("object") > 0) {
+  /*if (verificationServices.count("object") > 0) {
     hector_worldmodel_msgs::VerifyObject::Request request;
     hector_worldmodel_msgs::VerifyObject::Response response;
 
@@ -487,6 +512,14 @@ void ObjectTracker::posePerceptCb(const hector_worldmodel_msgs::PosePerceptConst
         object->setState(ObjectState::DISCARDED);
       }
     }
+  }*/
+
+  if ((object->getClassId().c_str() == "victim") || (object->getClassId().c_str() == "qrcode")) {
+    object->addSupport(100.0);
+  }
+
+  if ((object->getObjectId().c_str() == "victim") || (object->getObjectId().c_str() == "qrcode")) {
+    object->addSupport(100.0);
   }
 
   // publish point in target frame for debugging purposes
@@ -767,8 +800,16 @@ bool ObjectTracker::mapToNextObstacle(const geometry_msgs::Pose& source, const s
   Parameters::load(info.class_id);
 
   if (!parameter(_distance_to_obstacle_service, info.class_id).exists()) {
-    ROS_ERROR("Could not map object to next obstacle as the distance service %s is not available", parameter(_distance_to_obstacle_service, info.class_id).getService().c_str());
-    return false;
+    ROS_WARN("Could not map object to next obstacle as the distance service %s is not available", parameter(_distance_to_obstacle_service, info.class_id).getService().c_str());
+    
+    float distance = 1;//parameter(_default_distance, info.class_id);
+
+    tf::Pose sourceTF;
+    tf::poseMsgToTF(source, sourceTF);
+    sourceTF.setOrigin(sourceTF.getOrigin().normalized() * distance);
+    tf::poseTFToMsg(sourceTF, mapped);
+
+    return true;
   }
 
   // retrieve distance information

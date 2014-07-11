@@ -1,3 +1,4 @@
+//#define USE_USBCON
 #include "ros.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -8,7 +9,7 @@
 //int ir_req;
 //void ir_req_cb( const std_msgs::Int16& dmsg) {  ir_req = dmsg.data; }
 //ros::Subscriber<std_msgs::Int16> ir_req_sub("ir_req", ir_req_cb);
-finder::uint8_64 ir_data;
+finder::int16_64 ir_data;
 ros::Publisher ir_pub("ir_data", &ir_data);
 int refreshRate = 16; //Set this value to your desired refresh frequency
 int conta = 0;
@@ -95,7 +96,29 @@ void readIR_MLX90620()
     //ir_data.data[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
   }
 
-  i2c_stop();
+    i2c_stop();
+
+    if ((ir_data.data[0] == 0 && ir_data.data[63] == 0) || (ir_data.data[0] == 50 && ir_data.data[63] == 50)){
+      
+      if ((ir_data.data[0] == 50 && ir_data.data[63] == 50) || (ir_data.data[0] == 255 && ir_data.data[63] == 255)) {
+        i2c_write(0);
+        i2c_readNak();
+        i2c_stop();
+      }
+
+      pinMode(SDA, OUTPUT);
+      pinMode(SCL, OUTPUT);
+
+      digitalWrite(SCL,HIGH);
+      delay(10);
+      digitalWrite(SDA,HIGH);
+
+      pinMode(SDA, INPUT);
+      pinMode(SCL, INPUT);
+
+      delay(10);
+      init_ir();
+    }
 }
 int readCPIX_MLX90620()
 {
@@ -144,11 +167,7 @@ unsigned long milisLast = 0;
 unsigned long milisLastMsg = 0;
 bool timedOut = false;
 
-void setup() {
-
-  nh.initNode();
-
-  //////////////////////////////////////////////////////////////////////////////
+void init_ir() {
   i2c_init(); //Init the I2C pins
   //PORTC = (1 << PORTC4) | (1 << PORTC5); //Enable pull-ups
   pinMode(A4, INPUT_PULLUP);
@@ -157,6 +176,15 @@ void setup() {
   writeTrimmingValue(100);
   setConfiguration(refreshRate); //Configure the MLX sensor with the user's choice of refresh rate
   //calculate_TA(); //Calculate the current Tambient
+}
+
+void setup() {
+
+  nh.initNode();
+  
+  //////////////////////////////////////////////////////////////////////////////
+  init_ir();
+  //////////////////////////////////////////////////////////////////////////////
   nh.advertise(ir_pub); delay(1);
   //nh.subscribe(ir_req_sub); delay(1);
   //////////////////////////////////////////////////////////////////////////////

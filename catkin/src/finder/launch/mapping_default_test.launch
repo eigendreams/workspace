@@ -3,18 +3,18 @@
 <launch>
 
   <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
-  <arg name="base_frame" default="base_frame"/>
-  <arg name="odom_frame" default="odom"/>
+  <arg name="base_frame" default="base_footprint"/> <!-- base_frame -->
+  <arg name="odom_frame" default="nav"/> <!-- odom -->
   <arg name="pub_map_odom_transform" default="true"/>
   <arg name="scan_subscriber_queue_size" default="5"/>
   <arg name="scan_topic" default="scan"/>
   <arg name="map_size" default="2048"/>
   
-  <node pkg="tf" type="static_transform_publisher" name="laser_node_4" args="0 0 0 0 0 0 /map /odom 100"/>
+  <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_4" args="0 0 0 0 0 0 /map /odom 100"/>-->
   <node pkg="tf" type="static_transform_publisher" name="laser_node_5" args="0 0 0 0 0 0 /odom /base_footprint 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_6" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_7" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_9" args="0 0 0 0 0 0 /base_frame /laser 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_10" args="0 0 0 0 0 0 /base_frame /nav 100"/>
 

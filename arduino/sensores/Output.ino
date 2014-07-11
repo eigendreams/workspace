@@ -1,5 +1,5 @@
 /* This file is part of the Razor AHRS Firmware */
-
+long timelast = 0;
 // Output angles: yaw, pitch, roll
 void output_angles()
 {
@@ -12,29 +12,64 @@ void output_angles()
     //Serial.write((byte*) ypr, 12);  // No new-line
   //}
   //else 
+
+  /*
+  Serial.print("#YPRAMG=");
+  Serial.print(TO_DEG(yaw)); Serial.print(",");
+  Serial.print(TO_DEG(pitch)); Serial.print(",");
+  Serial.print(TO_DEG(roll)); Serial.print(",");
+  
+  Serial.print(accel[0]); Serial.print(",");
+  Serial.print(accel[1]); Serial.print(",");
+  Serial.print(accel[2]); Serial.print(",");
+
+  Serial.print(magnetom[0]); Serial.print(",");
+  Serial.print(magnetom[1]); Serial.print(",");
+  Serial.print(magnetom[2]); Serial.print(",");
+  
+  Serial.print(gyro[0]); Serial.print(",");
+  Serial.print(gyro[1]); Serial.print(",");
+  Serial.print(gyro[2]); Serial.println();*/
+  long timenow = millis();
+
+  if (timenow - timelast > 100) {
+    timelast = timenow;
   if (output_format == OUTPUT__FORMAT_TEXT)
   {
     //*** co2 begin***//
     if(digitalRead(pinAlarma))
-    {
       co2_msg.data = 1;
-    }
     else
-    {
       co2_msg.data = 0;
-    }
-    
     co2_val.publish( &co2_msg );
     delay(3);
     //*** co2 end***//  
       
-    roll_msg.data = TO_DEG(roll);
-    roll_ang.publish( &roll_msg );
-    delay(3);
+    //roll_msg.data = TO_DEG(roll);
+    //roll_ang.publish( &roll_msg );
+    //delay(3);
     
-    pitch_msg.data = TO_DEG(pitch);
-    pitch_ang.publish( &pitch_msg );
-    delay(3);
+    //pitch_msg.data = TO_DEG(pitch);
+    //pitch_ang.publish( &pitch_msg );
+    //delay(3);
+
+    imu_data.data[0] = TO_DEG(yaw);
+    imu_data.data[1] = TO_DEG(pitch);
+    imu_data.data[2] = TO_DEG(roll);
+
+    imu_data.data[3] = accel[0];
+    imu_data.data[4] = accel[1];
+    imu_data.data[5] = accel[2];
+
+    imu_data.data[6] = magnetom[0];
+    imu_data.data[7] = magnetom[1]; 
+    imu_data.data[8] = magnetom[2];
+
+    imu_data.data[9] = gyro[0];
+    imu_data.data[10] = gyro[1];
+    imu_data.data[11] = gyro[2];
+
+    imu_pub.publish(&imu_data);
     
     nh.spinOnce();
     //delay(50);
@@ -42,6 +77,7 @@ void output_angles()
     //Serial.print(TO_DEG(yaw)); Serial.print(",");
     //Serial.print(TO_DEG(pitch)); Serial.print(",");
     //Serial.print(TO_DEG(roll)); Serial.println();
+  }
   }
 }
 
@@ -121,37 +157,37 @@ void output_sensors_binary()
 
 void output_sensors()
 {
-  if (output_mode == OUTPUT__MODE_SENSORS_RAW)
-  {
-    if (output_format == OUTPUT__FORMAT_BINARY)
-      output_sensors_binary();
-    else if (output_format == OUTPUT__FORMAT_TEXT)
-      output_sensors_text('R');
-  }
-  else if (output_mode == OUTPUT__MODE_SENSORS_CALIB)
-  {
-    // Apply sensor calibration
-    compensate_sensor_errors();
+  // if (output_mode == OUTPUT__MODE_SENSORS_RAW)
+  // {
+  //   if (output_format == OUTPUT__FORMAT_BINARY)
+  //     output_sensors_binary();
+  //   else if (output_format == OUTPUT__FORMAT_TEXT)
+  //     output_sensors_text('R');
+  // }
+  // else if (output_mode == OUTPUT__MODE_SENSORS_CALIB)
+  // {
+  //   // Apply sensor calibration
+  //   compensate_sensor_errors();
     
-    if (output_format == OUTPUT__FORMAT_BINARY)
-      output_sensors_binary();
-    else if (output_format == OUTPUT__FORMAT_TEXT)
-      output_sensors_text('C');
-  }
-  else if (output_mode == OUTPUT__MODE_SENSORS_BOTH)
-  {
-    if (output_format == OUTPUT__FORMAT_BINARY)
-    {
-      output_sensors_binary();
-      compensate_sensor_errors();
-      output_sensors_binary();
-    }
-    else if (output_format == OUTPUT__FORMAT_TEXT)
-    {
-      output_sensors_text('R');
-      compensate_sensor_errors();
-      output_sensors_text('C');
-    }
-  }
+  //   if (output_format == OUTPUT__FORMAT_BINARY)
+  //     output_sensors_binary();
+  //   else if (output_format == OUTPUT__FORMAT_TEXT)
+  //     output_sensors_text('C');
+  // }
+  // else if (output_mode == OUTPUT__MODE_SENSORS_BOTH)
+  // {
+  //   if (output_format == OUTPUT__FORMAT_BINARY)
+  //   {
+  //     output_sensors_binary();
+  //     compensate_sensor_errors();
+  //     output_sensors_binary();
+  //   }
+  //   else if (output_format == OUTPUT__FORMAT_TEXT)
+  //   {
+  //     output_sensors_text('R');
+  //     compensate_sensor_errors();
+  //     output_sensors_text('C');
+  //   }
+  // }
 }
 

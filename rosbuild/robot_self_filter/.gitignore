@@ -6,3 +6,6 @@ srv_gen/
 share/
 self_filter
 test_filter
+**/.cproject
+**/.project
+**/.pydevproject

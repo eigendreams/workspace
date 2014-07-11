@@ -8,6 +8,7 @@ add_message_files(
 	FILES
 	uint8_64.msg
 	int16_64.msg
+	float32_12.msg
 )
 
 generate_messages(

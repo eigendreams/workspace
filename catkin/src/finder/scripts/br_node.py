@@ -86,6 +86,13 @@ class Br_node:
         self.init_time = rospy.get_time()
         #self.angInit()
 
+        self.br_offset_internal = 0.
+        self.br_ang_tmp_internal = 0      
+        self.br_ang_lst_internal = 0
+        self.br_ang_abs_internal = 0
+
+        self.times = 0        
+
         self.init_flag = False;
 
         self.brResetSub = rospy.Subscriber("br_reset", Int16, self.brResetCb)
@@ -179,20 +186,33 @@ class Br_node:
         else:
             self.br_ang_tmp = self.br_lec - self.br_offset
         """
+        self.br_ang_tmp_internal = self.map(self.br_lec, 0., self.br_enc_max, 0, 2 * pi)
+        self.br_ang_lst_internal = self.br_ang_abs_internal
+        self.br_ang_abs_internal = self.br_ang_tmp_internal
+        if (self.times > 4):
+            # encuentra si el cambio fue de 0 a 2pi
+            if (self.br_ang_abs_internal > 1.7 * pi and self.br_ang_lst_internal < 0.3 * pi):
+                self.br_ang_lap -= 1
+            # encuentra si el cambio fue de 2pi a 0
+            if (self.br_ang_abs_internal < 0.3 * pi and self.br_ang_lst_internal > 1.7 * pi):
+                self.br_ang_lap += 1    
+        """
         self.br_ang_tmp = self.br_lec        
         self.br_ang_tmp = self.map(self.br_ang_tmp, 0., 1023., 2*pi, 0.)
         self.br_ang_lst = self.br_ang_abs
         self.br_ang_abs = self.br_ang_tmp
+        """
         """MAP FIRST"""
 
         """LAP CALCULATE"""
+        """
         # encuentra si el cambio fue de 0 a 2pi
         if (self.br_ang_abs > 1.8 * pi and self.br_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
         if (self.br_ang_abs < 0.2 * pi and self.br_ang_lst > 1.8 * pi):
             self.lap += 1
-        
+        """
         self.br_ang_lap_lst = self.br_ang
         self.br_ang = 2 * pi * self.lap + self.br_ang_abs
         """LAP CALCULATE"""

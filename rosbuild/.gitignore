@@ -1,3 +1,10 @@
 **/bin/
 **/build/
 **/lib/
+**/.cproject
+**/.project
+**/.pydevproject
+*~
+**~
+*/~
+**/~

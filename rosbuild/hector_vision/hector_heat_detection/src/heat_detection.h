@@ -3,6 +3,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Int16.h"
 #include <hector_worldmodel_msgs/ImagePercept.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -26,11 +27,19 @@ private:
     void imageCallback(const sensor_msgs::ImageConstPtr& img, const sensor_msgs::CameraInfoConstPtr& info);
     void mappingCallback(const thermaleye_msgs::Mapping& mapping);
     void dynRecParamCallback(HeatDetectionConfig &config, uint32_t level);
+    ////////
+    void addVictimCb(const std_msgs::Int16& data);
+    ////////
 
     ros::Publisher pub_;
     image_transport::CameraSubscriber sub_;
     image_transport::CameraPublisher pub_detection_;
     ros::Subscriber sub_mapping_;
+
+    ////////
+    ros::Subscriber add_victim_sub;
+    int add_victim_val;
+    ////////
 
     dynamic_reconfigure::Server<HeatDetectionConfig> dyn_rec_server_;
 

@@ -6,7 +6,7 @@
 
   	
   	<node name="laser_node_13" pkg="hector_qrcode_detection" type="qrcode_detection_node" output="screen">
-    	<remap from="image" to="usb_cam_1/image_raw/" />
+    	<remap from="image" to="usb_cam_0/image_raw/" />
     	<remap from="image_transport" to="compressed" />
   	</node>
   	

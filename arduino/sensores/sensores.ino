@@ -310,13 +310,17 @@ const float magn_ellipsoid_transform[3][3] = {{0.902, -0.00354, 0.000636}, {-0.0
 #include <ros.h>
 #include <std_msgs/Int8.h>
 #include <std_msgs/Int16.h>
+#include "finder/float32_12.h"
 
 ros::NodeHandle nh;
 
-std_msgs::Int8 roll_msg;
-ros::Publisher roll_ang("roll", &roll_msg);
-std_msgs::Int8 pitch_msg;
-ros::Publisher pitch_ang("pitch", &pitch_msg);
+finder::float32_12 imu_data;
+ros::Publisher imu_pub("imu_data", &imu_data);
+
+//std_msgs::Int8 roll_msg;
+//ros::Publisher roll_ang("roll", &roll_msg);
+//std_msgs::Int8 pitch_msg;
+//ros::Publisher pitch_ang("pitch", &pitch_msg);
 std_msgs::Int8 co2_msg;
 ros::Publisher co2_val("co2", &co2_msg);
 
@@ -518,11 +522,13 @@ void setup()
   // Init Node
   nh.initNode();
   nh.subscribe(leds_sub);
-  nh.advertise(roll_ang);
-  delay(1);
-  nh.advertise(pitch_ang);
+  //nh.advertise(roll_ang);
+  //delay(1);
+  //nh.advertise(pitch_ang);
   delay(1);
   nh.advertise(co2_val);
+  delay(1);
+  nh.advertise(imu_pub);
   
   //*************** co2 setup ***************//
   pinMode(pinAlarma,INPUT);

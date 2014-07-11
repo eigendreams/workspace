@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  	<node name="heat_detection_test" pkg="hector_heat_detection" type="heat_detection" output="screen">
+    	<remap from="victim_camera/image" to="usb_cam_0/image_raw/" />
+    	<remap from="image_transport" to="compressed" />
+      <remap from="image_percept" to="/worldmodel/image_percept" />
+  	</node>
+  	
+
+	<!-- <node name="qrcode_test" pkg="nodelet" type="nodelet" args="load hector_qrcode_detection/qrcode_detection_node qrcode_manager_test">
+		<remap from="image" to="usb_cam_1/image_raw" />
+		<remap from="image_transport" to="compressed" />
+	</node> -->
+
+</launch>
