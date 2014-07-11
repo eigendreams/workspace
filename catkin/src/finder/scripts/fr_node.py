@@ -1,27 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-#
+
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 from math import *
 
-"""
-El proposito de esta clase es servir de nodo de control de bajo nivel para el motor de la fr del robot, el microcontrolador
-publica un topico de tipo Int16 llamada "fr_lec" y consume otro topico de tipo Int16 llamado "fr_out". fr_lec es la
-lectura sin procesar del encoder, y fr_out es el valor de salida PWM del motor, que puede ser un valor de -100 a 100. El
-procesamiento de los datos del encoder no es tan trivial, pero se incluyen las funciones necesarias para realizarlo.
-
-Esta clase debe suscrivirse a un topico Int16 llamado "fr_des" y publicar dos topicos Int16 llamados "fr_ang" y 
-"fr_vel" que contengan informacion del angulo y la velocidad. Internamente, el control se realiza sobre el valor del
-angulo, haciendo un match PID entre fr_des y fr_ang.
-
-ESTE MOTOR SE CONTROLA A BAJO NIVEL POR POSICION
-"""
-
 class Fr_node:
 
     def __init__(self, node_name_override = 'fr_node'):
+
         rospy.init_node(node_name_override)
         self.nodename = rospy.get_name()
         rospy.loginfo("fr_node starting with name %s", self.nodename) 
@@ -65,9 +53,9 @@ class Fr_node:
 
         # topic variables
         self.fr_lec = 0
-        #self.fr_des = 0
+        self.fr_des = 0
         self.fr_ang = 0
-        self.fr_ang_des = 0   
+        self.fr_ang_des = 0
         self.fr_vel = 0
         self.fr_vel_des = 0
         self.fr_out = 0
@@ -78,13 +66,8 @@ class Fr_node:
         self.fr_lec_dst = 0
         self.fr_ang_lst = 0
         self.fr_ang_chg = 0
-
         self.fr_ang_abs = 0
-        self.lap = 0
-
-        # inits
-        self.init_time = rospy.get_time()
-        #self.angInit()
+        self.fr_ang_lap = 0
 
         self.fr_offset_internal = 0.
         self.fr_ang_tmp_internal = 0      
@@ -92,18 +75,17 @@ class Fr_node:
         self.fr_ang_abs_internal = 0
 
         self.times = 0
-
-        self.init_flag = False;
+        self.init_time = rospy.get_time()
 
         self.frResetSub = rospy.Subscriber("fr_reset", Int16, self.frResetCb)
         self.frLecSub = rospy.Subscriber("fr_lec", Int16, self.frLecCb)
         self.frDesSub = rospy.Subscriber("fr_des", Float32, self.frDesCb)
         self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
-        
+
 
     def offsetCb(self, data):
 
-        if(data.data == 1):
+        if (data.data == 1):
 
             self.fr_offset  = self.fr_lec
             
@@ -118,12 +100,12 @@ class Fr_node:
 
     def map(self, x, in_min, in_max, out_min, out_max):
 
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+        return (x - in_min) * (out_max - out_min + 0.) / (in_max - in_min + 0.) + out_min
 
 
     def millis(self):
 
-        return 1000 * (rospy.get_time() - self.init_time)
+        return int(1000 * (self.rospy.get_time() - self.init_time))
 
 
     def constrain(self, x, min, max):
@@ -134,15 +116,35 @@ class Fr_node:
             return min
         return x
 
+    """
+    def pid(self):
+
+        if (abs(self.fr_des - self.fr_ang) < self.umbral_pos):
+           self.error_pos = 0.
+        else:
+            self.error_pos = self.fr_des - self.fr_ang
+
+        if (abs(self.fr_des - self.fr_ang) < self.kierr_pos):
+            if (abs(self.fr_des - self.fr_ang) < self.umbral_pos):
+                #pass
+                self.kisum_pos = 0.;
+            else:
+                self.kisum_pos += self.ki_pos * self.error_pos
+                self.kisum_pos = self.constrain(self.kisum_pos, -self.kimax_pos, self.kimax_pos)
+        else:
+            self.kisum_pos = 0.
+
+        self.fr_out = -self.constrain(self.kp_pos * self.error_pos + self.kisum_pos - self.kd_pos * (self.fr_ang - self.fr_ang_lst) + self.km_pos * self.fr_des, -self.range_pos, self.range_pos)
+    """
+
 
     def pid_pos(self):
 
-        if (abs(self.fr_ang_des - self.fr_ang) <= self.umbral_pos):
+        if (abs(self.fr_ang_des - self.fr_ang) < self.umbral_pos):
            self.error_pos = 0.
         else:
             self.error_pos = self.fr_ang_des - self.fr_ang
             #print "error " + str(self.error)
-
 
         if (abs(self.fr_ang_des - self.fr_ang) < self.kierr_pos):
             if (abs(self.fr_ang_des - self.fr_ang) < self.umbral_pos):
@@ -154,16 +156,16 @@ class Fr_node:
         else:
             self.kisum_pos = 0.
 
-        self.fr_out = self.constrain(self.kp_pos * self.error_pos + self.kisum_pos + self.km_pos * self.fr_ang_des, -self.range_pos, self.range_pos)
+        self.fr_out = self.constrain(self.kp_pos * self.error_pos + self.kisum_pos - self.kd_pos * (self.fr_ang - self.fr_ang_lst) + self.km_pos * self.fr_ang_des, -self.range_pos, self.range_pos)
+
 
     def pid_vel(self):
 
-        if (abs(self.fr_vel_des - self.fr_vel) <= self.umbral_vel):
+        if (abs(self.fr_vel_des - self.fr_vel) < self.umbral_vel):
            self.error_vel = 0.
         else:
             self.error_vel = self.fr_vel_des - self.fr_vel + 0.
             #print "error " + str(self.error)
-
 
         if (abs(self.fr_vel_des - self.fr_vel) < self.kierr_vel):
             if (abs(self.fr_vel_des - self.fr_vel) < self.umbral_vel):
@@ -175,65 +177,81 @@ class Fr_node:
         else:
             self.kisum_vel = 0.
 
-        self.fr_out = self.constrain(self.kp_vel * self.error_vel + self.kisum_vel + self.km_vel * self.fr_vel_des, -self.range_vel, self.range_vel)
+        self.fr_out = self.constrain(self.kp_vel * self.error_vel + self.kisum_vel - self.kd_pos * (self.fr_ang - self.fr_ang_lst) + self.km_vel * self.fr_vel_des, -self.range_vel, self.range_vel)
 
 
     def angCalc(self):
 
-        """MAP FIRST"""
-        
-        """
-        if self.fr_lec < self.fr_offset:
-            self.fr_ang_tmp = self.fr_lec + 1024 - self.fr_offset
-        else:
-            self.fr_ang_tmp = self.fr_lec - self.fr_offset
-        """
-        """
-        self.fr_ang_tmp = self.fr_lec
-        self.fr_ang_tmp = self.map(self.fr_ang_tmp, 0., 1023., 2*pi, 0.)
-        self.fr_ang_lst = self.fr_ang_abs
-        self.fr_ang_abs = self.fr_ang_tmp
-        """
-        """MAP FIRST"""
+        self.times += 1
 
-        """LAP CALCULATE"""
-        """# encuentra si el cambio fue de 0 a 2pi
-        if (self.fr_ang_abs > 1.8 * pi and self.fr_ang_lst < 0.2 * pi):
-            self.lap -= 1
-        # encuetra si el cambio due de 2pi a 0
-        if (self.fr_ang_abs < 0.2 * pi and self.fr_ang_lst > 1.8 * pi):
-         self.lap += 1
-        """
-
-        self.fr_ang_tmp_internal = self.map(self.fr_lec, 0., self.fr_enc_max, 0, 2 * pi)
+        self.fr_offset_internal = self.map(self.fr_offset, 0., self.fr_enc_max, 2 * pi, 0)
+        self.fr_ang_tmp_internal = self.map(self.fr_lec, 0., self.fr_enc_max, 2 * pi, 0)
         self.fr_ang_lst_internal = self.fr_ang_abs_internal
         self.fr_ang_abs_internal = self.fr_ang_tmp_internal
+
         if (self.times > 4):
             # encuentra si el cambio fue de 0 a 2pi
             if (self.fr_ang_abs_internal > 1.7 * pi and self.fr_ang_lst_internal < 0.3 * pi):
                 self.fr_ang_lap -= 1
             # encuentra si el cambio fue de 2pi a 0
             if (self.fr_ang_abs_internal < 0.3 * pi and self.fr_ang_lst_internal > 1.7 * pi):
-                self.fr_ang_lap += 1   
+                self.fr_ang_lap += 1
 
-                
+        self.fr_ang_lap_lst = self.fr_ang
+        self.fr_ang = 2 * pi * self.fr_ang_lap + self.fr_ang_abs_internal - self.fr_offset_internal 
+        self.fr_vel = 10 * (self.fr_ang - self.fr_ang_lap_lst)
+
+
+    """
+    def angCalc(self):
+
+        self.fr_ang_tmp = self.fr_lec        
+        self.fr_ang_tmp = self.map(self.fr_ang_tmp, 0., 1023., 2*pi, 0.)
+        self.fr_ang_lst = self.fr_ang_abs
+        self.fr_ang_abs = self.fr_ang_tmp
+
+        # encuentra si el cambio fue de 0 a 2pi
+        if (self.fr_ang_abs > 1.8 * pi and self.fr_ang_lst < 0.2 * pi):
+            self.lap -= 1
+        # encuetra si el cambio due de 2pi a 0
+        if (self.fr_ang_abs < 0.2 * pi and self.fr_ang_lst > 1.8 * pi):
+            self.lap += 1
+        
         self.fr_ang_lap_lst = self.fr_ang
         self.fr_ang = 2 * pi * self.lap + self.fr_ang_abs
-        """LAP CALCULATE"""
 
-        """MAP VEL OUT"""
         self.fr_vel = 10. * (self.fr_ang - self.fr_ang_lap_lst)
-        """MAP VEL OUT"""
+    """
+
 
     def frResetCb(self, data):
+        
         if (data.data == 1):
             self.fr_ang_des = 0
 
+
+    """
     def frLecCb(self, data):
+        
+        self.fr_lec = data.data
+        self.angCalc()
+        self.pid()
+
+
+    def frDesCb(self, data):
+
+        self.fr_des = data.data
+        self.angCalc()
+        self.pid()
+    """
+
+
+    def frLecCb(self, data):
+
         self.fr_lec = data.data
         self.angCalc()
 
-        if (abs(self.fr_vel_des) < 0.2):
+        if (abs(self.fr_vel_des) < 0.1):
             # self.fr_ang_des = self.constrain(self.fr_ang_des, 0, 1000)
             self.pid_pos()
             # print "angdes " + str(self.fr_ang_des)
@@ -243,10 +261,11 @@ class Fr_node:
 
 
     def frDesCb(self, data):
+
         self.fr_vel_des = data.data
         self.angCalc()
 
-        if (abs(self.fr_vel_des) < 0.2):
+        if (abs(self.fr_vel_des) < 0.1):
             # self.fr_ang_des = self.constrain(self.fr_ang_des, 0, 1000)
             self.pid_pos()
             # print "angdes " + str(self.fr_ang_des)
@@ -256,12 +275,14 @@ class Fr_node:
 
 
     def update(self):
+
         self.frOutPub.publish(self.fr_out)
         self.frAngPub.publish(self.fr_ang)
         self.frVelPub.publish(self.fr_vel)
 
 
     def spin(self):
+
         r = rospy.Rate(self.rate)
         while not rospy.is_shutdown():
             self.update()
@@ -269,7 +290,7 @@ class Fr_node:
 
 
 if __name__ == '__main__':
+
     """ main """
     fr_node = Fr_node()
-    fr_node.spin()
-    
+    fr_node.spin() 

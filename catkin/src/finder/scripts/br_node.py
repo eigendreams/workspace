@@ -6,22 +6,10 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 from math import *
 
-"""
-El proposito de esta clase es servir de nodo de control de bajo nivel para el motor de la br del robot, el microcontrolador
-publica un topico de tipo Int16 llamada "br_lec" y consume otro topico de tipo Int16 llamado "br_out". br_lec es la
-lectura sin procesar del encoder, y br_out es el valor de salida PWM del motor, que puede ser un valor de -100 a 100. El
-procesamiento de los datos del encoder no es tan trivial, pero se incluyen las funciones necesarias para realizarlo.
-
-Esta clase debe suscrivirse a un topico Int16 llamado "br_des" y publicar dos topicos Int16 llamados "br_ang" y 
-"br_vel" que contengan informacion del angulo y la velocidad. Internamente, el control se realiza sobre el valor del
-angulo, haciendo un match PID entre br_des y br_ang.
-
-ESTE MOTOR SE CONTROLA A BAJO NIVEL POR POSICION
-"""
-
 class Br_node:
 
     def __init__(self, node_name_override = 'br_node'):
+
         rospy.init_node(node_name_override)
         self.nodename = rospy.get_name()
         rospy.loginfo("br_node starting with name %s", self.nodename) 
@@ -65,9 +53,9 @@ class Br_node:
 
         # topic variables
         self.br_lec = 0
-        #self.br_des = 0
+        self.br_des = 0
         self.br_ang = 0
-        self.br_ang_des = 0   
+        self.br_ang_des = 0
         self.br_vel = 0
         self.br_vel_des = 0
         self.br_out = 0
@@ -78,27 +66,22 @@ class Br_node:
         self.br_lec_dst = 0
         self.br_ang_lst = 0
         self.br_ang_chg = 0
-
         self.br_ang_abs = 0
-        self.lap = 0
-
-        # inits
-        self.init_time = rospy.get_time()
-        #self.angInit()
+        self.br_ang_lap = 0
 
         self.br_offset_internal = 0.
         self.br_ang_tmp_internal = 0      
         self.br_ang_lst_internal = 0
         self.br_ang_abs_internal = 0
 
-        self.times = 0        
-
-        self.init_flag = False;
+        self.times = 0
+        self.init_time = rospy.get_time()
 
         self.brResetSub = rospy.Subscriber("br_reset", Int16, self.brResetCb)
         self.brLecSub = rospy.Subscriber("br_lec", Int16, self.brLecCb)
         self.brDesSub = rospy.Subscriber("br_des", Float32, self.brDesCb)
         self.offsetSub = rospy.Subscriber("offset", Int16, self.offsetCb)
+
 
     def offsetCb(self, data):
 
@@ -117,12 +100,12 @@ class Br_node:
 
     def map(self, x, in_min, in_max, out_min, out_max):
 
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+        return (x - in_min) * (out_max - out_min + 0.) / (in_max - in_min + 0.) + out_min
 
 
     def millis(self):
 
-        return 1000 * (rospy.get_time() - self.init_time)
+        return int(1000 * (self.rospy.get_time() - self.init_time))
 
 
     def constrain(self, x, min, max):
@@ -133,15 +116,35 @@ class Br_node:
             return min
         return x
 
+    """
+    def pid(self):
+
+        if (abs(self.br_des - self.br_ang) < self.umbral_pos):
+           self.error_pos = 0.
+        else:
+            self.error_pos = self.br_des - self.br_ang
+
+        if (abs(self.br_des - self.br_ang) < self.kierr_pos):
+            if (abs(self.br_des - self.br_ang) < self.umbral_pos):
+                #pass
+                self.kisum_pos = 0.;
+            else:
+                self.kisum_pos += self.ki_pos * self.error_pos
+                self.kisum_pos = self.constrain(self.kisum_pos, -self.kimax_pos, self.kimax_pos)
+        else:
+            self.kisum_pos = 0.
+
+        self.br_out = -self.constrain(self.kp_pos * self.error_pos + self.kisum_pos - self.kd_pos * (self.br_ang - self.br_ang_lst) + self.km_pos * self.br_des, -self.range_pos, self.range_pos)
+    """
+
 
     def pid_pos(self):
 
-        if (abs(self.br_ang_des - self.br_ang) <= self.umbral_pos):
+        if (abs(self.br_ang_des - self.br_ang) < self.umbral_pos):
            self.error_pos = 0.
         else:
             self.error_pos = self.br_ang_des - self.br_ang
             #print "error " + str(self.error)
-
 
         if (abs(self.br_ang_des - self.br_ang) < self.kierr_pos):
             if (abs(self.br_ang_des - self.br_ang) < self.umbral_pos):
@@ -153,16 +156,16 @@ class Br_node:
         else:
             self.kisum_pos = 0.
 
-        self.br_out = self.constrain(self.kp_pos * self.error_pos + self.kisum_pos + self.km_pos * self.br_ang_des, -self.range_pos, self.range_pos)
+        self.br_out = self.constrain(self.kp_pos * self.error_pos + self.kisum_pos - self.kd_pos * (self.br_ang - self.br_ang_lst) + self.km_pos * self.br_ang_des, -self.range_pos, self.range_pos)
+
 
     def pid_vel(self):
 
-        if (abs(self.br_vel_des - self.br_vel) <= self.umbral_vel):
+        if (abs(self.br_vel_des - self.br_vel) < self.umbral_vel):
            self.error_vel = 0.
         else:
             self.error_vel = self.br_vel_des - self.br_vel + 0.
             #print "error " + str(self.error)
-
 
         if (abs(self.br_vel_des - self.br_vel) < self.kierr_vel):
             if (abs(self.br_vel_des - self.br_vel) < self.umbral_vel):
@@ -174,62 +177,81 @@ class Br_node:
         else:
             self.kisum_vel = 0.
 
-        self.br_out = self.constrain(self.kp_vel * self.error_vel + self.kisum_vel + self.km_vel * self.br_vel_des, -self.range_vel, self.range_vel)
+        self.br_out = self.constrain(self.kp_vel * self.error_vel + self.kisum_vel - self.kd_pos * (self.br_ang - self.br_ang_lst) + self.km_vel * self.br_vel_des, -self.range_vel, self.range_vel)
 
 
     def angCalc(self):
 
-        """MAP FIRST"""
-        """
-        if self.br_lec < self.br_offset:
-            self.br_ang_tmp = self.br_lec + 1024 - self.br_offset
-        else:
-            self.br_ang_tmp = self.br_lec - self.br_offset
-        """
+        self.times += 1
+
+        self.br_offset_internal = self.map(self.br_offset, 0., self.br_enc_max, 0, 2 * pi)
         self.br_ang_tmp_internal = self.map(self.br_lec, 0., self.br_enc_max, 0, 2 * pi)
         self.br_ang_lst_internal = self.br_ang_abs_internal
         self.br_ang_abs_internal = self.br_ang_tmp_internal
+
         if (self.times > 4):
             # encuentra si el cambio fue de 0 a 2pi
             if (self.br_ang_abs_internal > 1.7 * pi and self.br_ang_lst_internal < 0.3 * pi):
                 self.br_ang_lap -= 1
             # encuentra si el cambio fue de 2pi a 0
             if (self.br_ang_abs_internal < 0.3 * pi and self.br_ang_lst_internal > 1.7 * pi):
-                self.br_ang_lap += 1    
-        """
+                self.br_ang_lap += 1
+
+        self.br_ang_lap_lst = self.br_ang
+        self.br_ang = 2 * pi * self.br_ang_lap + self.br_ang_abs_internal - self.br_offset_internal 
+        self.br_vel = 10 * (self.br_ang - self.br_ang_lap_lst)
+
+
+    """
+    def angCalc(self):
+
         self.br_ang_tmp = self.br_lec        
         self.br_ang_tmp = self.map(self.br_ang_tmp, 0., 1023., 2*pi, 0.)
         self.br_ang_lst = self.br_ang_abs
         self.br_ang_abs = self.br_ang_tmp
-        """
-        """MAP FIRST"""
 
-        """LAP CALCULATE"""
-        """
         # encuentra si el cambio fue de 0 a 2pi
         if (self.br_ang_abs > 1.8 * pi and self.br_ang_lst < 0.2 * pi):
             self.lap -= 1
         # encuetra si el cambio due de 2pi a 0
         if (self.br_ang_abs < 0.2 * pi and self.br_ang_lst > 1.8 * pi):
             self.lap += 1
-        """
+        
         self.br_ang_lap_lst = self.br_ang
         self.br_ang = 2 * pi * self.lap + self.br_ang_abs
-        """LAP CALCULATE"""
 
-        """MAP VEL OUT"""
         self.br_vel = 10. * (self.br_ang - self.br_ang_lap_lst)
-        """MAP VEL OUT"""
+    """
+
 
     def brResetCb(self, data):
+        
         if (data.data == 1):
             self.br_ang_des = 0
 
+
+    """
     def brLecCb(self, data):
+        
+        self.br_lec = data.data
+        self.angCalc()
+        self.pid()
+
+
+    def brDesCb(self, data):
+
+        self.br_des = data.data
+        self.angCalc()
+        self.pid()
+    """
+
+
+    def brLecCb(self, data):
+
         self.br_lec = data.data
         self.angCalc()
 
-        if (abs(self.br_vel_des) < 0.2):
+        if (abs(self.br_vel_des) < 0.1):
             # self.br_ang_des = self.constrain(self.br_ang_des, 0, 1000)
             self.pid_pos()
             # print "angdes " + str(self.br_ang_des)
@@ -239,10 +261,11 @@ class Br_node:
 
 
     def brDesCb(self, data):
+
         self.br_vel_des = data.data
         self.angCalc()
 
-        if (abs(self.br_vel_des) < 0.2):
+        if (abs(self.br_vel_des) < 0.1):
             # self.br_ang_des = self.constrain(self.br_ang_des, 0, 1000)
             self.pid_pos()
             # print "angdes " + str(self.br_ang_des)
@@ -252,12 +275,14 @@ class Br_node:
 
 
     def update(self):
+
         self.brOutPub.publish(self.br_out)
         self.brAngPub.publish(self.br_ang)
         self.brVelPub.publish(self.br_vel)
 
 
     def spin(self):
+
         r = rospy.Rate(self.rate)
         while not rospy.is_shutdown():
             self.update()
@@ -265,7 +290,7 @@ class Br_node:
 
 
 if __name__ == '__main__':
+
     """ main """
     br_node = Br_node()
-    br_node.spin()
-    
+    br_node.spin() 
