@@ -10,7 +10,7 @@
   <arg name="scan_topic" default="scan"/>
   <arg name="map_size" default="2048"/>
   
-  <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_4" args="0 0 0 0 0 0 /map /odom 100"/>-->
+  <node pkg="tf" type="static_transform_publisher" name="laser_node_4" args="0 0 0 0 0 0 /scanmatcher_frame /odom 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_5" args="0 0 0 0 0 0 /odom /base_footprint 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_6" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_7" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 

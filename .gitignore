@@ -7,7 +7,6 @@ maps/
 ftz/
 **/bin/
 **/build/
-**/lib/
 **/devel/
 **/install/
 **/.cproject
