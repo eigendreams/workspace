@@ -1,8 +1,5 @@
 'use strict';
 
-
-console.log("Si entro");
-
 angular.module('finderApp')
 
   /**

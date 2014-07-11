@@ -6,13 +6,14 @@ angular.module('finderApp', [
   'ngSanitize',
   'ngRoute',
   'ngTouch',
-  'vr.directives.slider'
+  'angular-bootstrap-select'
+  // 'vr.directives.slider'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'partials/main',
-        controller: 'MainCtrl'
+        templateUrl: 'partials/home',
+        controller: 'HomeCtrl'
       })
       .when('/login', {
         templateUrl: 'partials/login',

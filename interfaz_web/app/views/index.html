@@ -14,11 +14,13 @@
     <!-- build:css(app) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-select/bootstrap-select.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/jquery-ui/themes/jquery-ui.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
@@ -55,6 +57,7 @@
     <script src="bower_components/eventemitter2/lib/eventemitter2.js"></script>
     <script src="bower_components/roslibjs/build/roslib.min.js"></script>
     <script type="text/javascript" src="http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script>
 
     <!-- build:js(app) scripts/vendor.js -->
     <!-- bower:js -->
@@ -67,6 +70,11 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/venturocket-angular-slider/build/angular-slider.js"></script>
+    <script src="bower_components/prefixfree/prefixfree.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="bower_components/bootstrap-select/bootstrap-select.js"></script>
+    <script src="bower_components/angular-bootstrap-select/build/angular-bootstrap-select.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -86,6 +94,8 @@
         <script src="scripts/services/ros.js"></script>
         <script src="scripts/directives/mongooseError.js"></script>
         <script src="scripts/directives/termalsensorViewer.js"></script>
+        <script src="scripts/directives/robotViewer.js"></script>
+        <script src="scripts/directives/slider.js"></script>
         <!-- endbuild -->
 </body>
 </html>
