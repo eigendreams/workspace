@@ -184,8 +184,8 @@ class Fl_node:
 
         self.times += 1
 
-        self.fl_offset_internal = self.map(self.fl_offset, 0., self.fl_enc_max, 0, 2 * pi)
-        self.fl_ang_tmp_internal = self.map(self.fl_lec, 0., self.fl_enc_max, 0, 2 * pi)
+        self.fl_offset_internal = self.map(self.fl_offset, 0., self.fl_enc_max, 2 * pi, 0)
+        self.fl_ang_tmp_internal = self.map(self.fl_lec, 0., self.fl_enc_max, 2 * pi, 0)
         self.fl_ang_lst_internal = self.fl_ang_abs_internal
         self.fl_ang_abs_internal = self.fl_ang_tmp_internal
 

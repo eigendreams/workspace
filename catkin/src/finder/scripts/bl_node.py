@@ -163,8 +163,8 @@ class Bl_node:
 
         self.times += 1
 
-        self.bl_offset_internal = self.map(self.bl_offset, 0., self.bl_enc_max, 0, 2 * pi)
-        self.bl_ang_tmp_internal = self.map(self.bl_lec, 0., self.bl_enc_max, 0, 2 * pi)
+        self.bl_offset_internal = self.map(self.bl_offset, 0., self.bl_enc_max, 2 * pi, 0)
+        self.bl_ang_tmp_internal = self.map(self.bl_lec, 0., self.bl_enc_max, 2 * pi, 0)
         self.bl_ang_lst_internal = self.bl_ang_abs_internal
         self.bl_ang_abs_internal = self.bl_ang_tmp_internal
 

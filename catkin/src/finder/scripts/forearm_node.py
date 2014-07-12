@@ -163,8 +163,8 @@ class Forearm_node:
 
         self.times += 1
 
-        self.forearm_offset_internal = self.map(self.forearm_offset, 0., self.forearm_enc_max, 0, 2 * pi)
-        self.forearm_ang_tmp_internal = self.map(self.forearm_lec, 0., self.forearm_enc_max, 0, 2 * pi)
+        self.forearm_offset_internal = self.map(self.forearm_offset, 0., self.forearm_enc_max, 2 * pi, 0)
+        self.forearm_ang_tmp_internal = self.map(self.forearm_lec, 0., self.forearm_enc_max, 2 * pi, 0)
         self.forearm_ang_lst_internal = self.forearm_ang_abs_internal
         self.forearm_ang_abs_internal = self.forearm_ang_tmp_internal
 

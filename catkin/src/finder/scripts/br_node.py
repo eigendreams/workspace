@@ -184,8 +184,8 @@ class Br_node:
 
         self.times += 1
 
-        self.br_offset_internal = self.map(self.br_offset, 0., self.br_enc_max, 0, 2 * pi)
-        self.br_ang_tmp_internal = self.map(self.br_lec, 0., self.br_enc_max, 0, 2 * pi)
+        self.br_offset_internal = self.map(self.br_offset, 0., self.br_enc_max, 2 * pi, 0)
+        self.br_ang_tmp_internal = self.map(self.br_lec, 0., self.br_enc_max, 2 * pi, 0)
         self.br_ang_lst_internal = self.br_ang_abs_internal
         self.br_ang_abs_internal = self.br_ang_tmp_internal
 

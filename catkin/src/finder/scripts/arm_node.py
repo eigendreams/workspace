@@ -163,8 +163,8 @@ class Arm_node:
 
         self.times += 1
 
-        self.arm_offset_internal = self.map(self.arm_offset, 0., self.arm_enc_max, 0, 2 * pi)
-        self.arm_ang_tmp_internal = self.map(self.arm_lec, 0., self.arm_enc_max, 0, 2 * pi)
+        self.arm_offset_internal = self.map(self.arm_offset, 0., self.arm_enc_max, 2 * pi, 0)
+        self.arm_ang_tmp_internal = self.map(self.arm_lec, 0., self.arm_enc_max, 2 * pi, 0)
         self.arm_ang_lst_internal = self.arm_ang_abs_internal
         self.arm_ang_abs_internal = self.arm_ang_tmp_internal
 
