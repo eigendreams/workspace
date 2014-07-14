@@ -233,32 +233,33 @@ class Forearm_node:
         self.forearm_lec = data.data
         self.angCalc()
 
-        if (abs(self.forearm_vel_des) < 0.1):
-            # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
-            self.pid_pos()
-            # print "angdes " + str(self.forearm_ang_des)
-        else:
-            self.forearm_ang_des = self.forearm_ang
-            self.pid_vel()
+        # if (abs(self.forearm_vel_des) < 0.1):
+        #     # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
+        #     self.pid_pos()
+        #     # print "angdes " + str(self.forearm_ang_des)
+        # else:
+        #     self.forearm_ang_des = self.forearm_ang
+        #     self.pid_vel()
 
 
     def forearmDesCb(self, data):
 
-        self.forearm_vel_des = data.data
+        self.forearm_vel_des = self.constrain(data.data, -80, 80)
         self.angCalc()
 
-        if (abs(self.forearm_vel_des) < 0.1):
-            # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
-            self.pid_pos()
-            # print "angdes " + str(self.forearm_ang_des)
-        else:
-            self.forearm_ang_des = self.forearm_ang
-            self.pid_vel()
+        # if (abs(self.forearm_vel_des) < 0.1):
+        #     # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
+        #     self.pid_pos()
+        #     # print "angdes " + str(self.forearm_ang_des)
+        # else:
+        #     self.forearm_ang_des = self.forearm_ang
+        #     self.pid_vel()
 
 
     def update(self):
 
-        self.forearmOutPub.publish(self.forearm_out)
+        self.forearmOutPub.publish(self.forearm_vel_des)
+        #self.forearmOutPub.publish(self.forearm_out)
         self.forearmAngPub.publish(self.forearm_ang)
         self.forearmVelPub.publish(self.forearm_vel)
 

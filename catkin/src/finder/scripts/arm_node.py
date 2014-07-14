@@ -232,32 +232,33 @@ class Arm_node:
         self.arm_lec = data.data
         self.angCalc()
 
-        if (abs(self.arm_vel_des) < 0.1):
-            # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
-            self.pid_pos()
-            # print "angdes " + str(self.arm_ang_des)
-        else:
-            self.arm_ang_des = self.arm_ang
-            self.pid_vel()
+        # if (abs(self.arm_vel_des) < 0.1):
+        #     # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
+        #     self.pid_pos()
+        #     # print "angdes " + str(self.arm_ang_des)
+        # else:
+        #     self.arm_ang_des = self.arm_ang
+        #     self.pid_vel()
 
 
     def armDesCb(self, data):
 
-        self.arm_vel_des = data.data
+        self.arm_vel_des = self.constrain(data.data, -80, 80)
         self.angCalc()
 
-        if (abs(self.arm_vel_des) < 0.1):
-            # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
-            self.pid_pos()
-            # print "angdes " + str(self.arm_ang_des)
-        else:
-            self.arm_ang_des = self.arm_ang
-            self.pid_vel()
+        # if (abs(self.arm_vel_des) < 0.1):
+        #     # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
+        #     self.pid_pos()
+        #     # print "angdes " + str(self.arm_ang_des)
+        # else:
+        #     self.arm_ang_des = self.arm_ang
+        #     self.pid_vel()
 
 
     def update(self):
 
-        self.armOutPub.publish(self.arm_out)
+        self.armOutPub.publish(self.arm_vel_des)
+        #self.armOutPub.publish(self.arm_out)
         self.armAngPub.publish(self.arm_ang)
         self.armVelPub.publish(self.arm_vel)
 
