@@ -2,8 +2,10 @@
 
 <launch>
 	
-    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode1" args="/dev/ttyACM0" />
-    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode2" args="/dev/ttyACM1" />
-    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode3" args="/dev/ttyACM2" />
+    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode1" args="/dev/traction_arduino" />
+    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode2" args="/dev/talon_arduino" />
+    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode3" args="/dev/arm_arduino" />
+    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode4" args="/dev/sensor_arduino" />
+    <node respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode5" args="/dev/ir_arduino" />
     
 </launch>
