@@ -22,12 +22,23 @@ class Alive:
         # Quizá algún parámetro superior especifique una frecuencia de salida de datos,
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = rospy.get_param("alive_rate", 1)
+
+        self.alive_val = 1
+
         # Publicación de la batería como entero
-        self.alivePub = rospy.Publisher('alive', Int16)        
+        self.alivePub = rospy.Publisher('alive', Int16)  
+        slef.voltSub = rospy.Subscriber('volt', Int16, voltCb)  
+
+    def voltCb(self, data):
+
+        if (data.data < 11000):
+            self.alive_val = 0
+        else:
+            self.alive_val = 1    
         
     def update(self):
 		
-        self.alivePub.publish(1)
+        self.alivePub.publish(self.alive_val)
 
     def spin(self):
 		

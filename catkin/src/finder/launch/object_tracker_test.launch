@@ -6,7 +6,7 @@
       <param name="project_objects" type="bool" value="false" />
       <param name="angle_variance" type="double" value="0.121846968"/>
       <param name="publish_interval" type="double" value="1.0" />
-      <param name="default_distance" type="double" value="1.0" />
+      <param name="default_distance" type="double" value="0.001" />
 
       <rosparam>
         victim:
