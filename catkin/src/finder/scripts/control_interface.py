@@ -39,10 +39,15 @@ class Control_interface:
         self.brResetPub = rospy.Publisher("br_reset", Int16)
         self.blResetPub = rospy.Publisher("bl_reset", Int16)
 
-        self.offsetPub  = rospy.Publisher("offset", Int16)
         self.offset_val = 0
+        self.offsetPub = rospy.Publisher("offset", Int16)
 
         self.base_des = 0    
+        self.arm_des = 0
+        self.forearm_des = 0
+        self.wrist_des = 0
+        self.palm_des = 0
+        self.gripper_des = 0
         
         # Variables internas
         self.angular_rate = 0
@@ -101,10 +106,10 @@ class Control_interface:
         #         self.lock = True
         # if data.axes[self.axes_names['cross_hor']] == 0:
         #     self.lock = False;
-        if data.axes[self.axes_names['RT']] != 1:
-            self.base_des = ((data.axes[self.axes_names['RT']] - 1) / 2) 
-        else:
-            self.base_des = ((data.axes[self.axes_names['LT']] - 1) / 2) * -1
+        # if data.axes[self.axes_names['RT']] != 1:
+        #     self.base_des = ((data.axes[self.axes_names['RT']] - 1) / 2) 
+        # else:
+        #     self.base_des = ((data.axes[self.axes_names['LT']] - 1) / 2) * -1
 
         # Se reemplazaron por comparaciones para Booleanos (0 es False y 1 es True)
         self.bl_active = data.buttons[self.buttons_names['LB']]
@@ -114,19 +119,29 @@ class Control_interface:
 
         # El valor de little arm rate es fijo, y puede ser -10 o + 10 como maximo
         self.little_arm_rate = data.axes[self.axes_names['right_stick_ver']] * 10.
-        self.little_arm_reset = data.buttons[self.buttons_names['B']]
+        # self.little_arm_reset = data.buttons[self.buttons_names['B']]
 
         self.fast_traction = data.buttons[self.buttons_names['btn_stick_left']]
         self.fast_arms = data.buttons[self.buttons_names['btn_stick_right']]
 
         self.offset_val = data.buttons[self.buttons_names['Y']]
 
-        self.arm_des   = data.axes[self.axes_names['left_stick_ver']] * 1
-        self.forearm_des   = data.axes[self.axes_names['right_stick_ver']] * 1
+        self.base_des = data.axes[self.axes_names['left_stick_hor']] * 1
+        self.arm_des = data.axes[self.axes_names['left_stick_ver']] * 1
 
-        self.arm_out   = data.axes[self.axes_names['left_stick_ver']] * 60
-        self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * -60
+        if data.buttons[self.buttons_names['B']] == 1:
+            self.forearm_des = data.axes[self.axes_names['left_stick_ver']] * 1
 
+        self.wrist_des = data.axes[self.axes_names['right_stick_ver']] * 1
+        self.palm_des = data.axes[self.axes_names['right_stick_hor']] * 1
+
+        if data.axes[self.axes_names['RT']] != 1:
+            self.gripper_des = ((data.axes[self.axes_names['RT']] - 1) / 2) 
+        else:
+            self.gripper_des = ((data.axes[self.axes_names['LT']] - 1) / 2) * -1
+
+        # self.arm_out   = data.axes[self.axes_names['left_stick_ver']] * 60
+        # self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * -60
         
     def motorTractionUpdate(self):
 		       
@@ -153,6 +168,11 @@ class Control_interface:
     def motorArmUpdate(self):
 
         self.basePub.publish(self.base_rate)
+        self.armPub.publish(self.arm_des)
+        self.forearmPub.publish(self.forearm_des)
+        self.wristPub.publish(self.wrist_des)
+        self.palmPub.publish(self.palm_des)
+        self.wristPub.publish(self.wrist_des)
         # self.baseDebug.publish(int(self.base_rate * 20))
         # print "base: " + str(self.base_rate)
 
@@ -181,24 +201,24 @@ class Control_interface:
         else:
             self.bl_rate = 0
 
-        if self.little_arm_reset == 1:
-            if self.fr_active:
-                self.fr_rate = 0
-                self.frResetPub.publish(1)  
-            if self.fl_active:
-                self.fl_rate = 0
-                self.flResetPub.publish(1)
-            if self.br_active:
-                self.br_rate = 0
-                self.brResetPub.publish(1)
-            if self.bl_active:
-                self.bl_rate = 0
-                self.blResetPub.publish(1)
-        else:
-            self.frResetPub.publish(0)
-            self.flResetPub.publish(0)   
-            self.brResetPub.publish(0)       
-            self.blResetPub.publish(0)      
+        # if self.little_arm_reset == 1:
+        #     if self.fr_active:
+        #         self.fr_rate = 0
+        #         self.frResetPub.publish(1)  
+        #     if self.fl_active:
+        #         self.fl_rate = 0
+        #         self.flResetPub.publish(1)
+        #     if self.br_active:
+        #         self.br_rate = 0
+        #         self.brResetPub.publish(1)
+        #     if self.bl_active:
+        #         self.bl_rate = 0
+        #         self.blResetPub.publish(1)
+        # else:
+        #     self.frResetPub.publish(0)
+        #     self.flResetPub.publish(0)   
+        #     self.brResetPub.publish(0)       
+        #     self.blResetPub.publish(0)      
 
         self.frPub.publish(self.fr_rate * -1)
         self.flPub.publish(self.fl_rate * -1)
@@ -218,14 +238,13 @@ class Control_interface:
             if self.operation_mode == 'ArmControl':
                 # self.armPub.publish(self.arm_des)
                 # self.forearmPub.publish(self.forearm_des)
-                self.armOutPub.publish(self.arm_out)
-                self.forearmOutPub.publish(self.forearm_out)
-                self.basePub.publish(self.base_des)
+                # self.armOutPub.publish(self.arm_out)
+                # self.forearmOutPub.publish(self.forearm_out)
+                # self.basePub.publish(self.base_des)
+                self.motorArmUpdate()
             else:
                 self.motorTractionUpdate()
-                self.motorArmUpdate()
                 self.motorTractionArmUpdate()
-
                 self.offsetPub.publish(self.offset_val)
 
             r.sleep()

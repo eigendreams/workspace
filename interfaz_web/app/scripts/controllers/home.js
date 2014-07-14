@@ -104,7 +104,6 @@ angular.module('finderApp')
         console.log(line);
         switch (line) {
             case 1:
-                console.log("Entrón en case 1");
                 Ros.node.start('roscore');
                 $timeout( function () {
                     Ros.node.start('rosbridge');
@@ -117,14 +116,13 @@ angular.module('finderApp')
                 }, 4000);
                 break;
             case 2:
-                console.log("Entró en case 2");
                 Ros.node.start('rostractionarduino');
                 Ros.node.start('rostalonarduino');
                 Ros.node.start('rosarmarduino');
                 Ros.node.start('rossensorarduino');
+                Ros.node.start('rosirarduino');
                 break;
             case 3:
-                console.log("Entró en case 3");
                 Ros.node.start('rosleftnode');
                 Ros.node.start('rosrightnode');
                 Ros.node.start('rosbrnode');
@@ -133,52 +131,27 @@ angular.module('finderApp')
                 Ros.node.start('rosflnode');
                 break;
             case 4:
-                Ros.node.start('roscore');
-                $timeout( function () {
-                    Ros.node.start('rosbridge');
-                    $timeout( function () {
-                        Ros.node.start('rosalive');
-                        $timeout( function () {
-                            Ros.connect();
-                        }, 2000);
-                    }, 2000);
-                }, 4000);
+                Ros.node.start('rosbasenode');
+                Ros.node.start('rosarmnode');
+                Ros.node.start('rosforearmnode');
+                Ros.node.start('roswristnode');
+                Ros.node.start('rospalmnode');
+                Ros.node.start('rosgrippernode');
                 break;
             case 5:
-                Ros.node.start('roscore');
-                $timeout( function () {
-                    Ros.node.start('rosbridge');
-                    $timeout( function () {
-                        Ros.node.start('rosalive');
-                        $timeout( function () {
-                            Ros.connect();
-                        }, 2000);
-                    }, 2000);
-                }, 4000);
+                Ros.node.start('rosmjpegserver');
+                Ros.node.start('roscam');
                 break;
             case 6:
-                Ros.node.start('roscore');
-                $timeout( function () {
-                    Ros.node.start('rosbridge');
-                    $timeout( function () {
-                        Ros.node.start('rosalive');
-                        $timeout( function () {
-                            Ros.connect();
-                        }, 2000);
-                    }, 2000);
-                }, 4000);
+                Ros.node.start('roscontrol');
                 break;
             case 7:
-                Ros.node.start('roscore');
-                $timeout( function () {
-                    Ros.node.start('rosbridge');
-                    $timeout( function () {
-                        Ros.node.start('rosalive');
-                        $timeout( function () {
-                            Ros.connect();
-                        }, 2000);
-                    }, 2000);
-                }, 4000);
+                Ros.node.start('rosleftnode');
+                Ros.node.start('rosrightnode');
+                Ros.node.start('rosbrnode');
+                Ros.node.start('rosblnode');
+                Ros.node.start('rosfrnode');
+                Ros.node.start('rosflnode');
                 break;
         }
     }

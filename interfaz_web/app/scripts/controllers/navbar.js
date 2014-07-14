@@ -6,9 +6,11 @@ angular.module('finderApp')
     
     // console.log(Ros.isConnected());
 
-    $scope.state = 'Disconnected';
+    $scope.rosState = 'Disconnected';
     $scope.isConnected = false;
     $scope.isCommunicated = false;
+    $scope.laptopBattery = 0;
+    $scope.robotBattery = 0;
     // $scope.isServerConnnected = Ros.isServerConnnected;
     // $scope.laptopBattery = '0%';
     // Ros.connect(9090);
@@ -31,7 +33,6 @@ angular.module('finderApp')
     // }, 1000);
 
     $scope.getRosState = Ros.getRosState;
-    $scope.serverConnected = true;
 
     $scope.$watch('getRosState()', function(newVal) {
       // console.log("New Data", newVal);
@@ -48,6 +49,16 @@ angular.module('finderApp')
 
     $scope.rosDisconnect = function () { Ros.disconnect(); };
     $scope.rosConnect = function () { Ros.connect(); };
+
+    $interval(function () {
+
+        if ($scope.rosState === 'Connected') {
+
+          $scope.laptopBattery = Ros.topic.getData('batteryLevel');
+          $scope.robotBattery = Ros.topic.getData('volt');
+        }
+
+    }, 3000);
 
     // $scope.checkLaptopBattery = function () { 
     //   $http.get('/api/battery').
@@ -69,15 +80,6 @@ angular.module('finderApp')
     }, {
       'title': 'Settings',
       'link': '/settings'
-    }, {
-      'title': 'Ros Test',
-      'link': '/ros_test'
-    }, {
-      'title': 'Ros Nodes',
-      'link': '/ros_nodes'
-    }, {
-      'title': 'Topics',
-      'link': '/topics'
     }];
     
     $scope.logout = function() {
