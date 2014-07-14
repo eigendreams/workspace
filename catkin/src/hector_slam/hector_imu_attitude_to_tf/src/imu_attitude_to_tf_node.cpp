@@ -82,6 +82,7 @@ int main(int argc, char **argv) {
   transform_.frame_id_ = p_base_stabilized_frame_;
   transform_.child_frame_id_ = p_base_frame_;
 
+  base_ang_data = 0;
   ros::Subscriber imu_subscriber = n.subscribe("imu_topic", 10, imuMsgCallback);
   ros::Subscriber base_ang_sub = n.subscribe("base_ang", 10, baseAngCb);
 
