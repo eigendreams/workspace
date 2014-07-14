@@ -31,8 +31,10 @@ bool timedOut = false;
 void left_out_cb(const std_msgs::Int16& dmsg) {left_out = dmsg.data;}
 void right_out_cb(const std_msgs::Int16& dmsg) {right_out = dmsg.data;}
 void alive_cb(const std_msgs::Int16& dmsg) {
+	if (dmsg.data) {
 	milisLastMsg = millis();
 	timedOut = false;
+	}
 }
 ros::Subscriber<std_msgs::Int16> left_out_sub("left_out", left_out_cb);
 ros::Subscriber<std_msgs::Int16> right_out_sub("right_out", right_out_cb);

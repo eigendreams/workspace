@@ -21,8 +21,10 @@ unsigned long milisLastMsg = 0;
 bool timedOut = false;
 void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void alive_cb(const std_msgs::Int16& dmsg) {
-  milisLastMsg = millis();
-  timedOut = false;
+	if (dmsg.data) {
+  	milisLastMsg = millis();
+  	timedOut = false;
+	}
 }
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);

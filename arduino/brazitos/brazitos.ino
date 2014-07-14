@@ -186,8 +186,10 @@ void fl_out_cb(const std_msgs::Int16& dmsg) {fl_out = dmsg.data;}
 void br_out_cb(const std_msgs::Int16& dmsg) {br_out = dmsg.data;}
 void bl_out_cb(const std_msgs::Int16& dmsg) {bl_out = dmsg.data;}
 void alive_cb( const std_msgs::Int16& dmsg) {
+  if (dmsg.data){
   milisLastMsg = millis();
   timedOut = false;
+  }
 }
 ros::Subscriber<std_msgs::Int16> fr_out_sub("fr_out", fr_out_cb);
 ros::Subscriber<std_msgs::Int16> fl_out_sub("fl_out", fl_out_cb);

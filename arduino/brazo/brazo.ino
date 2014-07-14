@@ -78,8 +78,10 @@ void wrist_out_cb(const std_msgs::Int16& dmsg) {wrist_out = dmsg.data;}
 void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
 void alive_cb(const std_msgs::Int16& dmsg) {
-  milisLastMsg = millis();
-  timedOut = false;
+	if (dmsg.data) {
+  	milisLastMsg = millis();
+  	timedOut = false;
+	}
 }
 
 ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
