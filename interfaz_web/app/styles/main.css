@@ -110,6 +110,12 @@ canvas {
     height: 100%;
 }
 
+.camera-container-horizontal img {
+  margin: 0 -2px;
+  padding: 0;
+  /*float: left;*/
+  display: inline-block;
+}
 
 
 .sensor-container .ir-sensor {
@@ -139,81 +145,6 @@ canvas {
   }
 }
 
-
-/* slider */
-
-slider {
-  display:     block;
-  position:    relative;
-  height:      30px;
-  width:       500px;
-}
-
-slider span.bar {
-  height:     50%;
-  z-index:    0;
-  background: #eee;
-  left:       0;
-  top:        25%;
-  cursor:     pointer;
-}
-
-slider span.bar.selection, slider span.bar.unselected {
-}
-
-slider span.bar.selection {
-  background: #0a0;
-  opacity:    0.5;
-}
-
-slider span.bar.unselected {
-  width:      auto;
-  background: #a00;
-  opacity:    0.5;
-}
-
-slider span.pointer {
-  cursor:           pointer;
-  width:            15px;
-  top:              0;
-  bottom:           0;
-  background-color: #00a;
-}
-
-slider span.pointer:hover {
-}
-
-slider span.pointer.active {
-}
-
-slider span.bubble {
-  font-size:   0.7em;
-  line-height: 1.4em;
-  font-family: sans-serif;
-  text-align:  center;
-  text-shadow: none;
-  top:         3.3em;
-  cursor:      pointer;
-}
-
-slider span.bubble.selection, slider span.bubble.limit {
-  top: 25%;
-}
-
-slider span.bubble.selection {
-}
-
-slider span.bubble.limit {
-}
-
-slider span.bubble.low, slider span.bubble.high {
-}
-
-::-ms-tooltip {
-  display: none;
-}
-
-
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
 
@@ -228,6 +159,23 @@ slider span.bubble.low, slider span.bubble.high {
 @media (min-width: 1200px) {
   .map-container {
     height: 300px;
+    overflow: auto;
+
+  }
+
+  .map-container img {
+
+  }
+
+  .camera-container-horizontal img {
+    margin: 0;
+    padding: 0;
+    float: left;
+  }
+  .camera-frame-horizontal {
+    margin: 0 auto;
+    width: 600px;
+    overflow: auto;
   }
 
   .nodes-container {

@@ -74,7 +74,6 @@
           {{topic}}
         </li>
       </ul> -->
-      Mapa
       <!-- <div id="map"></div> -->
       <img class="img-responsive" src="images/map.jpg" />
     </div>
@@ -108,12 +107,12 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <p><img style="max-height: 150px" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_1/image_raw?quality={{videoQuality}}"></p>
+              <p><img style="max-height: 150px" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_1/image_raw?quality={{videoQuality}}?{{videoReset}}"></p>
             </div>
           </div>
         </div>
         <div class="col-md-3 complete-height center">
-          <div class="btn btn-info add-victim">
+          <div class="btn btn-info add-victim" ng-click="publishData('addVictim', 1)">
             Add<br>Victim
           </div>
         </div>
@@ -155,17 +154,17 @@
         </div>
         <div class="col-lg-4"></div> 
       </div> -->
-      <div class="row">
+      <div class="row camera-container-horizontal">
         <!-- <div class="col-lg-2"></div> -->
-        <div class="col-lg-6 col-sm-6">
+        <div class="col-lg-12 col-sm-12">
+          <div class="camera-frame-horizontal">
           <img style="height: 220px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video1}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
-        </div>
-        <div class="col-lg-6 col-sm-6">
           <img style="height: 220px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video2}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
+          </div>
         </div>
         <!-- <div class="col-lg-2"></div> -->
       </div>
-      <div class="row">
+      <div class="row camera container-vertical">
         <!-- <div class="col-lg-2"></div> -->
         <div class="col-lg-6 col-sm-6">
           <img style="height: 220px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video3}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
@@ -191,7 +190,7 @@
       <p class="">
         <button type="button" class="btn btn-primary" ng-click="videoReset = !videoReset">Reiniciar camaras</button>
       </p>
-      <p class="">
+      <!-- <p class="">
         <button type="button" class="btn btn-primary" ng-click="initMap()">Iniciar mapa</button>
       </p>
       <p class="">
@@ -201,13 +200,7 @@
         <button type="button" class="btn btn-primary" ng-click="viewer.shift(0,2)">Abajo</button>
         <button type="button" class="btn btn-primary" ng-click="scaleMap(0.1)">Acercar</button>
         <button type="button" class="btn btn-primary" ng-click="scaleMap(-0.1)">Alejar</button>
-      </p>
-      <p class="">
-        <button type="button" class="btn btn-primary">Encender led</button>
-      </p>
-      <p class="">
-        {{video1}} {{video2}} {{video3}} {{video4}}
-      </p>
+      </p> -->
       <div class="row">
         <div class="col-lg-6 col-sm-6">
           <p><select class="form-control" ng-model="video1">
@@ -247,6 +240,14 @@
       <div class="row">
         <div class="col-lg-12">
           <p><div slider config="sliderConfig" model="videoQuality" class="cdbl-slider"></div></p>
+        </div>
+      </div>
+      <p class="">
+        <button type="button" class="btn btn-primary">Encender led</button>
+      </p>
+      <div class="row">
+        <div class="col-lg-12">
+          <p><div slider config="sliderLedsConfig" model="ledsValue" class="cdbl-slider"></div></p>
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    var serverIP = "192.168.88.247";
-    // var serverIP = "localhost";
+    // var serverIP = "192.168.88.247";
+    var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -302,6 +302,41 @@ angular.module('finderApp')
             // topics.baseDes.topic.unsubscribe();
           });
         }
+      },
+      addVictim: {
+        name: '/add_victim',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {},
+        publish: function (data) {
+          var message = new ROSLIB.Message ({
+            data: 1
+          });
+          this.topic.publish(message);
+          console.log("Se va a publicar en victim");
+          console.log(message);
+          $timeout( function () {
+            var message = new ROSLIB.Message ({
+              data: 0
+            });
+            topics.addVictim.topic.publish(message);
+          }, 5000);
+        }
+      },
+      leds: {
+        name: '/leds',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {},
+        publish: function (data) {
+          var message = new ROSLIB.Message ({
+            data: data
+          });
+          console.log("Se va a publicar en leds " + message);
+          this.topic.publish(message);
+        }
       }
 
     };
@@ -452,6 +487,10 @@ angular.module('finderApp')
         },
         getData: function (topic) {
           return topics[topic].value;
+        },
+        publishData: function (topic, data) {
+          console.log("Se va a publicar data");
+          topics[topic].publish(data);
         },
         getNames: function () {
           var topicNames = {};
