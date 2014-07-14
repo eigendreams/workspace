@@ -18,17 +18,6 @@ angular.module('finderApp')
     $scope.video3 = 1;
     $scope.video4 = 1;
 
-
-     
-    $scope.$on('rosStateChanged', function() {
-        // console.log('nodes actualizado desde home');
-        // $scope.serverConnected = Ros.isServerConnnected();
-        // console.log('El servidor esta: '+Ros.serverConnected());
-        // $scope.serverState = Ros.getServerState();
-        //}
-      // console.log($scope.serverState);
-    });   
-
     $scope.listenerGroup = {
         groupOne : {
             baseDes: 0, 
@@ -104,20 +93,87 @@ angular.module('finderApp')
         }
     };
 
-    $scope.startNodes = function (nodes) {
-        // for (var i=0; i<nodes.length-1; i++) {
-            // console.log(nodes[i]);
-            Ros.node.start('roscore');
-            $timeout( function () {
-                Ros.node.start('rosbridge');
+    $scope.startNodes = function (line) {
+        console.log(line);
+        switch (line) {
+            case 1:
+                console.log("Entrón en case 1");
+                Ros.node.start('roscore');
                 $timeout( function () {
-                    Ros.node.start('rosalive');
+                    Ros.node.start('rosbridge');
                     $timeout( function () {
-                        Ros.connect();
+                        Ros.node.start('rosalive');
+                        $timeout( function () {
+                            Ros.connect();
+                        }, 2000);
                     }, 2000);
-                }, 2000);
-            }, 4000);
-        // }
+                }, 4000);
+                break;
+            case 2:
+                console.log("Entró en case 2");
+                Ros.node.start('rostractionarduino');
+                Ros.node.start('rostalonarduino');
+                Ros.node.start('rosarmarduino');
+                Ros.node.start('rossensorarduino');
+                break;
+            case 3:
+                console.log("Entró en case 3");
+                Ros.node.start('rosleftnode');
+                Ros.node.start('rosrightnode');
+                Ros.node.start('rosbrnode');
+                Ros.node.start('rosblnode');
+                Ros.node.start('rosfrnode');
+                Ros.node.start('rosflnode');
+                break;
+            case 4:
+                Ros.node.start('roscore');
+                $timeout( function () {
+                    Ros.node.start('rosbridge');
+                    $timeout( function () {
+                        Ros.node.start('rosalive');
+                        $timeout( function () {
+                            Ros.connect();
+                        }, 2000);
+                    }, 2000);
+                }, 4000);
+                break;
+            case 5:
+                Ros.node.start('roscore');
+                $timeout( function () {
+                    Ros.node.start('rosbridge');
+                    $timeout( function () {
+                        Ros.node.start('rosalive');
+                        $timeout( function () {
+                            Ros.connect();
+                        }, 2000);
+                    }, 2000);
+                }, 4000);
+                break;
+            case 6:
+                Ros.node.start('roscore');
+                $timeout( function () {
+                    Ros.node.start('rosbridge');
+                    $timeout( function () {
+                        Ros.node.start('rosalive');
+                        $timeout( function () {
+                            Ros.connect();
+                        }, 2000);
+                    }, 2000);
+                }, 4000);
+                break;
+            case 7:
+                Ros.node.start('roscore');
+                $timeout( function () {
+                    Ros.node.start('rosbridge');
+                    $timeout( function () {
+                        Ros.node.start('rosalive');
+                        $timeout( function () {
+                            Ros.connect();
+                        }, 2000);
+                    }, 2000);
+                }, 4000);
+                break;
+        }
     }
 
     $scope.toggleVideoQuality = function () {
@@ -163,5 +219,100 @@ angular.module('finderApp')
         }
 
     }, 200);
+
+
+    // $scope.viewer;
+    $scope.mapscale = 1;
+    $scope.gridClient;
+
+    $scope.scaleMap = function (rate) {
+        $scope.mapscale += rate;
+        // $scope.viewer.scaleToDimensions($scope.gridClient.currentGrid.width * $scope.mapscale, $scope.gridClient.currentGrid.height * $scope.mapscale);
+        // $scope.viewer.scaleToDimensions($scope.gridClient.currentGrid.width * 0.9, $scope.gridClient.currentGrid.height * 0.9);
+        $scope.viewer.scaleToDimensions(10, 10);
+    };
+
+    $scope.initMap = function () {
+
+        // Create the main viewer.
+        $("#map").empty();
+        $scope.viewer = new ROS2D.Viewer({
+            divID : 'map',
+            width : 600,
+            height : 300
+        });
+        
+
+        // Setup the map client.
+        $scope.gridClient = new OccupancyGridSrvClient({
+            ros : Ros.ros,
+            rootObject : $scope.viewer.scene,
+            service: '/map'
+        });
+
+        // var gridClient = new ROS2D.OccupancyGridClient({
+        //     ros : Ros.ros,
+        //     rootObject : $scope.viewer.scene,
+        //     topic: '/map',
+        //     continuous: true
+        // });
+
+        // $scope.viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+
+        // var grid = new ROS2D.OccupancyGrid;
+        // Scale the canvas to fit to the map
+        $scope.gridClient.on('change', function(){
+            console.log("El mapa cambió");
+            // $scope.viewer.scaleToDimensions($scope.gridClient.currentGrid.width, $scope.gridClient.currentGrid.height);
+            // console.log(gridClient.currentGrid.width);
+            // console.log(gridClient.currentGrid.height);
+            // // $scope.viewer.shift(30,30);
+            // $scope.viewer.shift(-1 * $scope.gridClient.currentGrid.width / 2 , -1 * $scope.gridClient.currentGrid.height / 2);
+        });
+
+        // $scope.viewer.shift(-1 * $scope.gridClient.currentGrid.width / 2 , -1 * $scope.gridClient.currentGrid.height / 2);
+    };
+
+    var OccupancyGridSrvClient = function(options) {
+        var that = this;
+        options = options || {};
+        var ros = options.ros;
+        var service = options.service || '/static_map';
+        this.rootObject = options.rootObject || new createjs.Container();
+
+        // current grid that is displayed
+        this.currentGrid = null;
+
+        // Setting up to the service
+        var rosService = new ROSLIB.Service({
+            ros : ros,
+            name : service,
+            serviceType : 'nav_msgs/GetMap',
+            compression : 'png'
+        });
+
+
+        $interval(function () {
+            console.log("Se inicio interval para el servicio");
+            rosService.callService(new ROSLIB.ServiceRequest(),function(response) {
+                // check for an old map
+                if (that.currentGrid) {
+                    that.rootObject.removeChild(that.currentGrid);
+                }
+
+                that.currentGrid = new ROS2D.OccupancyGrid({
+                    message : response.map
+                });
+                that.rootObject.addChild(that.currentGrid);
+
+                that.emit('change', that.currentGrid);
+            });
+        }, 2000);
+
+    };
+
+    OccupancyGridSrvClient.prototype.__proto__ = EventEmitter2.prototype;
+
+
 
   });

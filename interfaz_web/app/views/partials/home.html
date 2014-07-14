@@ -5,7 +5,7 @@
     <div class="col-md-4 well well-sm nodes-container">
       <div class="">
         <div class="btn-group btn-group-sm">
-          <a class="btn btn-info btn-group-title" ng-click="startNodes(['roscore','rosbridge','rosalive'])">Comunicación</a>
+          <a class="btn btn-info btn-group-title" ng-click="startNodes(1)">Comunicación</a>
           <a class="btn" ng-class="{'btn-default':(nodes.roscore!=='1'),'btn-success':(nodes.roscore==='1')}" ng-click="toggleNode('roscore')">Roscore</a>
           <a class="btn" ng-class="{'btn-default':(nodes.rosbridge!=='1'),'btn-success':(nodes.rosbridge==='1')}" ng-click="toggleNode('rosbridge')">Rosbridge</a>
           <a class="btn" ng-class="{'btn-default':(nodes.rosalive!=='1'),'btn-success':(nodes.rosalive==='1')}" ng-click="toggleNode('rosalive')">Rosalive</a>
@@ -14,7 +14,7 @@
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Arduinos</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(2)">Arduinos</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rostractionarduino!=='1'),'btn-success':(nodes.rostractionarduino==='1')}" ng-click="toggleNode('rostractionarduino')">Traction</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rostalonarduino!=='1'),'btn-success':(nodes.rostalonarduino==='1')}" ng-click="toggleNode('rostalonarduino')">Talon</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosarmarduino!=='1'),'btn-success':(nodes.rosarmarduino==='1')}" ng-click="toggleNode('rosarmarduino')">Arm</a>
@@ -24,7 +24,7 @@
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Motores Base</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(3)">Motores Base</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosleftnode!=='1'),'btn-success':(nodes.rosleftnode==='1')}" ng-click="toggleNode('rosleftnode')">Left</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosrightnode!=='1'),'btn-success':(nodes.rosrightnode==='1')}" ng-click="toggleNode('rosrightnode')">Right</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosbrnode!=='1'),'btn-success':(nodes.rosbrnode==='1')}" ng-click="toggleNode('rosbrnode')">Arm br</a>
@@ -75,6 +75,7 @@
         </li>
       </ul> -->
       Mapa
+      <div id="map"></div>
     </div>
 
     <div class="col-md-3 well well-sm sensor-container">
@@ -187,7 +188,18 @@
         <button type="button" class="btn btn-primary">Iniciar voz</button>
       </p>
       <p class="">
-        <button type="button" class="btn btn-primary" ng-click="videoReset = !videoReset">Reiniciar camaras {{videoReset}}</button>
+        <button type="button" class="btn btn-primary" ng-click="videoReset = !videoReset">Reiniciar camaras</button>
+      </p>
+      <p class="">
+        <button type="button" class="btn btn-primary" ng-click="initMap()">Iniciar mapa</button>
+      </p>
+      <p class="">
+        <button type="button" class="btn btn-primary" ng-click="viewer.shift(2,0)">Derecha</button>
+        <button type="button" class="btn btn-primary" ng-click="viewer.shift(-2,0)">Izquierda</button>
+        <button type="button" class="btn btn-primary" ng-click="viewer.shift(0,-2)">Arriba</button>
+        <button type="button" class="btn btn-primary" ng-click="viewer.shift(0,2)">Abajo</button>
+        <button type="button" class="btn btn-primary" ng-click="scaleMap(0.1)">Acercar</button>
+        <button type="button" class="btn btn-primary" ng-click="scaleMap(-0.1)">Alejar</button>
       </p>
       <p class="">
         <button type="button" class="btn btn-primary">Encender led</button>
