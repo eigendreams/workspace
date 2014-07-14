@@ -34,7 +34,7 @@ class Tif2jpg:
 		
         #self.bat_level = int((re.search('[0-9]*\%',(os.popen('acpi -b', 'r')).readline())).group(0)[:-1])
         #self.batPub.publish(self.bat_level)
-        subprocess.call(["convert", '/home/jakob/workspace/interfaz_web/app/images/map.tif', '/home/jakob/workspace/interfaz_web/app/images/map.jpg'])
+        subprocess.call(["convert", '~/workspace/catkin/src/finder/maps/hecto_slam_map.tif', '~/workspace/interfaz_web/app/images/map.jpg'])
 
     def spin(self):
 		

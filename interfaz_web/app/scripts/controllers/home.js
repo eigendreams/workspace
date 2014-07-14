@@ -17,6 +17,7 @@ angular.module('finderApp')
     $scope.video2 = 1;
     $scope.video3 = 1;
     $scope.video4 = 1;
+    $scope.ledsValue = 0;
 
     $scope.listenerGroup = {
         groupOne : {
@@ -60,6 +61,12 @@ angular.module('finderApp')
         step: 2
     }
     
+    $scope.sliderLedsConfig = {
+        min: 0,
+        max: 255,
+        step: 15
+    }
+
     $scope.setPrice = function(price) {
         $scope.price = price;    
     }
@@ -187,7 +194,7 @@ angular.module('finderApp')
 
     $scope.$on('nodesUpdated', function() {
         $scope.nodes = Ros.node.getNodes();
-    	// console.log($scope.nodes);
+        // console.log($scope.nodes);
         // $scope.rosState = Ros.getRosState();
     });
 
@@ -219,6 +226,16 @@ angular.module('finderApp')
         }
 
     }, 200);
+
+    $scope.publishData = function (topic, data) {
+        console.log("publishData");
+        Ros.topic.publishData(topic, data);
+    }
+
+    $scope.$watch('ledsValue', function() {
+        console.log('hey, myVar has changed! ' + $scope.ledsValue);
+        Ros.topic.publishData('leds', $scope.ledsValue);
+    });
 
 
     // $scope.viewer;
