@@ -67,7 +67,10 @@ public:
   {
     pn_.param("map_file_path", p_map_file_path_, std::string("."));
     geotiff_writer_.setMapFilePath(p_map_file_path_);
-    geotiff_writer_.setUseUtcTimeSuffix(true);
+    
+    ////////////////////////////////////////////////////////////////////////////
+    geotiff_writer_.setUseUtcTimeSuffix(false);
+    ////////////////////////////////////////////////////////////////////////////
 
     pn_.param("map_file_base_name", p_map_file_base_name_, std::string());
 
