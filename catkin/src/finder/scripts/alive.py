@@ -27,7 +27,7 @@ class Alive:
 
         # Publicación de la batería como entero
         self.alivePub = rospy.Publisher('alive', Int16)  
-        slef.voltSub = rospy.Subscriber('volt', Int16, voltCb)  
+        self.voltSub = rospy.Subscriber('volt', Int16, self.voltCb)  
 
     def voltCb(self, data):
 

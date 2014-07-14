@@ -22,12 +22,12 @@ class Wrist_node:
         #TODO cambiar por parametros
         self.wrist_enc_ana = False
         self.wrist_enc_max = 1008
-        self.wrist_offset = 146
+        self.wrist_offset = 590
 
         """COSTANTES"""
         """kevin test"""
         # PID control parameters
-        self.kp_pos = 25
+        self.kp_pos = 33
         self.ki_pos = 1
         self.kd_pos = 0
         self.km_pos = 0
@@ -252,7 +252,7 @@ class Wrist_node:
 
     def update(self):
 
-        self.wristOutPub.publish(self.wrist_out)
+        self.wristOutPub.publish(-self.wrist_out)
         self.wristAngPub.publish(self.wrist_ang)
         self.wristVelPub.publish(self.wrist_vel)
 
