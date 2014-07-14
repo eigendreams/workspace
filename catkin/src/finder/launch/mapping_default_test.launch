@@ -15,6 +15,7 @@
   <node pkg="tf" type="static_transform_publisher" name="laser_node_6" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_7" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 
   <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/>-->
+  <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_stabilized_frame 100"/>-->
   <node pkg="tf" type="static_transform_publisher" name="laser_node_9" args="0 0 0 0 0 0 /base_frame /laser 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_10" args="0 0 0 0 0 0 /base_frame /nav 100"/>
 

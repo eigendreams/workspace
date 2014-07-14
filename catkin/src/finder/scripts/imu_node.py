@@ -57,6 +57,18 @@ class Imu_node:
 
         self.imuSub = rospy.Subscriber("imu_data", float32_12, self.imuDataCb)
 
+        self.yaw = 0.001
+        self.pitch = 0.001
+        self.roll = 0.001
+        self.q = tf.transformations.quaternion_from_euler(self.roll,self.pitch,self.yaw)
+        self.imuMsg.orientation.x = self.q[0]
+        self.imuMsg.orientation.y = self.q[1]
+        self.imuMsg.orientation.z = self.q[2]
+        self.imuMsg.orientation.w = self.q[3]
+        self.imuMsg.header.stamp= rospy.Time.now()
+        self.imuMsg.header.frame_id = 'base_link'
+        self.imuPub.publish(self.imuMsg)
+
 
     def imuDataCb(self, data):
 
@@ -72,11 +84,12 @@ class Imu_node:
         self.imuMsg.orientation.w = self.q[3]
         self.imuMsg.header.stamp= rospy.Time.now()
         self.imuMsg.header.frame_id = 'base_link'
-        self.imuPub.publish(self.imuMsg)
+        
 
     def update(self):
 
-        pass
+        self.imuMsg.header.stamp= rospy.Time.now()
+        self.imuPub.publish(self.imuMsg)
 
     def spin(self):
 
