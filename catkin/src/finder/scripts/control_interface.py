@@ -127,10 +127,12 @@ class Control_interface:
         self.offset_val = data.buttons[self.buttons_names['Y']]
 
         self.base_des = data.axes[self.axes_names['left_stick_hor']] * 1
-        self.arm_des = data.axes[self.axes_names['left_stick_ver']] * 1
+
+        if data.buttons[self.buttons_names['B']] == 0:        
+            self.arm_des = data.axes[self.axes_names['left_stick_ver']] * 100
 
         if data.buttons[self.buttons_names['B']] == 1:
-            self.forearm_des = data.axes[self.axes_names['left_stick_ver']] * 1
+            self.forearm_des = data.axes[self.axes_names['left_stick_ver']] * 100
 
         self.wrist_des = data.axes[self.axes_names['right_stick_ver']] * 1
         self.palm_des = data.axes[self.axes_names['right_stick_hor']] * 1
@@ -167,12 +169,12 @@ class Control_interface:
 
     def motorArmUpdate(self):
 
-        self.basePub.publish(self.base_rate)
+        self.basePub.publish(self.base_des)
         self.armPub.publish(self.arm_des)
         self.forearmPub.publish(self.forearm_des)
         self.wristPub.publish(self.wrist_des)
         self.palmPub.publish(self.palm_des)
-        self.wristPub.publish(self.wrist_des)
+        self.gripperPub.publish(self.gripper_des)
         # self.baseDebug.publish(int(self.base_rate * 20))
         # print "base: " + str(self.base_rate)
 

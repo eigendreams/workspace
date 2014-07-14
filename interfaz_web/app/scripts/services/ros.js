@@ -169,6 +169,19 @@ angular.module('finderApp')
           });
         }
       },
+      wristDes: {
+        name: '/wrist_des',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.wristDes.value = message.data;
+            topics.wristDes.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
       palmOut: {
         name: '/palm_out',
         type: 'std_msgs/Int16',
@@ -182,6 +195,19 @@ angular.module('finderApp')
           });
         }
       },
+      palmDes: {
+        name: '/palm_des',
+        type: 'std_msgs/Float32',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.palmDes.value = message.data;
+            topics.palmDes.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
       gripperOut: {
         name: '/gripper_out',
         type: 'std_msgs/Int16',
@@ -191,6 +217,19 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.gripperOut.value = message.data;
             topics.gripperOut.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
+      gripperDes: {
+        name: '/gripper_des',
+        type: 'std_msgs/Float32',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.gripperDes.value = message.data;
+            topics.gripperDes.active = false;
             // topics.armOut.topic.unsubscribe();
           });
         }

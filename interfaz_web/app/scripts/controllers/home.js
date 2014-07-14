@@ -50,8 +50,11 @@ angular.module('finderApp')
             armOut: 0,
             forearmOut: 0,
             wristOut: 0,
+            wristDes: 0,
             palmOut: 0,
-            gripperOut: 0
+            palmDes: 0,
+            gripperOut: 0,
+            gripperDes: 0
         }
     }
 
@@ -146,12 +149,8 @@ angular.module('finderApp')
                 Ros.node.start('roscontrol');
                 break;
             case 7:
-                Ros.node.start('rosleftnode');
-                Ros.node.start('rosrightnode');
-                Ros.node.start('rosbrnode');
-                Ros.node.start('rosblnode');
-                Ros.node.start('rosfrnode');
-                Ros.node.start('rosflnode');
+                Ros.node.start('rosbatterymonitor');
+                Ros.node.start('rosirnode');
                 break;
         }
     }
@@ -186,7 +185,7 @@ angular.module('finderApp')
             }
 
             for (var topic in $scope.listenerGroup['groupArm']) {
-                if (topic == 'baseDes') {
+                if (topic == 'baseDes' || topic == 'gripperDes' || topic == 'wristDes' || topic == 'palmDes') {
                     $scope.listenerGroup['groupArm'][topic] = Ros.topic.getData(topic).toFixed(2);
                 } else {
                     $scope.listenerGroup['groupArm'][topic] = Ros.topic.getData(topic);
