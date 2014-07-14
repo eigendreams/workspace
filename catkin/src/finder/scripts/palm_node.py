@@ -64,7 +64,7 @@ class Palm_node:
         # coversion a radianes
         self.palm_ang = self.palm_out * 3.1416 / 200.
 
-        self.palmOutPub.publish(int(self.palm_out)
+        self.palmOutPub.publish(int(self.palm_out))
         self.palmAngPub.publish(self.palm_ang)
         self.palmVelPub.publish(self.palm_vel)
 

@@ -64,7 +64,7 @@ class Gripper_node:
         # coversion a radianes
         self.gripper_ang = self.gripper_out * 3.1416 / 200.
 
-        self.gripperOutPub.publish(int(self.gripper_out)
+        self.gripperOutPub.publish(int(self.gripper_out))
         self.gripperAngPub.publish(self.gripper_ang)
         self.gripperVelPub.publish(self.gripper_vel)
 
