@@ -53,7 +53,7 @@ class Gripper_node:
 
     def update(self):
 
-        if (abs(self.gripper_vel_des) < 0.1):
+        if (abs(self.gripper_vel) < 0.1):
             # Mantiene posicion constante
             self.gripper_out = self.gripper_out
         else:

@@ -53,7 +53,7 @@ class Palm_node:
 
     def update(self):
 
-        if (abs(self.palm_vel_des) < 0.1):
+        if (abs(self.palm_vel) < 0.1):
             # Mantiene posicion constante
             self.palm_out = self.palm_out
         else:
