@@ -35,7 +35,7 @@
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Motores Brazo</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(4)">Motores Brazo</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosbasenode!=='1'),'btn-success':(nodes.rosbasenode==='1')}" ng-click="toggleNode('rosbasenode')">Base</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosarmnode!=='1'),'btn-success':(nodes.rosarmnode==='1')}" ng-click="toggleNode('rosarmnode')">Arm</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosforearmnode!=='1'),'btn-success':(nodes.rosforearmnode==='1')}" ng-click="toggleNode('rosforearmnode')">Forearm</a>
@@ -46,20 +46,20 @@
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Video</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(5)">Video</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosmjpegserver!=='1'),'btn-success':(nodes.rosmjpegserver==='1')}" ng-click="toggleNode('rosmjpegserver')">Mjpeg Server</a>
         <a class="btn" ng-class="{'btn-default':(nodes.roscam!=='1'),'btn-success':(nodes.roscam==='1')}" ng-click="toggleNode('roscam')">Camaras</a>
       </div>
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Control</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(6)">Control</a>
         <a class="btn" ng-class="{'btn-default':(nodes.roscontrol!=='1'),'btn-success':(nodes.roscontrol==='1')}" ng-click="toggleNode('roscontrol')">Nodo de control</a>
       </div>
       </div>
       <div class="">
       <div class="btn-group btn-group-sm">
-        <a class="btn btn-info btn-group-title" ng-click="startNodes()">Sensores</a>
+        <a class="btn btn-info btn-group-title" ng-click="startNodes(7)">Sensores</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosbatterymonitor!=='1'),'btn-success':(nodes.rosbatterymonitor==='1')}" ng-click="toggleNode('rosbatterymonitor')">Monitor de batería</a>
         <a class="btn" ng-class="{'btn-default':(nodes.rosirnode!=='1'),'btn-success':(nodes.rosirnode==='1')}" ng-click="toggleNode('rosirnode')">Nodo sensor térmico</a>
         <a class="btn" ng-class="{'btn-default':(nodes.roslasernode!=='1'),'btn-success':(nodes.roslasernode==='1')}" ng-click="toggleNode('roslasernode')">SLAM</a>
