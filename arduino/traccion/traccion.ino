@@ -43,14 +43,10 @@ std_msgs::Int16 right_lec_msg;
 ros::Publisher left_lec_pub("left_lec", &left_lec_msg);
 ros::Publisher right_lec_pub("right_lec", &right_lec_msg);
 
-/*std_msgs::Int16 a2_lec;
-std_msgs::Int16 a3_lec;
-std_msgs::Int16 a4_lec;
-std_msgs::Int16 a5_lec;
-ros::Publisher a2_pub("traction_a2_lec", &a2_lec);
-ros::Publisher a3_pub("traction_a3_lec", &a3_lec);
-ros::Publisher a4_pub("traction_a4_lec", &a4_lec);
-ros::Publisher a5_pub("traction_a5_lec", &a5_lec);*/
+std_msgs::Int16 batt_v_msg;
+std_msgs::Int16 mot_a_msg;
+ros::Publisher batt_v_pub("volt", &batt_v_msg);
+ros::Publisher mot_a_pub("amp", &mot_a_msg);
 
 void setup() {
 	// Configurando pines
@@ -68,15 +64,20 @@ void setup() {
 
 	// Suscribiendo y publicando
 	nh.subscribe(left_out_sub);
+	delay(1);
 	nh.subscribe(right_out_sub);
+	delay(1);
 	nh.subscribe(alive_sub);
+	delay(1);
 	nh.advertise(left_lec_pub);
+	delay(1);
 	nh.advertise(right_lec_pub);
 
-	/*nh.advertise(a2_pub);
-	nh.advertise(a3_pub);
-	nh.advertise(a4_pub);
-	nh.advertise(a5_pub);*/
+    delay(1);
+	nh.advertise(batt_v_pub);
+	delay(1);
+	nh.advertise(mot_a_pub);
+	delay(1);
 
 	// Inicializa los motores y encoders
 	LEFT.begin();
@@ -90,7 +91,7 @@ void loop() {
 
 	unsigned long milisNow = millis();
 
-	// 20 Hz / 50 ms operation is best, it seems
+	// 20 Hz / 1 ms operation is best, it seems
 	if (milisNow - milisLast >= 100) {
 
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
@@ -113,15 +114,16 @@ void loop() {
 		left_lec_pub.publish(&left_lec_msg);
 		right_lec_pub.publish(&right_lec_msg);
 
-		/*a2_lec.data = analogRead(A2);
-		a3_lec.data = analogRead(A3);
-		a4_lec.data = analogRead(A4);
-		a5_lec.data = analogRead(A5);
+		int lec_v  = analogRead(A1);
+		int lec_a1 = analogRead(A2);
+		int lec_a2 = analogRead(A4);
 
-		a2_pub.publish(&a2_lec);
-		a3_pub.publish(&a3_lec);
-		a4_pub.publish(&a4_lec);
-		a5_pub.publish(&a5_lec);*/
+		batt_v_msg.data = 1000 * ((5. * lec_v) / 1024.)  / (0.06369);
+		mot_a_msg.data = 1000 * ((5. * lec_a1) / 1024.)  / (0.01830) + 1000 * ((5. * lec_a2) / 1024.)  / (0.01830);
+
+ 		delay(1);
+		batt_v_pub.publish(&batt_v_msg);
+		mot_a_pub.publish(&mot_a_msg);
 
 		milisLast = milisNow;
 	}
