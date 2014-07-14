@@ -169,6 +169,19 @@ angular.module('finderApp')
           });
         }
       },
+      wristDes: {
+        name: '/wrist_des',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.wristDes.value = message.data;
+            topics.wristDes.active = false;
+            // topics.armOut.topic.unsubscribe();
+          });
+        }
+      },
       palmOut: {
         name: '/palm_out',
         type: 'std_msgs/Int16',

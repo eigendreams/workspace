@@ -50,6 +50,7 @@ angular.module('finderApp')
             armOut: 0,
             forearmOut: 0,
             wristOut: 0,
+            wristDes: 0,
             palmOut: 0,
             palmDes: 0,
             gripperOut: 0,
