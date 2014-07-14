@@ -30,12 +30,15 @@
 #include "ros/ros.h"
 #include "tf/transform_broadcaster.h"
 #include "sensor_msgs/Imu.h"
+#include "std_msgs/Float32.h"
 
 std::string p_base_stabilized_frame_;
 std::string p_base_frame_;
 tf::TransformBroadcaster* tfB_;
 tf::StampedTransform transform_;
 tf::Quaternion tmp_;
+
+double base_ang_data;
 
 #ifndef TF_MATRIX3x3_H
   typedef btScalar tfScalar;
@@ -49,13 +52,18 @@ void imuMsgCallback(const sensor_msgs::Imu& imu_msg)
   tfScalar yaw, pitch, roll;
   tf::Matrix3x3(tmp_).getRPY(roll, pitch, yaw);
 
-  tmp_.setRPY(roll, pitch, 0.0);
+  tmp_.setRPY(roll, pitch, base_ang_data);
 
   transform_.setRotation(tmp_);
 
   transform_.stamp_ = imu_msg.header.stamp;
 
   tfB_->sendTransform(transform_);
+}
+
+void baseAngCb(const std_msgs::Float32& ang_data)
+{
+  base_ang_data = ang_data.data;
 }
 
 int main(int argc, char **argv) {
@@ -75,6 +83,7 @@ int main(int argc, char **argv) {
   transform_.child_frame_id_ = p_base_frame_;
 
   ros::Subscriber imu_subscriber = n.subscribe("imu_topic", 10, imuMsgCallback);
+  ros::Subscriber base_ang_sub = n.subscribe("base_ang", 10, baseAngCb);
 
   ros::spin();
 
