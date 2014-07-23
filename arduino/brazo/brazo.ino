@@ -23,7 +23,7 @@ SimpleDynamixelClass DYNAMIXEL(&Dynamixelobj, 480, 666, 100);
 // Pins 3, 5 for DC Motor control (first DOF) and pins 4, 6 for DC Motor Control (fourth DOF)
 // SimpleDriverClass(pin_en, pin_dir, umbral, val) // sense == sign(val), max_angle == abs(val)
 SimpleDriverClass BASE(5, 3, 2, 100);
-SimpleDriverClass MUNNIECA(6, 4, 2, 100);
+//SimpleDriverClass MUNNIECA(6, 4, 2, 100);
 
 // Pins 7 for Talon control (second DOF) and 8 for Talon control (third DOF)
 // TalonClass(pin, umbral, val) // sense == sign(val), max_angle == abs(val)
@@ -35,6 +35,7 @@ SimpleDriverClass MUNNIECA(6, 4, 2, 100);
 //Servo brazo_servo;
 //Servo antebrazo_servo;
 Servo gripper_servo;
+Servo munnieca_servo;
 //SimpleServoClass PALMA(&gripper_servo, 100);
 
 // Pins 13, 12, 11 for SPI single reads of magnetic encoders (second, third and fourth DOFs) in software emulation mode
@@ -79,8 +80,8 @@ void palm_out_cb(const std_msgs::Int16& dmsg) {palm_out = dmsg.data;}
 void gripper_out_cb(const std_msgs::Int16& dmsg) {gripper_out = dmsg.data;}
 void alive_cb(const std_msgs::Int16& dmsg) {
 	if (dmsg.data) {
-  	milisLastMsg = millis();
-  	timedOut = false;
+  		milisLastMsg = millis();
+  		timedOut = false;
 	}
 }
 
@@ -91,6 +92,16 @@ ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
 ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
+
+void gripper_reset_cb(const std_msgs::Int16& dmsg) {
+	if (dmsg.data) {
+		Dynamixelobj.reset(1);
+		Dynamixelobj.begin(1000000UL, 2);
+		Dynamixelobj.reset(1);
+		Dynamixelobj.setMaxTorque(1, 1023);
+	}
+}
+ros::Subscriber<std_msgs::Int16> gripper_reset_sub("gripper_reset", gripper_reset_cb);
 
 std_msgs::Int16 base_lec_msg;
 std_msgs::Int16 arm_lec_msg;
@@ -108,7 +119,7 @@ ros::Publisher wrist_lec_pub("wrist_lec", &wrist_lec_msg);
 void setup() {
 
 	BASE.begin();
-	MUNNIECA.begin();
+	//MUNNIECA.begin();
 
 	//pinMode(7, OUTPUT);
 	//pinMode(8, OUTPUT);
@@ -118,6 +129,7 @@ void setup() {
 	//antebrazo_servo.attach(8);
 	//BRAZO.attach(7);
 	//ANTEBRAZO.attach(8);
+	munnieca_servo.attach(7);
 	gripper_servo.attach(9);
 
 	// Select encoders as digital
@@ -136,6 +148,8 @@ void setup() {
 
 	nh.subscribe(alive_sub);
 
+	nh.subscribe(gripper_reset_sub);
+
 	nh.advertise(base_lec_pub);
 	nh.advertise(arm_lec_pub);
 	nh.advertise(forearm_lec_pub);
@@ -145,6 +159,8 @@ void setup() {
 
 	// Comm at 1 Mhz and ENC initialization
 	//Dynamixelobj.begin(56000UL, 2);
+	Dynamixelobj.begin(1000000UL, 2);
+	Dynamixelobj.setMaxTorque(1, 1023);
 	AS5043obj.begin();
 }
 
@@ -156,6 +172,7 @@ void loop() {
 	//brazo_servo.write(arm_out * 5 + 1500);
 	//antebrazo_servo.write(forearm_out * 5 + 1500);
 	gripper_servo.write(palm_out * 5 + 1500);
+	munnieca_servo.write(wrist_out * 5 + 1500);
 
 
 	// 20 Hz operation
@@ -186,13 +203,14 @@ void loop() {
 		BASE.write(base_out);
 		//BRAZO.write(arm_out);
 		//ANTEBRAZO.write(forearm_out);
-		MUNNIECA.write(wrist_out);
+		//MUNNIECA.write(wrist_out);
 		gripper_servo.write(palm_out * 5 + 1500);
 		DYNAMIXEL.write(gripper_out);
 
 		//brazo_servo.write(arm_out * 5 + 1500);
 		//antebrazo_servo.write(forearm_out * 5 + 1500);
 		gripper_servo.write(palm_out * 5 + 1500);
+		munnieca_servo.write(wrist_out * 5 + 1500);
 
 
 		base_lec_msg.data = base_lec;

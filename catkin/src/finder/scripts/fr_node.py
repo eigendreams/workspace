@@ -34,7 +34,7 @@ class Fr_node:
         self.kd_pos = 0
         self.km_pos = 0
         self.umbral_pos = 1
-        self.range_pos = 35 # Maximo pwm permitido
+        self.range_pos = 40 # Maximo pwm permitido
         self.kierr_pos = 2
         self.kimax_pos = 35
         self.kisum_pos = 0
@@ -45,7 +45,7 @@ class Fr_node:
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 35 # Maximo pwm permitido
+        self.range_vel = 40 # Maximo pwm permitido
         self.kierr_vel = 1
         self.kimax_vel = 35
         self.kisum_vel = 0
@@ -76,6 +76,8 @@ class Fr_node:
 
         self.times = 0
         self.init_time = rospy.get_time()
+
+        self.fr_save = 0
 
         self.frResetSub = rospy.Subscriber("fr_reset", Int16, self.frResetCb)
         self.frLecSub = rospy.Subscriber("fr_lec", Int16, self.frLecCb)
@@ -275,6 +277,10 @@ class Fr_node:
 
 
     def update(self):
+
+        self.fr_save = self.fr_out + self.fr_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 40 - self.fr_save / 40
+        self.range_vel = 40 - self.fr_save / 40
 
         self.frOutPub.publish(self.fr_out)
         self.frAngPub.publish(self.fr_ang)

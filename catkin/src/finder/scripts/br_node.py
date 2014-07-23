@@ -77,6 +77,8 @@ class Br_node:
         self.times = 0
         self.init_time = rospy.get_time()
 
+        self.br_save = 0
+
         self.brResetSub = rospy.Subscriber("br_reset", Int16, self.brResetCb)
         self.brLecSub = rospy.Subscriber("br_lec", Int16, self.brLecCb)
         self.brDesSub = rospy.Subscriber("br_des", Float32, self.brDesCb)
@@ -275,6 +277,10 @@ class Br_node:
 
 
     def update(self):
+
+        self.br_save = self.br_out + self.br_save * 0.5 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 50 - self.br_save / 6
+        self.range_vel = 50 - self.br_save / 6
 
         self.brOutPub.publish(self.br_out)
         self.brAngPub.publish(self.br_ang)

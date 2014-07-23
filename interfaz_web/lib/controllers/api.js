@@ -23,19 +23,19 @@ var nodes = {
     state: "0"
   },
   rostractionarduino : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM0','__name:=traction_arduino']],
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/traction_arduino','__name:=traction_arduino']],
     stop: "kill -9 $(ps aux | grep traction_arduino | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'traction_arduino' -c",
     state: "0"
   },
   rossensorarduino : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM1','__name:=sensor_arduino']],
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/sensor_arduino','__name:=sensor_arduino']],
     stop: "kill -9 $(ps aux | grep sensor_arduino | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'sensor_arduino' -c",
     state: "0"
   },
   rostalonarduino : {
-    start: ['rosrun',['rosserial_python','serial_node.py','/dev/ttyACM2','__name:=talon_arduino']],
+    start: ['rosrun',['rosserial_python','serial_node.py','/dev/talon_arduino','__name:=talon_arduino']],
     stop: "kill -9 $(ps aux | grep talon_arduino | grep -v grep | awk '{print $2}')",
     evalState: "ps aux | grep -v grep | egrep 'talon_arduino' -c",
     state: "0"
