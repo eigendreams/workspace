@@ -4,6 +4,7 @@ angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
     // var serverIP = "192.168.88.247";
+    var serverIP = "192.168.88.236";
     var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
@@ -243,6 +244,19 @@ angular.module('finderApp')
           this.topic.subscribe( function (message) {
             topics.baseDes.value = message.data;
             topics.baseDes.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
+      },
+      operationMode: {
+        name: '/operation_mode',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.operationMode.value = message.data;
+            topics.operationMode.active = false;
             // topics.baseDes.topic.unsubscribe();
           });
         }
