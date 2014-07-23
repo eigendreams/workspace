@@ -3,14 +3,11 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-<<<<<<< HEAD
-    var serverIP = "192.168.88.247";
+    // var serverIP = "192.168.88.247";
     // var serverIP = "localhost";
-=======
     // var serverIP = "192.168.88.247";
     var serverIP = "192.168.88.236";
-    var serverIP = "localhost";
->>>>>>> 46aa8822d5fa33a1b64dbb7447b43b297e7b17ce
+    // var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
