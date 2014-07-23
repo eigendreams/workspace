@@ -30,24 +30,24 @@ class Arm_node:
 
         # PID control parameters
         self.kp_pos = 10
-        self.ki_pos = 10
+        self.ki_pos = 1
         self.kd_pos = 0
         self.km_pos = 0
-        self.umbral_pos = 0.1
+        self.umbral_pos = 0.05
         self.range_pos = 50 # Maximo pwm permitido
         self.kierr_pos = 1.2
-        self.kimax_pos = 50
+        self.kimax_pos = 20
         self.kisum_pos = 0
         self.error_pos = 0
 
         self.kp_vel = 5
-        self.ki_vel = 2
+        self.ki_vel = 0
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
         self.range_vel = 50 # Maximo pwm permitido
-        self.kierr_vel = 1
-        self.kimax_vel = 50
+        self.kierr_vel = 2
+        self.kimax_vel = 20
         self.kisum_vel = 0
         self.error_vel = 0
 

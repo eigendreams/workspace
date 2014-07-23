@@ -9,6 +9,7 @@
   <include file="$(find finder)/launch/qrcode_detection_test.launch"/>
   <include file="$(find finder)/launch/heat_detection_test.launch"/>
   <include file="$(find finder)/launch/object_tracker_test.launch"/>
+  <include file="$(find finder)/launch/motion_detection_test.launch"/>
 
   <node name="laser_node_15" pkg="finder" type="tif2jpg.py" output="screen"></node>
   <node name="laser_node_14" pkg="finder" type="imu_node.py" output="screen"></node>

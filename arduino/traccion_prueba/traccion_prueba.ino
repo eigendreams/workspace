@@ -1,3 +1,4 @@
+#define USE_USBCON
 #include "ros.h"
 #include "std_msgs/Int16.h"
 #include "std_msgs/Empty.h"
@@ -32,8 +33,8 @@ void left_out_cb(const std_msgs::Int16& dmsg) {left_out = dmsg.data;}
 void right_out_cb(const std_msgs::Int16& dmsg) {right_out = dmsg.data;}
 void alive_cb(const std_msgs::Int16& dmsg) {
 	if (dmsg.data) {
-		milisLastMsg = millis();
-		timedOut = false;
+	milisLastMsg = millis();
+	timedOut = false;
 	}
 }
 ros::Subscriber<std_msgs::Int16> left_out_sub("left_out", left_out_cb);
@@ -49,15 +50,6 @@ std_msgs::Int16 batt_v_msg;
 std_msgs::Int16 mot_a_msg;
 ros::Publisher batt_v_pub("volt", &batt_v_msg);
 ros::Publisher mot_a_pub("amp", &mot_a_msg);
-
-/*std_msgs::Int16 a2_msg;
-std_msgs::Int16 a3_msg;
-std_msgs::Int16 a4_msg;
-std_msgs::Int16 a5_msg;
-ros::Publisher a2_pub("a2", &a2_msg);
-ros::Publisher a3_pub("a3", &a3_msg);
-ros::Publisher a4_pub("a4", &a4_msg);
-ros::Publisher a5_pub("a5", &a5_msg);*/
 
 void setup() {
 	// Configurando pines
@@ -90,16 +82,11 @@ void setup() {
 	nh.advertise(mot_a_pub);
 	delay(1);
 
-	//nh.advertise(a2_pub);
-	//nh.advertise(a3_pub);
-	//nh.advertise(a4_pub);
-	//nh.advertise(a5_pub);
-
 	// Inicializa los motores y encoders
-	LEFT.begin();
-	RIGHT.begin();
-	ENCLEFT.begin();
-	ENCRIGHT.begin();
+	//LEFT.begin();
+	//RIGHT.begin();
+	//ENCLEFT.begin();
+	//ENCRIGHT.begin();
 }
 
 void loop() {
@@ -118,11 +105,11 @@ void loop() {
 			timedOut = true;
 		}
 
-		left_lec = ENCLEFT.read();
-		right_lec = ENCRIGHT.read();
+		//left_lec = ENCLEFT.read();
+		//right_lec = ENCRIGHT.read();
 
-		LEFT.write(left_out);
-		RIGHT.write(right_out);
+		//LEFT.write(left_out);
+		//RIGHT.write(right_out);
 
 		left_lec_msg.data = left_lec;
 		right_lec_msg.data = right_lec;
@@ -130,31 +117,16 @@ void loop() {
 		left_lec_pub.publish(&left_lec_msg);
 		right_lec_pub.publish(&right_lec_msg);
 
-		/*int lec_a2 = analogRead(A2);
-		int lec_a3 = analogRead(A3);
-		int lec_a4 = analogRead(A4);
-		int lec_a5 = analogRead(A5);*/
+		int lec_v  = analogRead(A0);
+		int lec_a1 = analogRead(A2);
+		int lec_a2 = analogRead(A4);
 
-		int lec_v = analogRead(A2);
-		int lec_a1 = analogRead(A3);
-		int lec_a2 = lec_a1;
-
-		batt_v_msg.data = 1000 * ((5. * lec_v) / 1024.)  / (0.06369);
+		batt_v_msg.data = lec_v; // 1000 * ((5. * lec_v) / 1024.)  / (0.06369);
 		mot_a_msg.data = 1000 * ((5. * lec_a1) / 1024.)  / (0.01830) + 1000 * ((5. * lec_a2) / 1024.)  / (0.01830);
 
  		delay(1);
 		batt_v_pub.publish(&batt_v_msg);
 		mot_a_pub.publish(&mot_a_msg);
-
-		/*a2_msg.data = lec_a2;
-		a3_msg.data = lec_a3;
-		a4_msg.data = lec_a4;
-		a5_msg.data = lec_a5;
-
-		a2_pub.publish(&a2_msg);
-		a3_pub.publish(&a3_msg);
-		a4_pub.publish(&a4_msg);
-		a5_pub.publish(&a5_msg);*/
 
 		milisLast = milisNow;
 	}

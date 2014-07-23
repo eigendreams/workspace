@@ -153,6 +153,16 @@ ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
 ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
 
+void gripper_reset_cb(const std_msgs::Int16& dmsg) {
+	if (dmsg.data) {
+		Dynamixelobj.reset(1);
+		Dynamixelobj.begin(1000000UL, 2);
+		Dynamixelobj.reset(1);
+		Dynamixelobj.setMaxTorque(1, 1023);
+	}
+}
+ros::Subscriber<std_msgs::Int16> gripper_reset_sub("gripper_reset", gripper_reset_cb);
+
 std_msgs::Int16 base_lec_msg;
 std_msgs::Int16 arm_lec_msg;
 std_msgs::Int16 forearm_lec_msg;
@@ -200,6 +210,8 @@ void setup() {
 
 	nh.subscribe(alive_sub);
 
+	nh.subscribe(gripper_reset_sub);
+
 	nh.advertise(base_lec_pub);
 	nh.advertise(arm_lec_pub);
 	nh.advertise(forearm_lec_pub);
@@ -209,6 +221,7 @@ void setup() {
 
 	// Comm at 1 Mhz and ENC initialization
 	Dynamixelobj.begin(1000000UL, 2);
+	Dynamixelobj.setMaxTorque(1, 1023);
 	AS5043obj.begin();
 }
 
@@ -222,6 +235,10 @@ void loop() {
 	gripper_servo.write(palm_out * 5 + 1500);
 	munnieca_servo.write(wrist_out * 5 + 1500);
 
+	if (Dynamixelobj.ping(1) == -1) {
+		Dynamixelobj.begin(1000000UL, 2);
+		Dynamixelobj.setMaxTorque(1, 1023);
+	}
 
 	// 20 Hz operation
 	if (milisNow - milisLast >= 100) {

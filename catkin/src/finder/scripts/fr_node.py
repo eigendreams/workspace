@@ -30,7 +30,7 @@ class Fr_node:
 
         # PID control parameters
         self.kp_pos = 7
-        self.ki_pos = 1
+        self.ki_pos = 0.5
         self.kd_pos = 0
         self.km_pos = 0
         self.umbral_pos = 1
@@ -41,7 +41,7 @@ class Fr_node:
         self.error_pos = 0
 
         self.kp_vel = 5
-        self.ki_vel = 2
+        self.ki_vel = 1
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5

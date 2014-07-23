@@ -27,7 +27,31 @@ class Wrist_node:
         """COSTANTES"""
         """kevin test"""
         # PID control parameters
-        self.kp_pos = 33
+        self.kp_pos = 25
+        self.ki_pos = 1
+        self.kd_pos = 0
+        self.km_pos = 0
+        self.umbral_pos = 0.05
+        self.range_pos = 60 # Maximo pwm permitido
+        self.kierr_pos = 0.6
+        self.kimax_pos = 20
+        self.kisum_pos = 0
+        self.error_pos = 0
+
+        self.kp_vel = 25
+        self.ki_vel = 1
+        self.kd_vel = 0
+        self.km_vel = 0
+        self.umbral_vel = 0.05
+        self.range_vel = 60 # Maximo pwm permitido
+        self.kierr_vel = 2
+        self.kimax_vel = 60
+        self.kisum_vel = 0
+        self.error_vel = 0
+
+        """
+        # PID control parameters
+        self.kp_pos = 25
         self.ki_pos = 1
         self.kd_pos = 0
         self.km_pos = 0
@@ -48,6 +72,7 @@ class Wrist_node:
         self.kimax_vel = 20
         self.kisum_vel = 0
         self.error_vel = 0
+        """
 
         # topic variables
         self.wrist_lec = 0

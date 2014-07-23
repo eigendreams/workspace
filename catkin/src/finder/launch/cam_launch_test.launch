@@ -12,6 +12,7 @@
     <param name="framerate" value="20" />
   </node>
 -->
+<!--
   <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="640" />
@@ -22,7 +23,7 @@
     <rosparam file="$(find finder)/yaml/cam_cal.yml"/>
     <param name="framerate" value="10"/>
   </node>
-<!--
+-->
   <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video1" />
     <param name="image_width" value="640" />
@@ -41,7 +42,7 @@
     <param name="camera_frame_id" value="base_frame" />
     <param name="io_method" value="mmap"/>
     <rosparam file="$(find finder)/yaml/cam_cal.yml"/>
-    <param name="framerate" value="15"/>
+    <param name="framerate" value="10"/>
   </node>
   <node name="usb_cam_3" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video3" />
@@ -51,7 +52,7 @@
     <param name="camera_frame_id" value="base_frame" />
     <param name="io_method" value="mmap"/>
     <rosparam file="$(find finder)/yaml/cam_cal.yml"/>
-    <param name="framerate" value="15"/>
+    <param name="framerate" value="10"/>
   </node>
   <node name="usb_cam_4" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video4" />
@@ -61,7 +62,6 @@
     <param name="camera_frame_id" value="base_frame" />
     <param name="io_method" value="mmap"/>
     <rosparam file="$(find finder)/yaml/cam_cal.yml"/>
-    <param name="framerate" value="15"/>
+    <param name="framerate" value="10"/>
   </node>
--->
 </launch>

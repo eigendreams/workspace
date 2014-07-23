@@ -39,6 +39,8 @@ class Control_interface:
         self.brResetPub = rospy.Publisher("br_reset", Int16)
         self.blResetPub = rospy.Publisher("bl_reset", Int16)
 
+	self.gripperResetPub = rospy.Publisher("gripper_reset", Int16)
+
         self.offset_val = 0
         self.offsetPub = rospy.Publisher("offset", Int16)
 
@@ -134,13 +136,17 @@ class Control_interface:
         if data.buttons[self.buttons_names['B']] == 1:
             self.forearm_des = data.axes[self.axes_names['left_stick_ver']] * 100
 
-        self.wrist_des = data.axes[self.axes_names['right_stick_ver']] * 1
-        self.palm_des = data.axes[self.axes_names['right_stick_hor']] * 1
+        self.wrist_des = data.axes[self.axes_names['right_stick_ver']] * -1
+        self.palm_des = data.axes[self.axes_names['right_stick_hor']] * 0.7 
 
         if data.axes[self.axes_names['RT']] != 1:
             self.gripper_des = ((data.axes[self.axes_names['RT']] - 1) / 2) 
         else:
             self.gripper_des = ((data.axes[self.axes_names['LT']] - 1) / 2) * -1
+
+	if data.axes[self.axes_names['RT']] == -1:
+            if data.axes[self.axes_names['LT']] == -1:
+                self.gripperResetPub.publish(1);
 
         # self.arm_out   = data.axes[self.axes_names['left_stick_ver']] * 60
         # self.forearm_out   = data.axes[self.axes_names['right_stick_ver']] * -60

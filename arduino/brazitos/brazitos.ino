@@ -154,10 +154,10 @@ boolean checkConfig_MLX90620()
 ros::NodeHandle nh;
 
 // umbral, max
-TalonClass MTFR(2, 70);
-TalonClass MTFL(2, 70);
-TalonClass MTBR(2, 70);
-TalonClass MTBL(2, 70);
+TalonClass MTFR(2, 35);
+TalonClass MTFL(2, 35);
+TalonClass MTBR(2, 50);
+TalonClass MTBL(2, 50);
 
 // pin, min, max, max_change, map
 EncoderClass ENCFR(A0, 0, 1023, 255, 100);
@@ -187,8 +187,8 @@ void br_out_cb(const std_msgs::Int16& dmsg) {br_out = dmsg.data;}
 void bl_out_cb(const std_msgs::Int16& dmsg) {bl_out = dmsg.data;}
 void alive_cb( const std_msgs::Int16& dmsg) {
   if (dmsg.data){
-  milisLastMsg = millis();
-  timedOut = false;
+    milisLastMsg = millis();
+    timedOut = false;
   }
 }
 ros::Subscriber<std_msgs::Int16> fr_out_sub("fr_out", fr_out_cb);

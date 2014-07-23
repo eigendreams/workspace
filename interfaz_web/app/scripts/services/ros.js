@@ -3,8 +3,8 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
-    // var serverIP = "192.168.88.247";
-    var serverIP = "localhost";
+    var serverIP = "192.168.88.247";
+    // var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -171,7 +171,7 @@ angular.module('finderApp')
       },
       wristDes: {
         name: '/wrist_des',
-        type: 'std_msgs/Int16',
+        type: 'std_msgs/Float32',
         value: 0,
         active: false,
         subscribe: function () {
@@ -349,8 +349,8 @@ angular.module('finderApp')
         active: false,
         subscribe: function () {
           this.topic.subscribe( function (message) {
-            topics.batteryLevel.value = message.data;
-            topics.batteryLevel.active = false;
+            topics.volt.value = message.data;
+            topics.volt.active = false;
             // topics.baseDes.topic.unsubscribe();
           });
         }

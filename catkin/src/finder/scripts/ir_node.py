@@ -12,6 +12,7 @@ from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import MultiArrayDimension
 from std_msgs.msg import MultiArrayLayout
 from finder.msg import uint8_64
+from finder.msg import int16_64
 
 class IR_Node():
     
@@ -37,7 +38,7 @@ class IR_Node():
         self.bad_flag = False;
 
         self.irPub = rospy.Publisher("ir_out", String)
-        self.irSub = rospy.Subscriber("ir_data", uint8_64, self.plotfcn)
+        self.irSub = rospy.Subscriber("ir_data", int16_64, self.plotfcn)
 
 
     def constrain(self, x, min, max):
@@ -65,7 +66,7 @@ class IR_Node():
             """
             #self.databuffer[(i / 16) * 16 + i % 16] = data.data[i]
             #print(data.data[i])
-            self.asccibuffer += data.data[i]#(i % 4) * 16 + i / 4]
+            self.asccibuffer += chr(data.data[i])#(i % 4) * 16 + i / 4]
 
         """
         for i in range(64):
