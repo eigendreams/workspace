@@ -3,8 +3,14 @@
 angular.module('finderApp')
   .factory('Ros', ['$rootScope', '$interval', '$timeout', '$http', function ($rootScope, $interval, $timeout, $http) {
 
+<<<<<<< HEAD
     var serverIP = "192.168.88.247";
     // var serverIP = "localhost";
+=======
+    // var serverIP = "192.168.88.247";
+    var serverIP = "192.168.88.236";
+    var serverIP = "localhost";
+>>>>>>> 46aa8822d5fa33a1b64dbb7447b43b297e7b17ce
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;
     var rosCommunicationActive = false;
@@ -247,6 +253,19 @@ angular.module('finderApp')
           });
         }
       },
+      operationMode: {
+        name: '/operation_mode',
+        type: 'std_msgs/Int16',
+        value: 0,
+        active: false,
+        subscribe: function () {
+          this.topic.subscribe( function (message) {
+            topics.operationMode.value = message.data;
+            topics.operationMode.active = false;
+            // topics.baseDes.topic.unsubscribe();
+          });
+        }
+      },
       irOut: {
         name: '/ir_out',
         type: 'std_msgs/String',
@@ -387,7 +406,7 @@ angular.module('finderApp')
             data: data
           });
           console.log("Se va a publicar en leds " + message);
-          this.topic.publish(message);
+          topics.leds.topic.publish(message);
         }
       }
 

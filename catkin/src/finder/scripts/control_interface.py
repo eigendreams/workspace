@@ -38,6 +38,7 @@ class Control_interface:
         self.flResetPub = rospy.Publisher("fl_reset", Int16)
         self.brResetPub = rospy.Publisher("br_reset", Int16)
         self.blResetPub = rospy.Publisher("bl_reset", Int16)
+        self.operationModePub = rospy.Publisher("operation_mode", Int16)
 
 	self.gripperResetPub = rospy.Publisher("gripper_reset", Int16)
 
@@ -250,10 +251,12 @@ class Control_interface:
                 # self.forearmOutPub.publish(self.forearm_out)
                 # self.basePub.publish(self.base_des)
                 self.motorArmUpdate()
+                self.operationModePub.publish(1);
             else:
                 self.motorTractionUpdate()
                 self.motorTractionArmUpdate()
                 self.offsetPub.publish(self.offset_val)
+                self.operationModePub.publish(0);
 
             r.sleep()
             

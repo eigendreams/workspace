@@ -18,6 +18,7 @@ angular.module('finderApp')
     $scope.video3 = 1;
     $scope.video4 = 1;
     $scope.ledsValue = 0;
+    $scope.co2sensorMessage = "CO2 NOT detected";
 
     $scope.listenerGroup = {
         groupOne : {
@@ -195,6 +196,20 @@ angular.module('finderApp')
 
             $scope.termalsensorData = Ros.topic.getData('irOut');
             $scope.co2sensorData = Ros.topic.getData('co2');
+            if ($scope.co2sensorData === 1) {
+                $scope.co2sensorMessage = "CO2 Detected";
+            }
+            else {
+                $scope.co2sensorMessage = "CO2 NOT detected";
+            }
+
+            $scope.operationMode = Ros.topic.getData('operationMode');
+            if ($scope.operationMode === 1) {
+                $scope.operationModeMessage = "ARM mode";
+            }
+            else {
+                $scope.operationModeMessage = "TRACTION mode";
+            }
         }
 
     }, 200);
