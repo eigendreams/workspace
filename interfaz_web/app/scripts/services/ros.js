@@ -171,7 +171,7 @@ angular.module('finderApp')
       },
       wristDes: {
         name: '/wrist_des',
-        type: 'std_msgs/Int16',
+        type: 'std_msgs/Float32',
         value: 0,
         active: false,
         subscribe: function () {
@@ -387,7 +387,7 @@ angular.module('finderApp')
             data: data
           });
           console.log("Se va a publicar en leds " + message);
-          this.topic.publish(message);
+          topics.leds.topic.publish(message);
         }
       }
 
