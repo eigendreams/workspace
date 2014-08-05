@@ -1,3 +1,12 @@
+To use the Stellaris, comment the line
+
+ASSERT(c != 0)
+
+in the Hardware_serial.cpp file in the method write at hardware/lm4f/cores/lm4f
+
+
+
+
 Modificar los archivos:
 
 Ejecutar el archivo rename.sh o manualmente las cosas:
