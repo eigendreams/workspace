@@ -72,9 +72,9 @@ class Imu_node:
 
     def imuDataCb(self, data):
 
-        self.yaw = data.data[0] * self.grad2rad
-        self.pitch = data.data[1] * self.grad2rad
-        self.roll = data.data[2] * self.grad2rad
+        self.yaw = 0 * data.data[0] * self.grad2rad
+        self.pitch = 0 * data.data[1] * self.grad2rad
+        self.roll = 0 * data.data[2] * self.grad2rad
             
         self.q = tf.transformations.quaternion_from_euler(self.roll,self.pitch,self.yaw)
         
@@ -88,7 +88,7 @@ class Imu_node:
 
     def update(self):
 
-        self.imuMsg.header.stamp= rospy.Time.now()
+        self.imuMsg.header.stamp = rospy.Time.now()
         self.imuPub.publish(self.imuMsg)
 
     def spin(self):

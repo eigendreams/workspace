@@ -34,9 +34,9 @@ class Bl_node:
         self.kd_pos = 0
         self.km_pos = 0
         self.umbral_pos = 0.5
-        self.range_pos = 50 # Maximo pwm permitido
+        self.range_pos = 60 # Maximo pwm permitido
         self.kierr_pos = 5
-        self.kimax_pos = 50
+        self.kimax_pos = 30
         self.kisum_pos = 0
         self.error_pos = 0
 
@@ -45,9 +45,9 @@ class Bl_node:
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 50 # Maximo pwm permitido
+        self.range_vel = 60 # Maximo pwm permitido
         self.kierr_vel = 1
-        self.kimax_vel = 50
+        self.kimax_vel = 30
         self.kisum_vel = 0
         self.error_vel = 0
 
@@ -75,6 +75,7 @@ class Bl_node:
         self.bl_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
 
         self.bl_save = 0
@@ -259,6 +260,10 @@ class Bl_node:
 
     def blLecCb(self, data):
 
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
+
         self.bl_lec = data.data
         self.angCalc()
 
@@ -287,9 +292,9 @@ class Bl_node:
 
     def update(self):
 
-        self.bl_save = self.bl_out + self.bl_save * 0.5 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
-        self.range_pos = 50 - self.bl_save / 6
-        self.range_vel = 50 - self.bl_save / 6
+        self.bl_save = abs(self.bl_out) + self.bl_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 60 - self.bl_save / 40
+        self.range_vel = 60 - self.bl_save / 40
 
         self.blOutPub.publish(self.bl_out)
         self.blAngPub.publish(self.bl_ang)

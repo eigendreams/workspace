@@ -29,25 +29,25 @@ class Forearm_node:
         #self.forearm_lec_dir = -100
 
         # PID control parameters
-        self.kp_pos = 10
-        self.ki_pos = 1
+        self.kp_pos = 35
+        self.ki_pos = 0
         self.kd_pos = 0
         self.km_pos = 0
-        self.umbral_pos = 0.05
-        self.range_pos = 50 # Maximo pwm permitido
+        self.umbral_pos = 0.5
+        self.range_pos = 35 # Maximo pwm permitido
         self.kierr_pos = 1.2
-        self.kimax_pos = 20
+        self.kimax_pos = 10
         self.kisum_pos = 0
         self.error_pos = 0
 
-        self.kp_vel = 5
+        self.kp_vel = 35
         self.ki_vel = 0
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 50 # Maximo pwm permitido
+        self.range_vel = 35 # Maximo pwm permitido
         self.kierr_vel = 2
-        self.kimax_vel = 20
+        self.kimax_vel = 10
         self.kisum_vel = 0
         self.error_vel = 0
         
@@ -75,7 +75,10 @@ class Forearm_node:
         self.forearm_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
+
+        self.forearm_save = 0
 
         self.forearmResetSub = rospy.Subscriber("forearm_reset", Int16, self.forearmResetCb)
         self.forearmLecSub = rospy.Subscriber("forearm_lec", Int16, self.forearmLecCb)
@@ -230,36 +233,43 @@ class Forearm_node:
 
     def forearmLecCb(self, data):
 
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
+
         self.forearm_lec = data.data
         self.angCalc()
 
-        # if (abs(self.forearm_vel_des) < 0.1):
-        #     # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
-        #     self.pid_pos()
-        #     # print "angdes " + str(self.forearm_ang_des)
-        # else:
-        #     self.forearm_ang_des = self.forearm_ang
-        #     self.pid_vel()
-
+        if (abs(self.forearm_vel_des) < 0.1):
+            # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
+            self.pid_pos()
+            # print "angdes " + str(self.forearm_ang_des)
+        else:
+            self.forearm_ang_des = self.forearm_ang
+            self.pid_vel()
 
     def forearmDesCb(self, data):
 
-        self.forearm_vel_des = self.constrain(data.data, -80, 80)
+        self.forearm_vel_des = self.constrain(data.data, -100, 100) / 100.
         self.angCalc()
 
-        # if (abs(self.forearm_vel_des) < 0.1):
-        #     # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
-        #     self.pid_pos()
-        #     # print "angdes " + str(self.forearm_ang_des)
-        # else:
-        #     self.forearm_ang_des = self.forearm_ang
-        #     self.pid_vel()
+        if (abs(self.forearm_vel_des) < 0.1):
+            # self.forearm_ang_des = self.constrain(self.forearm_ang_des, 0, 1000)
+            self.pid_pos()
+            # print "angdes " + str(self.forearm_ang_des)
+        else:
+            self.forearm_ang_des = self.forearm_ang
+            self.pid_vel()
 
 
     def update(self):
 
-        self.forearmOutPub.publish(self.forearm_vel_des)
-        #self.forearmOutPub.publish(self.forearm_out)
+        self.forearm_save = abs(self.forearm_out) + self.forearm_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 35 - self.forearm_save / 40
+        self.range_vel = 35 - self.forearm_save / 40
+
+        #self.forearmOutPub.publish(self.forearm_vel_des)
+        self.forearmOutPub.publish(self.forearm_out)
         self.forearmAngPub.publish(self.forearm_ang)
         self.forearmVelPub.publish(self.forearm_vel)
 

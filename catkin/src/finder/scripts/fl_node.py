@@ -29,14 +29,14 @@ class Fl_node:
         #self.fl_lec_dir = -100
 
         # PID control parameters
-        self.kp_pos = 7
-        self.ki_pos = 0.5
+        self.kp_pos = 10
+        self.ki_pos = 1
         self.kd_pos = 0
         self.km_pos = 0
-        self.umbral_pos = 1
-        self.range_pos = 40 # Maximo pwm permitido
+        self.umbral_pos = 0.5
+        self.range_pos = 50 # Maximo pwm permitido
         self.kierr_pos = 2
-        self.kimax_pos = 35
+        self.kimax_pos = 25
         self.kisum_pos = 0
         self.error_pos = 0
 
@@ -45,9 +45,9 @@ class Fl_node:
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 40 # Maximo pwm permitido
+        self.range_vel = 50 # Maximo pwm permitido
         self.kierr_vel = 1
-        self.kimax_vel = 35
+        self.kimax_vel = 25
         self.kisum_vel = 0
         self.error_vel = 0
 
@@ -75,6 +75,7 @@ class Fl_node:
         self.fl_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
 
         self.fl_save = 0;
@@ -250,6 +251,10 @@ class Fl_node:
 
     def flLecCb(self, data):
 
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
+
         self.fl_lec = data.data
         self.angCalc()
 
@@ -278,9 +283,9 @@ class Fl_node:
 
     def update(self):
 
-        self.fl_save = self.fl_out + self.fl_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
-        self.range_pos = 40 - self.fl_save / 40
-        self.range_vel = 40 - self.fl_save / 40
+        self.fl_save = abs(self.fl_out) + self.fl_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 50 - self.fl_save / 40
+        self.range_vel = 50 - self.fl_save / 40
 
         self.flOutPub.publish(self.fl_out)
         self.flAngPub.publish(self.fl_ang)

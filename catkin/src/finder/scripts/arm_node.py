@@ -29,25 +29,25 @@ class Arm_node:
         #self.arm_lec_dir = -100
 
         # PID control parameters
-        self.kp_pos = 10
-        self.ki_pos = 1
+        self.kp_pos = 70
+        self.ki_pos = 0
         self.kd_pos = 0
         self.km_pos = 0
-        self.umbral_pos = 0.05
-        self.range_pos = 50 # Maximo pwm permitido
+        self.umbral_pos = 0.5
+        self.range_pos = 70 # Maximo pwm permitido
         self.kierr_pos = 1.2
-        self.kimax_pos = 20
+        self.kimax_pos = 10
         self.kisum_pos = 0
         self.error_pos = 0
 
-        self.kp_vel = 5
+        self.kp_vel = 70
         self.ki_vel = 0
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 50 # Maximo pwm permitido
+        self.range_vel = 70 # Maximo pwm permitido
         self.kierr_vel = 2
-        self.kimax_vel = 20
+        self.kimax_vel = 10
         self.kisum_vel = 0
         self.error_vel = 0
 
@@ -75,7 +75,10 @@ class Arm_node:
         self.arm_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
+
+        self.arm_save = 0
 
         self.armResetSub = rospy.Subscriber("arm_reset", Int16, self.armResetCb)
         self.armLecSub = rospy.Subscriber("arm_lec", Int16, self.armLecCb)
@@ -229,35 +232,45 @@ class Arm_node:
 
     def armLecCb(self, data):
 
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
+
         self.arm_lec = data.data
         self.angCalc()
 
-        # if (abs(self.arm_vel_des) < 0.1):
-        #     # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
-        #     self.pid_pos()
-        #     # print "angdes " + str(self.arm_ang_des)
-        # else:
-        #     self.arm_ang_des = self.arm_ang
-        #     self.pid_vel()
+        if (abs(self.arm_vel_des) < 0.1):
+            # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
+            self.pid_pos()
+            # print "angdes " + str(self.arm_ang_des)
+        else:
+            self.arm_ang_des = self.arm_ang
+            self.pid_vel()
 
 
     def armDesCb(self, data):
 
-        self.arm_vel_des = self.constrain(data.data, -80, 80)
+        self.arm_vel_des = self.constrain(data.data, -100, 100) / 100.
         self.angCalc()
 
-        # if (abs(self.arm_vel_des) < 0.1):
-        #     # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
-        #     self.pid_pos()
-        #     # print "angdes " + str(self.arm_ang_des)
-        # else:
-        #     self.arm_ang_des = self.arm_ang
-        #     self.pid_vel()
+        if (abs(self.arm_vel_des) < 0.1):
+            # self.arm_ang_des = self.constrain(self.arm_ang_des, 0, 1000)
+            self.pid_pos()
+            # print "angdes " + str(self.arm_ang_des)
+        else:
+            self.arm_ang_des = self.arm_ang
+            self.pid_vel()
 
 
     def update(self):
 
-        self.armOutPub.publish(self.arm_vel_des)
+        self.arm_save = abs(self.arm_out) + self.arm_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 70 - self.arm_save / 40
+        self.range_vel = 70 - self.arm_save / 40
+
+        #print(str(self.arm_save))
+
+        self.armOutPub.publish(self.arm_vel_des * 100)
         #self.armOutPub.publish(self.arm_out)
         self.armAngPub.publish(self.arm_ang)
         self.armVelPub.publish(self.arm_vel)

@@ -62,7 +62,7 @@
 					</ul>
 				</li>
 				<li class="navbar-text" ng-hide='(rosState !== "Connected")'>Laptop Battery: {{laptopBattery}}%</li>
-				<li class="navbar-text" ng-hide='(rosState !== "Connected")'>Robot Battery: {{robotBattery}} V</li>
+				<li class="navbar-text" ng-hide='(rosState !== "Connected")'>Robot Battery: {{robotBattery/1000}} V</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}"><a ng-href="{{item.link}}">{{item.title}}</a></li>

@@ -29,23 +29,23 @@ class Base_node:
         #self.base_lec_dir = -100
 
         # PID control parameters
-        self.kp_pos = 50
+        self.kp_pos = 70
         self.ki_pos = 5.
         self.kd_pos = 0.
         self.km_pos = 0.
         self.umbral_pos = 0.1
-        self.range_pos = 50. # Maximo pwm permitido
+        self.range_pos = 80. # Maximo pwm permitido
         self.kierr_pos = 2
         self.kimax_pos = 25.
         self.kisum_pos = 0.
         self.error_pos = 0.
 
-        self.kp_vel = 50
+        self.kp_vel = 70
         self.ki_vel = 5.
         self.kd_vel = 0.
         self.km_vel = 0.
         self.umbral_vel = 0.1
-        self.range_vel = 50. # Maximo pwm permitido
+        self.range_vel = 80. # Maximo pwm permitido
         self.kierr_vel = 2
         self.kimax_vel = 25.
         self.kisum_vel = 0.
@@ -75,6 +75,7 @@ class Base_node:
         self.base_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
 
         self.baseResetSub = rospy.Subscriber("base_reset", Int16, self.baseResetCb)
@@ -247,6 +248,10 @@ class Base_node:
 
 
     def baseLecCb(self, data):
+
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
 
         self.base_lec = data.data
         self.angCalc()

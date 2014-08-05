@@ -6,7 +6,7 @@ angular.module('finderApp')
     // var serverIP = "192.168.88.247";
     // var serverIP = "localhost";
     // var serverIP = "192.168.88.247";
-    var serverIP = "192.168.88.236";
+    var serverIP = "192.168.88.230";
     // var serverIP = "localhost";
     var ros = new ROSLIB.Ros();
     var rosConnectionActive = false;

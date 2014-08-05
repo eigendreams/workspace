@@ -98,7 +98,7 @@ void readIR_MLX90620()
 
     i2c_stop();
 
-    if ((ir_data.data[0] == 0 && ir_data.data[63] == 0) || (ir_data.data[0] == 50 && ir_data.data[63] == 50)){
+    if ((ir_data.data[0] == 0 && ir_data.data[63] == 0) || (ir_data.data[0] == 50 && ir_data.data[63] == 50) || (ir_data.data[0] == 255 && ir_data.data[63] == 255)){
       
       if ((ir_data.data[0] == 50 && ir_data.data[63] == 50) || (ir_data.data[0] == 255 && ir_data.data[63] == 255)) {
         i2c_write(0);
@@ -118,6 +118,21 @@ void readIR_MLX90620()
 
       delay(10);
       init_ir();
+
+      i2c_start_wait(MLX90620_WRITE);
+      i2c_write(CMD_READ_REGISTER); //Command = read a register
+      i2c_write(0x00); //Start address = 0x00
+      i2c_write(0x01); //Address step = 1
+      i2c_write(0x40); //Number of reads is 64
+      i2c_rep_start(MLX90620_READ);
+
+      for(int i = 0 ; i < 64 ; i++)
+      {
+      byte pixelDataLow = i2c_readAck();
+      byte pixelDataHigh = i2c_readAck();
+      ir_data.data[i] = (byte)(constrain(((int)(pixelDataHigh << 8) | pixelDataLow) + 50, 0, 255));
+      //ir_data.data[i] = (int)(pixelDataHigh << 8) | pixelDataLow;
+  }
     }
 }
 int readCPIX_MLX90620()

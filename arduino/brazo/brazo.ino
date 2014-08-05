@@ -174,6 +174,11 @@ void loop() {
 	gripper_servo.write(palm_out * 5 + 1500);
 	munnieca_servo.write(wrist_out * 5 + 1500);
 
+	if (Dynamixelobj.ping(1) == -1) {
+		Dynamixelobj.begin(1000000UL, 2);
+		Dynamixelobj.setMaxTorque(1, 1023);
+	}
+
 
 	// 20 Hz operation
 	if (milisNow - milisLast >= 100) {

@@ -135,8 +135,8 @@ void loop() {
 		int lec_a4 = analogRead(A4);
 		int lec_a5 = analogRead(A5);*/
 
-		int lec_v = analogRead(A2);
-		int lec_a1 = analogRead(A3);
+		int lec_v = analogRead(A3);
+		int lec_a1 = analogRead(A2);
 		int lec_a2 = lec_a1;
 
 		batt_v_msg.data = 1000 * ((5. * lec_v) / 1024.)  / (0.06369);

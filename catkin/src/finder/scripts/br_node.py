@@ -34,9 +34,9 @@ class Br_node:
         self.kd_pos = 0
         self.km_pos = 0
         self.umbral_pos = 0.5
-        self.range_pos = 50 # Maximo pwm permitido
+        self.range_pos = 60 # Maximo pwm permitido
         self.kierr_pos = 5
-        self.kimax_pos = 50
+        self.kimax_pos = 30
         self.kisum_pos = 0
         self.error_pos = 0
 
@@ -45,9 +45,9 @@ class Br_node:
         self.kd_vel = 0
         self.km_vel = 0
         self.umbral_vel = 0.5
-        self.range_vel = 50 # Maximo pwm permitido
+        self.range_vel = 60 # Maximo pwm permitido
         self.kierr_vel = 1
-        self.kimax_vel = 50
+        self.kimax_vel = 30
         self.kisum_vel = 0
         self.error_vel = 0
 
@@ -75,6 +75,7 @@ class Br_node:
         self.br_ang_abs_internal = 0
 
         self.times = 0
+        self.times_lec = 0
         self.init_time = rospy.get_time()
 
         self.br_save = 0
@@ -250,6 +251,10 @@ class Br_node:
 
     def brLecCb(self, data):
 
+        self.times_lec += 1
+        if (self.times_lec < 4):
+            self.offset = data.data
+
         self.br_lec = data.data
         self.angCalc()
 
@@ -278,9 +283,9 @@ class Br_node:
 
     def update(self):
 
-        self.br_save = self.br_out + self.br_save * 0.5 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
-        self.range_pos = 50 - self.br_save / 6
-        self.range_vel = 50 - self.br_save / 6
+        self.br_save = abs(self.br_out) + self.br_save * 0.95 #MAXIMO DE 70 POR 35 (1 + 35 * 0.5 + ...)
+        self.range_pos = 60 - self.br_save / 40
+        self.range_vel = 60 - self.br_save / 40
 
         self.brOutPub.publish(self.br_out)
         self.brAngPub.publish(self.br_ang)

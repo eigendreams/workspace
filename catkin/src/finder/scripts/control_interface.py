@@ -82,8 +82,8 @@ class Control_interface:
 
         self.arm_out = 0
         self.forearm_out = 0
-        self.armOutPub = rospy.Publisher("arm_out", Int16)
-        self.forearmOutPub = rospy.Publisher("forearm_out", Int16)
+        # self.armOutPub = rospy.Publisher("arm_out", Int16)
+        # self.forearmOutPub = rospy.Publisher("forearm_out", Int16)
 
         self.operation_mode = "Navigation"
 
