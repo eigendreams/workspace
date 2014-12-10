@@ -39,20 +39,7 @@ namespace shape_msgs
       *(outbuffer + offset++) = 0;
       *(outbuffer + offset++) = 0;
       for( uint8_t i = 0; i < dimensions_length; i++){
-      int32_t * val_dimensionsi = (int32_t *) &(this->dimensions[i]);
-      int32_t exp_dimensionsi = (((*val_dimensionsi)>>23)&255);
-      if(exp_dimensionsi != 0)
-        exp_dimensionsi += 1023-127;
-      int32_t sig_dimensionsi = *val_dimensionsi;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = (sig_dimensionsi<<5) & 0xff;
-      *(outbuffer + offset++) = (sig_dimensionsi>>3) & 0xff;
-      *(outbuffer + offset++) = (sig_dimensionsi>>11) & 0xff;
-      *(outbuffer + offset++) = ((exp_dimensionsi<<4) & 0xF0) | ((sig_dimensionsi>>19)&0x0F);
-      *(outbuffer + offset++) = (exp_dimensionsi>>4) & 0x7F;
-      if(this->dimensions[i] < 0) *(outbuffer + offset -1) |= 0x80;
+      offset += serializeAvrFloat64(outbuffer + offset, this->dimensions[i]);
       }
       return offset;
     }
@@ -68,17 +55,7 @@ namespace shape_msgs
       offset += 3;
       dimensions_length = dimensions_lengthT;
       for( uint8_t i = 0; i < dimensions_length; i++){
-      uint32_t * val_st_dimensions = (uint32_t*) &(this->st_dimensions);
-      offset += 3;
-      *val_st_dimensions = ((uint32_t)(*(inbuffer + offset++))>>5 & 0x07);
-      *val_st_dimensions |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<3;
-      *val_st_dimensions |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<11;
-      *val_st_dimensions |= ((uint32_t)(*(inbuffer + offset)) & 0x0f)<<19;
-      uint32_t exp_st_dimensions = ((uint32_t)(*(inbuffer + offset++))&0xf0)>>4;
-      exp_st_dimensions |= ((uint32_t)(*(inbuffer + offset)) & 0x7f)<<4;
-      if(exp_st_dimensions !=0)
-        *val_st_dimensions |= ((exp_st_dimensions)-1023+127)<<23;
-      if( ((*(inbuffer+offset++)) & 0x80) > 0) this->st_dimensions = -this->st_dimensions;
+      offset += deserializeAvrFloat64(inbuffer + offset, &(this->st_dimensions));
         memcpy( &(this->dimensions[i]), &(this->st_dimensions), sizeof(float));
       }
      return offset;

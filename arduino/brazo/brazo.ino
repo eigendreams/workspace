@@ -32,10 +32,8 @@ SimpleDriverClass BASE(5, 3, 2, 100);
 
 // Pin 9 for standard servo control (fifth DOF)
 // SimpleServoClass(pin, val) // sense == sign(val), max_angle == abs(val) (from -90 to +90)
-//Servo brazo_servo;
-//Servo antebrazo_servo;
-Servo gripper_servo;
-Servo munnieca_servo;
+Servo palm_servo;
+Servo wrist_servo;
 //SimpleServoClass PALMA(&gripper_servo, 100);
 
 // Pins 13, 12, 11 for SPI single reads of magnetic encoders (second, third and fourth DOFs) in software emulation mode
@@ -49,14 +47,12 @@ AS5043Class AS5043obj(13, 12, 11);
 // Pins A1...A3 as CS for SPI read of each sensor, positive sense, sampling size of 1
 // EncoderClass(AS5043Class, pin_csn, min, max, val), as before
 EncoderClass ENCBASE(&AS5043obj, A0, 485, 1004, -100);
-EncoderClass ENCBRAZO(&AS5043obj, A2, 350, 820, -100);
-EncoderClass ENCANTEBRAZO(& AS5043obj, A1, 550, 90, -100);
-EncoderClass ENCMUNNIECA(A3, 350, 895, 100, 100);
+EncoderClass ENCARM(&AS5043obj, A2, 350, 820, -100);
+EncoderClass ENCFOREARM(& AS5043obj, A1, 550, 90, -100);
+EncoderClass ENCWRIST(A3, 350, 895, 100, 100);
 
 // The incoming 6 DOF int16 information from ROS
 int base_out = 0;
-//int arm_out = 0;
-//int forearm_out = 0;
 int wrist_out= 0;
 int palm_out = 0;
 int gripper_out = 0;
@@ -65,8 +61,6 @@ int base_lec;
 int arm_lec;
 int forearm_lec;
 int wrist_lec;
-int palm_lec;
-int gripper_lec;
 
 unsigned long milisLast = 0;
 unsigned long milisLastMsg = 0;
@@ -86,8 +80,6 @@ void alive_cb(const std_msgs::Int16& dmsg) {
 }
 
 ros::Subscriber<std_msgs::Int16> base_out_sub("base_out", base_out_cb);
-//ros::Subscriber<std_msgs::Int16> arm_out_sub("arm_out", arm_out_cb);
-//ros::Subscriber<std_msgs::Int16> forearm_out_sub("forearm_out", forearm_out_cb);
 ros::Subscriber<std_msgs::Int16> wrist_out_sub("wrist_out", wrist_out_cb);
 ros::Subscriber<std_msgs::Int16> palm_out_sub("palm_out", palm_out_cb);
 ros::Subscriber<std_msgs::Int16> gripper_out_sub("gripper_out", gripper_out_cb);
@@ -129,8 +121,8 @@ void setup() {
 	//antebrazo_servo.attach(8);
 	//BRAZO.attach(7);
 	//ANTEBRAZO.attach(8);
-	munnieca_servo.attach(7);
-	gripper_servo.attach(9);
+	palm_servo.attach(9);
+	wrist_servo.attach(7);
 
 	// Select encoders as digital
 	pinMode(A0, OUTPUT);
@@ -171,8 +163,8 @@ void loop() {
 
 	//brazo_servo.write(arm_out * 5 + 1500);
 	//antebrazo_servo.write(forearm_out * 5 + 1500);
-	gripper_servo.write(palm_out * 5 + 1500);
-	munnieca_servo.write(wrist_out * 5 + 1500);
+	palm_servo.write(palm_out * 5 + 1500);
+	wrist_servo.write(wrist_out * 5 + 1500);
 
 	if (Dynamixelobj.ping(1) == -1) {
 		Dynamixelobj.begin(1000000UL, 2);
@@ -199,9 +191,9 @@ void loop() {
 
 	    // Obten los valores absolutos de los encoders
 	    base_lec = ENCBASE.read();
-	    arm_lec = ENCBRAZO.read();
-	    forearm_lec = ENCANTEBRAZO.read();
-	    wrist_lec = ENCMUNNIECA.read();
+	    arm_lec = ENCARM.read();
+	    forearm_lec = ENCFOREARM.read();
+	    wrist_lec = ENCWRIST.read();
 	    //palm_lec = PALMA.read();
 	    //gripper_lec = DYNAMIXEL.read();
 
@@ -209,13 +201,13 @@ void loop() {
 		//BRAZO.write(arm_out);
 		//ANTEBRAZO.write(forearm_out);
 		//MUNNIECA.write(wrist_out);
-		gripper_servo.write(palm_out * 5 + 1500);
+		//gripper_servo.write(palm_out * 5 + 1500);
 		DYNAMIXEL.write(gripper_out);
 
 		//brazo_servo.write(arm_out * 5 + 1500);
 		//antebrazo_servo.write(forearm_out * 5 + 1500);
-		gripper_servo.write(palm_out * 5 + 1500);
-		munnieca_servo.write(wrist_out * 5 + 1500);
+		//gripper_servo.write(palm_out * 5 + 1500);
+		//munnieca_servo.write(wrist_out * 5 + 1500);
 
 
 		base_lec_msg.data = base_lec;

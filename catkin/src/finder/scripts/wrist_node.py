@@ -277,7 +277,7 @@ class Wrist_node:
 
     def update(self):
 
-        self.wristOutPub.publish(-self.wrist_out)
+        self.wristOutPub.publish(self.wrist_out)
         self.wristAngPub.publish(self.wrist_ang)
         self.wristVelPub.publish(self.wrist_vel)
 

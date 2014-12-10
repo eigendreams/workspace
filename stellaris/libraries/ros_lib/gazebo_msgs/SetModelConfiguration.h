@@ -51,20 +51,7 @@ static const char SETMODELCONFIGURATION[] = "gazebo_msgs/SetModelConfiguration";
       *(outbuffer + offset++) = 0;
       *(outbuffer + offset++) = 0;
       for( uint8_t i = 0; i < joint_positions_length; i++){
-      int32_t * val_joint_positionsi = (int32_t *) &(this->joint_positions[i]);
-      int32_t exp_joint_positionsi = (((*val_joint_positionsi)>>23)&255);
-      if(exp_joint_positionsi != 0)
-        exp_joint_positionsi += 1023-127;
-      int32_t sig_joint_positionsi = *val_joint_positionsi;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = (sig_joint_positionsi<<5) & 0xff;
-      *(outbuffer + offset++) = (sig_joint_positionsi>>3) & 0xff;
-      *(outbuffer + offset++) = (sig_joint_positionsi>>11) & 0xff;
-      *(outbuffer + offset++) = ((exp_joint_positionsi<<4) & 0xF0) | ((sig_joint_positionsi>>19)&0x0F);
-      *(outbuffer + offset++) = (exp_joint_positionsi>>4) & 0x7F;
-      if(this->joint_positions[i] < 0) *(outbuffer + offset -1) |= 0x80;
+      offset += serializeAvrFloat64(outbuffer + offset, this->joint_positions[i]);
       }
       return offset;
     }
@@ -113,17 +100,7 @@ static const char SETMODELCONFIGURATION[] = "gazebo_msgs/SetModelConfiguration";
       offset += 3;
       joint_positions_length = joint_positions_lengthT;
       for( uint8_t i = 0; i < joint_positions_length; i++){
-      uint32_t * val_st_joint_positions = (uint32_t*) &(this->st_joint_positions);
-      offset += 3;
-      *val_st_joint_positions = ((uint32_t)(*(inbuffer + offset++))>>5 & 0x07);
-      *val_st_joint_positions |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<3;
-      *val_st_joint_positions |= ((uint32_t)(*(inbuffer + offset++)) & 0xff)<<11;
-      *val_st_joint_positions |= ((uint32_t)(*(inbuffer + offset)) & 0x0f)<<19;
-      uint32_t exp_st_joint_positions = ((uint32_t)(*(inbuffer + offset++))&0xf0)>>4;
-      exp_st_joint_positions |= ((uint32_t)(*(inbuffer + offset)) & 0x7f)<<4;
-      if(exp_st_joint_positions !=0)
-        *val_st_joint_positions |= ((exp_st_joint_positions)-1023+127)<<23;
-      if( ((*(inbuffer+offset++)) & 0x80) > 0) this->st_joint_positions = -this->st_joint_positions;
+      offset += deserializeAvrFloat64(inbuffer + offset, &(this->st_joint_positions));
         memcpy( &(this->joint_positions[i]), &(this->st_joint_positions), sizeof(float));
       }
      return offset;

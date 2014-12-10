@@ -99,7 +99,7 @@ static const char SELFTEST[] = "diagnostic_msgs/SelfTest";
     }
 
     const char * getType(){ return SELFTEST; };
-    const char * getMD5(){ return "74c9372c870a76da4fc2b3973978b898"; };
+    const char * getMD5(){ return "ac21b1bab7ab17546986536c22eb34e9"; };
 
   };
 

@@ -1,7 +1,7 @@
 #include "ros.h"
 #include "std_msgs/Int16.h"
 #include "std_msgs/Empty.h"
-#include "Servo.h"
+//#include "Servo.h"
 #include "OSMC.h"
 #include "AS5043.h"
 #include "Encoder.h"
@@ -28,8 +28,12 @@ unsigned long milisLast = 0;
 unsigned long milisLastMsg = 0;
 bool timedOut = false;
 
-void left_out_cb(const std_msgs::Int16& dmsg) {left_out = dmsg.data;}
-void right_out_cb(const std_msgs::Int16& dmsg) {right_out = dmsg.data;}
+void left_out_cb(const std_msgs::Int16& dmsg) {
+	left_out = dmsg.data;
+}
+void right_out_cb(const std_msgs::Int16& dmsg) {
+	right_out = dmsg.data;
+}
 void alive_cb(const std_msgs::Int16& dmsg) {
 	if (dmsg.data) {
 		milisLastMsg = millis();
@@ -113,16 +117,19 @@ void loop() {
 		// Check for timeOut condition, if yes set desired speeds to 0 and raise the timedOut flag
 		// to set mode as PWM until next message is received (default timeOut as used in ROS, 5000 ms)
 		if (milisNow - milisLastMsg >= 3500) {
-			left_out = 0;
-			right_out = 0;
-			timedOut = true;
-		}
+		 	left_out = 0;
+		 	right_out = 0;
+		 	timedOut = true;
+		 }
 
 		left_lec = ENCLEFT.read();
 		right_lec = ENCRIGHT.read();
 
 		LEFT.write(left_out);
 		RIGHT.write(right_out);
+
+		//LEFT.write(100);
+		//RIGHT.write(100);
 
 		left_lec_msg.data = left_lec;
 		right_lec_msg.data = right_lec;

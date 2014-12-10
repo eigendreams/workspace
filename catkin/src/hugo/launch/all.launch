@@ -1,0 +1,33 @@
+<launch>
+
+    <machine name="c1_opt" address="jakob-net"   env-loader="/opt/ros/groovy/env.sh"          user="jakob" password="jakob" />
+    <machine name="c1_src" address="jakob-net"   env-loader="~/workspace/catkin/devel/env.sh" user="jakob" password="jakob" />
+    <machine name="c2_src" address="raspberrypi" env-loader="~/workspace/catkin/devel/env.sh" user="pi" password="rpi" />
+    <machine name="c2_opt" address="raspberrypi" env-loader="/opt/ros/groovy/env.sh"          user="pi" password="rpi" />
+
+    <node machine="c2_src" name="usb_cam" pkg="usb_cam" type="usb_cam_node" respawn="true" output="screen" >
+        <param name="video_device" value="/dev/video0" />
+        <param name="image_width" value="320" />
+        <param name="image_height" value="240" />
+        <param name="pixel_format" value="yuyv" />
+        <param name="camera_frame_id" value="usb_cam" />
+        <param name="io_method" value="mmap"/>
+    </node>
+
+    <node machine="c1_opt" name="image_viewusb" pkg="image_view" type="image_view" respawn="true" output="screen" >
+        <remap from="image" to="/usb_cam/image_raw"/>
+		<remap from="image_transport" to="compressed"/>
+    </node>
+
+    <node machine="c2_src" respawn="true" pkg="rosserial_python" type="serial_node.py" name="serialnode1" args="/dev/ttyACM0" />
+       
+    <node machine="c2_src" respawn="true" pkg="hugo" type="interface_joy.py" name="interface_joy" /> 
+    <node machine="c2_src" respawn="true" pkg="hugo" type="interface_servo.py" name="interface_servo" />
+    <node machine="c2_src" respawn="true" pkg="hugo" type="interface_motor.py" name="interface_motor" />
+    <node machine="c2_src" respawn="true" pkg="hugo" type="interface_play_audio.py" name="interface_play_audio" />
+
+    <node machine="c1_opt" respawn="true" pkg="joy" type="joy_node" name="joy_node">
+        <param name="dev" value="/dev/input/js0" />
+    </node>
+
+</launch>

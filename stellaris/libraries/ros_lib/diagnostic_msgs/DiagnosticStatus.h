@@ -23,6 +23,7 @@ namespace diagnostic_msgs
       enum { OK = 0 };
       enum { WARN = 1 };
       enum { ERROR = 2 };
+      enum { STALE = 3 };
 
     virtual int serialize(unsigned char *outbuffer) const
     {
@@ -110,7 +111,7 @@ namespace diagnostic_msgs
     }
 
     const char * getType(){ return "diagnostic_msgs/DiagnosticStatus"; };
-    const char * getMD5(){ return "67d15a62edb26e9d52b0f0efa3ef9da7"; };
+    const char * getMD5(){ return "d0ce08bc6e5ba34c7754f563a9cabaf1"; };
 
   };
 
