@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-
+################################################################################
 from math import *
-
-from ino_mod import *
-
+################################################################################
 import rospy
 from std_msgs.msg import Bool
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
-
 from dynamic_reconfigure.server import Server
+################################################################################
 from volti.cfg import PIDConfig
-
+################################################################################
+from ino_mod import *
+################################################################################
 
 class PID_node:
 
@@ -21,26 +21,24 @@ class PID_node:
         rospy.init_node(node_name_default)
         self.nodename = rospy.get_name()
         rospy.loginfo("pid_node starting with name %s", self.nodename)
-
         self.rate = float(rospy.get_param("param_global_rate", '10'))
-        self.init_time = rospy.get_time()
 
         # pid_out da el valor de salida al motor de -100 a 100
         # pid_ang da el valor del angulo del encoder en su marco de referencia (lafrom std_msgs.msg import Bool IMU da el angulo de la esfera, en general, dado
         # que cada motor puede dar una cantidad potencialmente infinita de vueltas, no es posible hacer una correspondencia uno a uno
-        # con el angulo real del motor
+        # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         self.pidOutPub = rospy.Publisher("~pid_out", Int16)
         self.pidAngPub = rospy.Publisher("~pid_ang", Float32)
         self.pidVelPub = rospy.Publisher("~pid_vel", Float32)
 
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.kp_pos = float(rospy.get_param('~kp_pos', '70'))
-        self.ki_pos = float(rospy.get_param('~ki_pos',  '0'))
-        self.kd_pos = float(rospy.get_param('~kd_pos',  '0'))
-        self.km_pos = float(rospy.get_param('~km_pos',  '0'))
+        self.kp_pos = float(rospy.get_param('~kp_pos', '70'))           # kp
+        self.ki_pos = float(rospy.get_param('~ki_pos',  '0'))           # ki
+        self.kd_pos = float(rospy.get_param('~kd_pos',  '0'))           # kd
+        self.km_pos = float(rospy.get_param('~km_pos',  '0'))           # km
         # variables de limitacion adicionales
-        self.umbral_pos = float(rospy.get_param('~umbral_pos', '0.5'))  # valor en radianes dentro del cual el error se considera nula
+        self.umbral_pos = float(rospy.get_param('~umbral_pos', '0.5'))  # valor en radianes dentro del cual el error de posicion se toma nulo
         self.range_pos  = float(rospy.get_param('~range_pos', '70'))    # maximo pwm permitido en este modo de control
         self.kierr_pos  = float(rospy.get_param('~kierr_pos',  '1.2'))  # rango en radianes DENTRO del cual acumular error integral
         self.kimax_pos  = float(rospy.get_param('~kimax_pos', '10'))    # macima pwm contribuido por el error integral
@@ -85,6 +83,8 @@ class PID_node:
 
         self.times = 0                      
         self.times_lec = 0
+
+        self.init_time = rospy.get_time()
 
         self.pidResetSub = rospy.Subscriber("~pid_reset", Int16, self.pidResetCb)
         self.pidLecSub = rospy.Subscriber("~pid_lec", Int16, self.pidLecCb)
@@ -217,11 +217,6 @@ class PID_node:
         else:
             self.pid_ang_des = self.pid_ang
             self.pid_vel()
-
-
-    def pidDesCb(self, data):
-
-        self.pid_vel_des = self.constrain(data.data, -100, 100) / 100.
 
 
     def update(self):

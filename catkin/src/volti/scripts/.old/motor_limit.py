@@ -14,14 +14,17 @@ actual en cada sampleo. Ej, si estamos en salida 0, cada segundo aumenta un 10 l
 si es de 100%, cada segundo disminuye un 40 la salida maxima al motor. Con limites fijos entre 0 y 100
 """
 
+################################################################################
+from math import *
+################################################################################
+from ino_mod import *
+################################################################################
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
+################################################################################
 
-from math import *
-from ino_mod import *
-
-class Motor_output_limit:
+class Motor_limit:
 
     def __init__(self, node_name_override = 'motor_output_limit'):
         rospy.init_node(node_name_override)

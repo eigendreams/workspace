@@ -70,7 +70,7 @@ void alive_cb( const std_msgs::Int16& dmsg) {
     timedOut = false;
   }
 } 
-ros::Subscriber<std_msgs::Int16> alive_sub("alive", alive_cb);
+ros::Subscriber<std_msgs::Int16> alive_sub("al", alive_cb);
 
 int gear1_lec;
 int gear2_lec;

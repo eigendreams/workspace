@@ -1,0 +1,15 @@
+<launch>
+
+ <!-- joy node -->
+  <node respawn="true" pkg="joy" type="joy" name="_joy" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+  <node respawn="true" pkg="finder_low_py" type="finder_teleop_joy" name="teleop_joy"/>
+    <param name="axis_linear" value="5" type="int"/>
+    <param name="axis_angular" value="0" type="int"/>
+    <param name="button_reverse" value="1" type="int"/>
+  </node>
+
+</launch>
