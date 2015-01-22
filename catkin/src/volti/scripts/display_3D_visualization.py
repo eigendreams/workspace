@@ -27,7 +27,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import roslib; roslib.load_manifest('razor_imu_9dof')
+import roslib; roslib.load_manifest('volti')
 import rospy
 
 from visual import *
@@ -184,4 +184,4 @@ def processIMU_message(rawMsg):
     L3.text = str(yaw)
 
 
-sub = rospy.Subscriber('imuRaw', float32_12, processIMU_message)
+sub = rospy.Subscriber('imu', float32_12, processIMU_message)

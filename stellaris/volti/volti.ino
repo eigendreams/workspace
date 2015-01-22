@@ -19,7 +19,7 @@ IMU imu1(1);
 
 volti::float32_12 imu_data2;
 ros::Publisher imu_pub2("i2", &imu_data2);
-IMU imu2(2);
+IMU imu2(3);
 
 // vol1 vol2 mot1 mot2 motv
 Servo servo_11;
@@ -29,7 +29,7 @@ Servo servo_14;
 Servo servo_15;
 
 // CLK, DO, PROG
-AS5043Class AS5043obj(23, 25, 26);
+AS5043Class AS5043obj(15, 25, 26);
 // CSN
 EncoderClass gear1(&AS5043obj, 34, 485, 1004, -100);
 EncoderClass gear2(&AS5043obj, 33, 485, 1004, -100);
@@ -96,7 +96,7 @@ void setup() {
   pinMode(14, OUTPUT);
   pinMode(15, OUTPUT);
 
-  pinMode(23, OUTPUT);
+  pinMode(15, OUTPUT);
   pinMode(25, INPUT);
   pinMode(26, OUTPUT);
   pinMode(34, OUTPUT);

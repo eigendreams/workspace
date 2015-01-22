@@ -69,21 +69,21 @@
 #define GYRO_ADDRESS  ((short) 0x68) // 0x68 = 0xD0 / 2
 
 #if ARDUINO >= 100
-  #define WIRE_SEND(b) Wire.write((byte) b) 
-  #define WIRE_RECEIVE() Wire.read() 
+  #define WIRE_SEND(b) Wire1.write((byte) b) 
+  #define WIRE_RECEIVE() Wire1.read() 
 #else
-  #define WIRE_SEND(b) Wire.send(b)
-  #define WIRE_RECEIVE() Wire.receive() 
+  #define WIRE_SEND(b) Wire1.send(b)
+  #define WIRE_RECEIVE() Wire1.receive() 
 #endif
 
 
 
 
 
-#ifndef IMU_h
-#define IMU_h
+#ifndef IMU1_h
+#define IMU1_h
 
-class IMU
+class IMU1
 {
 	public:
 
@@ -143,7 +143,7 @@ class IMU
     short num_gyro_errors;
 
     short module;
-    IMU(short module);
+    IMU1(short module);
     
     void Compass_Heading();
     void Normalize(void);

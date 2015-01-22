@@ -8,6 +8,8 @@ from ino_mod import *
 from numpy import *
 from numpy.linalg import inv 
 ################################################################################
+import rospy
+################################################################################
 #
 """
 Implementacion burde de un sistema de filtrado kalman de una sola dimension
@@ -19,8 +21,13 @@ class Kfilter:
     #
     def __init__(self, settings = {'Q':10 , 'R':10 , 'P0':10}):
         #
+        """
         self.A = array([[1.5, 0.5, 0] , [0, 1.5, 0.5], [0, 0, 2]], dtype=float)
         self.B = array([[-.5, 0, 0] , [0, -.5, 0], [0, 0, -.5]], dtype=float)
+        self.H = array([[1, 0, 0] , [0, 1, 0], [0, 0, 1]], dtype=float)
+        """
+        self.A = array([[2, 0, 0] , [0, 2, 0], [0, 0, 2]], dtype=float)
+        self.B = array([[-1, 0, 0] , [0, -1, 0], [0, 0, -1]], dtype=float)
         self.H = array([[1, 0, 0] , [0, 1, 0], [0, 0, 1]], dtype=float)
         #
         # settings = {'Q':10 , 'R':10 , 'P0':10}
@@ -70,16 +77,21 @@ class Kfilter:
         # TIME UPDATE
         self.Xkp  = dot(self.A , self.Xkm1) + dot(self.B , self.U)
         self.Pkp  = dot(self.A , dot(self.Pkm1, self.A.T)) + self.Q
+        #rospy.loginfo("Pkp=" + str(self.Pkp))
         # UPDATE
         self.Y[0, 0] = measure
         self.Y[1, 0] = measure - self.Xk[0, 0]
         self.Y[2, 0] = self.Xk[1, 0] - self.Xkm1m1[1, 0]
         # MEASURMENT UPDATE
         self.Vk    = self.Y - dot(self.H, self.Xkp)
+        #rospy.loginfo("Vk=" + str(self.Vk))
         self.Sk    = dot(self.H, dot(self.Pkp, self.H.T)) + self.R
+        #rospy.loginfo("Sk=" + str(self.Sk))
         self.Kk    = dot(self.Pkp, dot(self.H.T, inv(self.Sk)))
+        #rospy.loginfo("Kk=" + str(self.Kk))
         self.Xk    = self.Xkp + dot(self.Kk, self.Vk)
         self.Pk    = self.Pkp - dot(self.Kk, dot(self.Sk, self.Kk.T))
+        #rospy.loginfo("Pk=" + str(self.Pk))        
         #
         self.Pkm1[0, 0] = self.Pk[0, 0]
         self.Pkm1[1, 0] = self.Pk[1, 0]
