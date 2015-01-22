@@ -21,4 +21,4 @@ stubs/
 **/**.tar
 **.zip
 **.tar
-
+**.pyc
