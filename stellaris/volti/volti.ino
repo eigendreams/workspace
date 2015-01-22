@@ -1,5 +1,6 @@
 #include "ros.h"
 #include "std_msgs/Int16.h"
+//#include "volti/float32_12.h"
 #include "volti/float32_3.h"
 #include "Servo.h"
 #include "AS5043.h"
@@ -13,10 +14,12 @@ unsigned long milisLast = 0;
 unsigned long milisLastMsg = 0;
 bool timedOut = false;
 
+//volti::float32_12 imu_data1;
 volti::float32_3 imu_data1;
 ros::Publisher imu_pub1("i1", &imu_data1);
 IMU imu1(1);
 
+//volti::float32_12 imu_data2;
 volti::float32_3 imu_data2;
 ros::Publisher imu_pub2("i2", &imu_data2);
 IMU imu2(3);
@@ -137,14 +140,14 @@ void loop() {
   nh.spinOnce();
   unsigned long milisNow = millis();
 
-  imu1.loop(); delayMicroseconds(500);
-  imu2.loop(); delayMicroseconds(500);
+  imu1.loop(); delayMicroseconds(333);
+  imu2.loop(); delayMicroseconds(333);
 
-  if (milisNow - milisLast >= 99) {
+  if (milisNow - milisLast >= 90) {
 
     milisLast = milisNow;
 
-    if (milisNow - milisLastMsg >= 3500) {
+    if (milisNow - milisLastMsg >= 3000) {
 
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
