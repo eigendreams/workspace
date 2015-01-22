@@ -137,10 +137,10 @@ void loop() {
   nh.spinOnce();
   unsigned long milisNow = millis();
 
-  imu1.loop();
-  imu2.loop();
+  imu1.loop(); delayMicroseconds(500);
+  imu2.loop(); delayMicroseconds(500);
 
-  if (milisNow - milisLast >= 100) {
+  if (milisNow - milisLast >= 99) {
 
     milisLast = milisNow;
 

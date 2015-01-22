@@ -1,6 +1,6 @@
 #define HW__VERSION_CODE 10724 // SparkFun "9DOF Sensor Stick" version "SEN-10724" (HMC5883L magnetometer)
-#define OUTPUT__BAUD_RATE 115200
-#define OUTPUT__DATA_INTERVAL 50  // in milliseconds
+#define OUTPUT__BAUD_RATE 57600
+#define OUTPUT__DATA_INTERVAL 20  // in milliseconds
 #define OUTPUT__MODE_CALIBRATE_SENSORS 0 // Outputs sensor min/max values as text for manual calibration
 #define OUTPUT__MODE_ANGLES 1 // Outputs yaw/pitch/roll in degrees
 #define OUTPUT__MODE_SENSORS_CALIB 2 // Outputs calibrated sensor values for all 9 axes

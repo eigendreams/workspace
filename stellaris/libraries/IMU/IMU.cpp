@@ -456,8 +456,11 @@ void IMU::Read_Gyro()
 ////////////////////////////////////////////////////////////////////////////////
 
 void IMU::read_sensors() {
+  delayMicroseconds(333);
   Read_Gyro(); // Read gyroscope
+  delayMicroseconds(333);
   Read_Accel(); // Read accelerometer
+  delayMicroseconds(333);
   Read_Magn(); // Read magnetometer
 }
 
