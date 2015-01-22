@@ -11,6 +11,7 @@ generate_dynamic_reconfigure_options(
 add_message_files(
 	FILES
 	float32_12.msg
+	float32_3.msg
 )
 
 generate_messages(
