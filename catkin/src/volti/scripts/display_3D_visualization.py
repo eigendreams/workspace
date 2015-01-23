@@ -37,7 +37,7 @@ import math
 
 from time import time
 from sensor_msgs.msg import Imu
-from finder.msg import float32_12
+from volti.msg import float32_3
 
 grad2rad = 3.141592/180.0
 
@@ -184,4 +184,4 @@ def processIMU_message(rawMsg):
     L3.text = str(yaw)
 
 
-sub = rospy.Subscriber('imu', float32_12, processIMU_message)
+sub = rospy.Subscriber('i1', float32_3, processIMU_message)

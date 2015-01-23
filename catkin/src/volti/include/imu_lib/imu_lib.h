@@ -1,5 +1,12 @@
+#ifndef IMU_H_
+#define IMU_H_
+
+#include "ADXL345.h"
+#include "gyro.h"
+#include "hmc5883.h"
+
 #define HW__VERSION_CODE 10724 // SparkFun "9DOF Sensor Stick" version "SEN-10724" (HMC5883L magnetometer)
-#define OUTPUT__BAUD_RATE 115200
+#define OUTPUT__BAUD_RATE 57600
 #define OUTPUT__DATA_INTERVAL 20  // in milliseconds
 #define OUTPUT__MODE_CALIBRATE_SENSORS 0 // Outputs sensor min/max values as text for manual calibration
 #define OUTPUT__MODE_ANGLES 1 // Outputs yaw/pitch/roll in degrees
@@ -68,6 +75,8 @@
 #define MAGN_ADDRESS  ((short) 0x1E) // 0x1E = 0x3C / 2
 #define GYRO_ADDRESS  ((short) 0x68) // 0x68 = 0xD0 / 2
 
+
+/*
 #if ARDUINO >= 100
   #define WIRE_SEND(b) Wire.write((byte) b) 
   #define WIRE_RECEIVE() Wire.read() 
@@ -75,25 +84,26 @@
   #define WIRE_SEND(b) Wire.send(b)
   #define WIRE_RECEIVE() Wire.receive() 
 #endif
+*/
 
-
-
-
-
-#ifndef IMU_h
-#define IMU_h
 
 class IMU
-{
+{   private:
+
+	void init_matrix(float array[][3],float A[][3]);
+	float constrain(float X,float A, float B);
 	public:
 
+	Adxl345* Acelerometro;
+	Gyro* Gyrometro;
+	MAG* Magnetometro;
     // Select your startup output mode and format here!
     short output_mode;
     short output_format;
 
     // If set true, an error message will be output if we fail to read sensor data.
     // Message format: "!ERR: reading <sensor>", followed by "\r\n".
-    boolean output_errors;  // true or false
+    bool output_errors;  // true or false
 
     // Sensor variables
     float accel[3];  // Actually stores the NEGATED acceleration (equals gravity, if board not moving).
@@ -134,16 +144,16 @@ class IMU
     float G_Dt; // Integration time for DCM algorithm
 
     // More output-state variables
-    boolean output_stream_on;
-    boolean output_single_on;
+    bool output_stream_on;
+    bool output_single_on;
     short curr_calibration_sensor;
-    boolean reset_calibration_session_flag;
+    bool reset_calibration_session_flag;
     short num_accel_errors;
     short num_magn_errors;
     short num_gyro_errors;
 
     short module;
-    IMU(short module);
+    IMU();
     
     void Compass_Heading();
     void Normalize(void);
@@ -173,5 +183,9 @@ class IMU
     char readChar();
     void setup();
     void loop();
+
+    float getPich() { return this->pitch; }
+    float getRoll() { return this->roll; }
+    float getYaw() { return this->yaw; }
 };
 #endif

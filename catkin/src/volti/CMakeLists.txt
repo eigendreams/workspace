@@ -1,8 +1,22 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(volti)
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs tf joy message_generation dynamic_reconfigure)
 
-#catkin_python_setup()
+project(volti)
+
+find_package(
+	catkin 
+	REQUIRED COMPONENTS 
+		roscpp 
+		rospy 
+		std_msgs 
+		tf 
+		joy 
+		message_generation 
+		dynamic_reconfigure
+)
+
+set(ROS_BUILD_TYPE Release)
+
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 generate_dynamic_reconfigure_options(
     cfg/PIDvel.cfg
@@ -20,8 +34,40 @@ generate_messages(
 )
 
 catkin_package(
-	INCLUDE_DIRS scripts
-	CATKIN_DEPENDS message_runtime
+	INCLUDE_DIRS include
+    CATKIN_DEPENDS 
+    	message_runtime
+    	roscpp 
+    	std_msgs
 )
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(
+	include 
+	include/imu_lib
+	${catkin_INCLUDE_DIRS}
+)
+
+add_library(ADXL345
+	src/ADXL345.cpp
+)
+target_link_libraries(ADXL345 ${catkin_LIBRARIES})
+
+add_library(gyro
+	src/gyro.cpp
+)
+target_link_libraries(gyro ${catkin_LIBRARIES})
+
+add_library(hmc5883
+	src/hmc5883.cpp
+)
+target_link_libraries(hmc5883 ${catkin_LIBRARIES})
+
+add_library(imu_lib
+	src/imu_lib.cpp
+)
+target_link_libraries(imu_lib ADXL345 gyro hmc5883 ${catkin_LIBRARIES})
+
+add_executable(imu_node
+	nodes/imu_node.cpp
+)
+target_link_libraries(imu_node imu_lib ${catkin_LIBRARIES})

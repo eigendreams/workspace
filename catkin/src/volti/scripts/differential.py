@@ -101,9 +101,11 @@ class Differential:
         self.vs_val = 0
         #
         # Asociaciones con publicadores y suscriptores
-        self.m1 = rospy.Publisher("m1", Int16)  # salida al motor 1
-        self.m2 = rospy.Publisher("m2", Int16)  #
+        self.m1 = rospy.Publisher("m1dummy", Int16)  # salida al motor 1
+        self.m2 = rospy.Publisher("m2dummy", Int16)  #
         self.e1 = rospy.Subscriber("e1", Int16, self.e1cb)  # entrada del encoder 1
+        self.e1vel = rospy.Publisher("e1vel", Float32)  #
+        self.e1accel = rospy.Publisher("e1accel", Float32)  #
         self.e2 = rospy.Subscriber("e2", Int16, self.e2cb)  #
         #
         #
@@ -153,6 +155,9 @@ class Differential:
         self.angle_m1 = self.X_m1[0, 0]
         self.speed_m1 = self.X_m1[1, 0]
         self.accel_m1 = self.X_m1[2, 0]
+        #
+        self.e1vel.publish(self.speed_m1)
+        self.e1accel.publish(self.accel_m1)
         #
     def e2cb(self, data):
         #

@@ -39,9 +39,9 @@ class Encoder:
         self.internal_angle_last        = self.internal_angle
         self.internal_angle             = map(measure, 0., 1023., 0., 2. * pi)
         #
-        if (self.internal_angle > 1.7 * pi and self.internal_angle_last < 0.3 * pi):
+        if (self.internal_angle > 1.1 * pi and self.internal_angle_last < 0.9 * pi):
             self.laps = self.laps - 1
-        if (self.internal_angle < 0.3 * pi and self.internal_angle_last > 1.7 * pi):
+        if (self.internal_angle < 0.9 * pi and self.internal_angle_last > 1.1 * pi):
             self.laps = self.laps + 1
         #
         self.output_angle               = 2 * pi * self.laps + self.internal_angle - self.internal_offset
