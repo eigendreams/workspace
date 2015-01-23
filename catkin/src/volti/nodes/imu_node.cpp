@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   ros::Rate loop_rate(50);
   int count = 0;
   IMU MyImu;
-  volti::float32_3 msg;
+  volti::float32_12 msg;
   //std_msgs::Float32 msg;
 
   while (ros::ok())
