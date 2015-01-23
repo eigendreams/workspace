@@ -32,7 +32,11 @@ int main(int argc, char **argv)
     //msg.data[0] = MyImu.pitch*180.0/pi;
     //msg.data[0] = MyImu.roll*180.0/pi;
     //msg.data[0] = MyImu.yaw*180.0/pi;
-    msg.data = MyImu.pitch*180.0/pi;
+    msg.data = MyImu.accel[0];
+    imu_pub.publish(msg);
+    msg.data = MyImu.accel[1];
+    imu_pub.publish(msg);
+    msg.data = MyImu.accel[2];
     imu_pub.publish(msg);
     ros::spinOnce();
     loop_rate.sleep();
