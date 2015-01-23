@@ -26,9 +26,9 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     MyImu.loop();
-    msg.data[0] = MyImu.pitch*180.0/pi
-    msg.data[0] = MyImu.roll*180.0/pi
-    msg.data[0] = MyImu.yaw*180.0/pi
+    msg.data[0] = MyImu.pitch*180.0/pi;
+    msg.data[0] = MyImu.roll*180.0/pi;
+    msg.data[0] = MyImu.yaw*180.0/pi;
     imu_pub.publish(msg);
     ros::spinOnce();
     loop_rate.sleep();
