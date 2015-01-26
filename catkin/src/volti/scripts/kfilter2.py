@@ -23,8 +23,8 @@ class Kfilter2:
         #
         self.dt = 0.1
         self.X = array([[0.], [0.], [0.]])
-        self.Xm1 = array([[0.], [0.], [0.]])
-        self.Xm1m1 = array([[0.], [0.], [0.]])
+        self.Ym1 = array([[0.], [0.], [0.]])
+        self.Ym1m1 = array([[0.], [0.], [0.]])
         self.P = diag((settings['P0'], settings['P0'], settings['P0']))
         self.A = array([[1., self.dt, 0.5 * self.dt * self.dt], [0., 1., self.dt], [0., 0., 1.]])
         self.Q = eye(self.X.shape()[0])
@@ -73,19 +73,19 @@ class Kfilter2:
             return self.Y
             #
         # INPUT
-        self.Xm1m1[0, 0] = self.Xm1[0, 0]
-        self.Xm1m1[1, 0] = self.Xm1[1, 0]
-        self.Xm1m1[2, 0] = self.Xm1[2, 0]
+        self.Ym1m1[0, 0] = self.Ym1[0, 0]
+        self.Ym1m1[1, 0] = self.Ym1[1, 0]
+        self.Ym1m1[2, 0] = self.Ym1[2, 0]
         #
-        self.Xm1[0, 0] = self.X[0, 0]
-        self.Xm1[1, 0] = self.X[1, 0]
-        self.Xm1[2, 0] = self.X[2, 0]
+        self.Ym1[0, 0] = self.Y[0, 0]
+        self.Ym1[1, 0] = self.Y[1, 0]
+        self.Ym1[2, 0] = self.Y[2, 0]
         # TIME UPDATE
         (self.X, self.P) = self.kf_predict(self.X, self.P, self.A, self.Q)
         #
         self.Y[0, 0] = measure
-        self.Y[1, 0] = measure - self.X[0, 0]
-        self.Y[2, 0] = self.X[1, 0] - self.Xm1m1[1, 0]
+        self.Y[1, 0] = measure - self.Ym1[0, 0]
+        self.Y[2, 0] = self.Ym1[1, 0] - self.Ym1m1[1, 0]
         #
         (self.X, self.P, self.K, self.IM, self.IS, self.LH) = self.kf_update(self.X, self.P, self.Y, self.H, self.R)
         #rospy.loginfo("Pkp=" + str(self.Pkp))
