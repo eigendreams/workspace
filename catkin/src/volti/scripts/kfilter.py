@@ -22,31 +22,22 @@ class Kfilter:
     def __init__(self, settings = {'Q':10 , 'R':10 , 'P0':10, 'rate':10}):
         #
         self.dt = 1. / float(settings['rate'])
-        #
         self.A = array([[1., self.dt, 0.5 * self.dt * self.dt], [0., 1., self.dt], [0., 0., 1.]], dtype=float)
         self.H = array([[1, 0, 0] , [0, 1, 0], [0, 0, 1]], dtype=float)
         self.Q = array([[settings['Q'], 0, 0] , [0, settings['Q'], 0], [0, 0, settings['Q']]], dtype=float)
         self.R = array([[settings['R'], 0, 0] , [0, settings['R'], 0], [0, 0, settings['R']]], dtype=float)
-        self.P0 = array([[settings['P0'], 0, 0] , [0, settings['P0'], 0], [0, 0, settings['P0']]], dtype=float)
+        self.Pkm1 = array([[settings['P0'], 0, 0] , [0, settings['P0'], 0], [0, 0, settings['P0']]], dtype=float)
         self.Xkm1 = array([[0] , [0], [0]], dtype=float)
+        self.Xkm1m1 = array([[0] , [0], [0]], dtype=float)
         self.Y = array([[0], [0], [0]], dtype=float) # measure
         self.Ym1 = array([[0.], [0.], [0.]], dtype=float)
         self.Ym1m1 = array([[0.], [0.], [0.]], dtype=float)
-        self.Pkm1 = array([[settings['P0'], 0, 0] , [0, settings['P0'], 0], [0, 0, settings['P0']]], dtype=float)
         self.times = 0
         #
     def compute(self, measure):
         #
         self.times = self.times + 1
         #
-        if (self.times < 2):
-            self.Xkm1[0, 0] = measure
-            self.Xkm1[1, 0] = measure
-            self.Xkm1[2, 0] = measure
-            self.Xk         = copy(self.Xkm1)
-            self.Xkm1m1     = copy(self.Xkm1)
-            return self.Xkm1
-            #
         # INPUT
         #
         self.Ym1m1[0, 0] = self.Ym1[0, 0]
