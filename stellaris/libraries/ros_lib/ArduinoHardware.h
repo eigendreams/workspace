@@ -54,13 +54,13 @@ class ArduinoHardware {
     }
 
     void init(){
-      Serial5.begin(baud_);
+      Serial.begin(baud_);
       //Serial5.begin(baud_);
     }
 
     int read(){
-      if (Serial5.available() > 0)
-        return Serial5.read();
+      if (Serial.available() > 0)
+        return Serial.read();
       //if (Serial5.available() > 0)
       //  return Serial5.read();
       else
@@ -69,7 +69,7 @@ class ArduinoHardware {
 
     void write(uint8_t* data, int length){
       for(int i=0; i<length; i++)
-        Serial5.write(data[i]);
+        Serial.write(data[i]);
         //Serial5.write(data[i]);
     }
 

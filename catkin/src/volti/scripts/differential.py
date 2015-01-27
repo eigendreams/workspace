@@ -66,7 +66,7 @@ class Differential:
         self.pid_vel_m2 = PID(self.vel_settings)
         #
         # filtro de entradas del encoder
-        self.kf_settings = {'Q' : 10, 'R' : 10, 'P0' : 10}
+        self.kf_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : 10}
         #
         # filtros kalman de los encoders
         self.filter_e1  = Kfilter(self.kf_settings)
@@ -101,8 +101,8 @@ class Differential:
         self.vs_val = 0
         #
         # Asociaciones con publicadores y suscriptores
-        self.m1 = rospy.Publisher("m1dummy", Int16)  # salida al motor 1
-        self.m2 = rospy.Publisher("m2dummy", Int16)  #
+        self.m1 = rospy.Publisher("m1", Int16)  # salida al motor 1
+        self.m2 = rospy.Publisher("m2", Int16)  #
         self.e1 = rospy.Subscriber("e1", Int16, self.e1cb)  # entrada del encoder 1
         self.e1vel = rospy.Publisher("e1vel", Float32)  #
         self.e1accel = rospy.Publisher("e1accel", Float32)  #

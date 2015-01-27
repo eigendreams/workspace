@@ -39,12 +39,6 @@ class Encoder:
         self.internal_angle_last        = self.internal_angle
         self.internal_angle             = map(measure, 0., 1023., 0., 2. * pi)
         #
-        """
-        if (self.internal_angle > 1.1 * pi and self.internal_angle_last < 0.9 * pi):
-            self.laps = self.laps - 1
-        if (self.internal_angle < 0.9 * pi and self.internal_angle_last > 1.1 * pi):
-            self.laps = self.laps + 1
-        """
         self.change = self.internal_angle - self.internal_angle_last
         if (abs(self.change) > pi): # es un cambio muy drastico, asumiremos que hubo un salto,  max RPM de 300
             if (self.internal_angle_last > self.internal_angle): # ej saltar de 900 a 100 -> 100 -800 -> change de 800 

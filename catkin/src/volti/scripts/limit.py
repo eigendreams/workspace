@@ -10,14 +10,16 @@ class Limit:
     #
     def __init__(self, settings = {'output_limit_max' : 100, 'rate' : 10, 'a' : 10, 'b' : 2}):
         #
-        self.output_limit_max   = settings['output_limit_max']
-        self.rate               = settings['rate']
-        self.a                  = settings['a']
-        self.b                  = settings['b']
+        self.output_limit_max   = float(settings['output_limit_max'])
+        self.rate               = float(settings['rate'])
+        self.a                  = float(settings['a'])
+        self.b                  = float(settings['b'])
         #
         self.output_limit       = 100
         self.output_actual      = 0
         self.output_command     = 0
+        #
+        self.outputs            = [0, 0, 0]
         #
         #
     def gainFcn(self, data):
@@ -36,7 +38,11 @@ class Limit:
         else:
             self.output_actual = self.output_command
             #
-        return self.output_actual
+        self.outputs = self.outputs[1:] + self.outputs[:1]
+        self.outputs[2] = self.output_actual
+        self.output_smooth = (self.outputs[0] * 0.25 + self.outputs[1] * 0.25 + self.outputs[2] * 0.5) / 3        
+        #
+        return self.output_smooth
         #
         #
     def resetting(self, settings):
