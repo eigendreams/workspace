@@ -46,7 +46,7 @@ class Encoder:
             self.laps = self.laps + 1
         """
         self.change = self.internal_angle - self.internal_angle_last
-        if (abs(self.change) > 512): # es un cambio muy drastico, asumiremos que hubo un salto
+        if (abs(self.change) > pi): # es un cambio muy drastico, asumiremos que hubo un salto,  max RPM de 300
             if (self.internal_angle_last > self.internal_angle): # ej saltar de 900 a 100 -> 100 -800 -> change de 800 
                 self.laps = self.laps + 1
             if (self.internal_angle_last <= self.internal_angle): # ej saltar de 100 a 900 -> 900 - 100 -> change de 800
