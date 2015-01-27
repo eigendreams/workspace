@@ -8,7 +8,7 @@
 #include "imu_lib.h"
 #include <cmath>
 
-#include "volti/float32_12.h"
+//#include "volti/float32_12.h"
 #include "volti/float32_3.h"
 
 using namespace std;
@@ -19,12 +19,12 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "imu_node");
   ros::NodeHandle n;
-  ros::Publisher imu_pub = n.advertise<volti::float32_12>("i1", 1000);
+  ros::Publisher imu_pub = n.advertise<volti::float32_3>("i1", 1000);
   //ros::Publisher imu_pub = n.advertise<std_msgs::Float32>("i1", 1000);
   ros::Rate loop_rate(50);
   int count = 0;
   IMU MyImu;
-  volti::float32_12 msg;
+  volti::float32_3 msg;
   //std_msgs::Float32 msg;
 
   while (ros::ok())
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         msg.data[0] = MyImu.yaw * 180 / pi;
         msg.data[1] = MyImu.pitch * 180 / pi;
         msg.data[2] = MyImu.roll * 180 / pi;
-        msg.data[3] = MyImu.accel[0];
+        /*msg.data[3] = MyImu.accel[0];
         msg.data[4] = MyImu.accel[1];
         msg.data[5] = MyImu.accel[2];
         msg.data[6] = MyImu.magnetom[0];
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         msg.data[8] = MyImu.magnetom[2];
         msg.data[9] = MyImu.gyro[0];
         msg.data[10] = MyImu.gyro[1];
-        msg.data[11] = MyImu.gyro[2];
+        msg.data[11] = MyImu.gyro[2];*/
         imu_pub.publish(msg);
     }
 

@@ -6,8 +6,8 @@
 
 ros::NodeHandle nh;
 
-unsigned long microsLast = 0;
-unsigned long microsLastMsg = 0;
+unsigned long millisLast = 0;
+unsigned long millisLastMsg = 0;
 bool timedOut = false;
 Servo servo_13;
 AS5043Class AS5043obj(15, 25, 26);
@@ -23,7 +23,7 @@ void alive_cb( const std_msgs::Int16& dmsg) {
   if (dmsg.data){
     digitalWrite(RED_LED, LOW);
     digitalWrite(GREEN_LED, HIGH);
-    microsLastMsg = micros();
+    millisLastMsg = millis();
     timedOut = false;
   }
 } 
@@ -70,11 +70,11 @@ void loop() {
 
   nh.spinOnce();
 
-  unsigned long microsNow = micros();
-  if (microsNow - microsLast >= 10000) {
-    microsLast = microsNow;
+  unsigned long millisNow = millis();
+  if (millisNow - millisLast >= 100) {
+    millisLast = millisNow;
 
-    if (microsNow - microsLastMsg >= 3000000) {
+    if (millisNow - millisLastMsg >= 3000) {
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
       s13_out = 0;  // m1
