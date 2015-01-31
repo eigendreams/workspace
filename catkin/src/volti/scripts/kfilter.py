@@ -42,6 +42,31 @@ class Kfilter:
         #
         # INPUT
         #
+        if (self.times < 4):
+            self.Y[0, 0] = measure
+            self.Y[1, 0] = 0
+            self.Y[2, 0] = 0
+            #
+            self.Ym1[0, 0] = measure
+            self.Ym1[1, 0] = 0
+            self.Ym1[2, 0] = 0
+            #
+            self.Ym1m1[0, 0] = measure
+            self.Ym1m1[1, 0] = 0
+            self.Ym1m1[2, 0] = 0
+            #
+            self.Xk[0, 0] = measure
+            self.Xk[1, 0] = 0
+            self.Xk[2, 0] = 0
+            #
+            self.Xkm1[0, 0] = measure
+            self.Xkm1[1, 0] = 0
+            self.Xkm1[2, 0] = 0
+            #
+            self.Xkm1m1[0, 0] = measure
+            self.Xkm1m1[1, 0] = 0
+            self.Xkm1m1[2, 0] = 0
+        #
         self.Ym1m1[0, 0] = self.Ym1[0, 0]
         self.Ym1m1[1, 0] = self.Ym1[1, 0]
         self.Ym1m1[2, 0] = self.Ym1[2, 0]

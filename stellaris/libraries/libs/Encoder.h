@@ -76,6 +76,9 @@ public:
 	unsigned int get();						// Gets last read 10 bit ANGLE stream or the RAW analogRead
 	int getAngle();							// Returns angle between -abs_map_out and +abs_map_out from last read
 	int getChange();						// Return the last change calculated between reads
+	int getStatus();
+	int isValid();
+	void restartComm();
 											// If NOT using an AS5043 the next will return 0 or nothing
 	void begin();							// If using the AS5043 object, performs initialization sequence
 	void softProg(unsigned int data);		// If using the AS5043 object, perform a software program with data
@@ -83,7 +86,8 @@ public:
 
 	int debug_var;
 	
-private:
+public:
+
 	int min;								// min of read from 0 to 1023
 	int max;								// max of read from 0 to 1023
 	int maxChange;
@@ -97,6 +101,7 @@ private:
 	int pincsn;							// Slave select pin of chain
 
 	int lecture;							// The lecture value, RAW value
+	int status;
 	int lastlecture;
 	int change;
 

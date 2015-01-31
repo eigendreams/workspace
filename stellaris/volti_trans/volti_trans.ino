@@ -1,8 +1,14 @@
 //#include "rosSerial5.h"
 #include "ros.h"
+//////
+//////
+//////
 #include "std_msgs/Int16.h"
 #include "volti/float32_12.h"
 #include "volti/float32_3.h"
+//////
+//////
+//////
 #include "Servo.h"
 #include "AS5043.h"
 #include "Encoder.h"
@@ -17,12 +23,12 @@ unsigned long millisTock = 0;
 bool timedOut = false;
 
 //volti::float32_12 imu_data1;
-volti::float32_3 imu_data1;
+volti::float32_12 imu_data1;
 ros::Publisher imu_pub1("i1", &imu_data1);
 IMU imu1(1);
 
 //volti::float32_12 imu_data2;
-volti::float32_3 imu_data2;
+volti::float32_12 imu_data2;
 ros::Publisher imu_pub2("i2", &imu_data2);
 IMU imu2(3);
 
@@ -142,7 +148,7 @@ void commloop() {
 
   if (millisTock <= millis()) {
 
-    millisTock += 50;
+    millisTock += 20;
 
     if (millis() - milisLastMsg >= 3000) {
 
@@ -158,7 +164,7 @@ void commloop() {
       timedOut = true;
     }
 
-    gear1_lec = gear1.read();
+    /*gear1_lec = gear1.read();
     gear2_lec = gear2.read();
     //
     if (gear1.isValid() != 1) {
@@ -170,7 +176,7 @@ void commloop() {
       gear2.restartComm();
       gear2_lec = gear2.read();
     }
-    //gearv_lec = gearv.read();
+    //gearv_lec = gearv.read();*/
 
     gear1_lec_msg.data = gear1_lec;
     gear2_lec_msg.data = gear2_lec;
@@ -189,7 +195,7 @@ void commloop() {
     imu_data1.data[0] = TO_DEG(imu1.yaw);
     imu_data1.data[1] = TO_DEG(imu1.pitch);
     imu_data1.data[2] = TO_DEG(imu1.roll);
-    /*imu_data1.data[3] = imu1.accel[0];
+    imu_data1.data[3] = imu1.accel[0];
     imu_data1.data[4] = imu1.accel[1];
     imu_data1.data[5] = imu1.accel[2];
     imu_data1.data[6] = imu1.magnetom[0];
@@ -197,14 +203,14 @@ void commloop() {
     imu_data1.data[8] = imu1.magnetom[2];
     imu_data1.data[9] = imu1.gyro[0];
     imu_data1.data[10] = imu1.gyro[1];
-    imu_data1.data[11] = imu1.gyro[2];*/
+    imu_data1.data[11] = imu1.gyro[2];
 
     imu_pub1.publish(&imu_data1);
 
     imu_data2.data[0] = TO_DEG(imu2.yaw);
     imu_data2.data[1] = TO_DEG(imu2.pitch);
     imu_data2.data[2] = TO_DEG(imu2.roll);
-    /*imu_data2.data[3] = imu2.accel[0];
+    imu_data2.data[3] = imu2.accel[0];
     imu_data2.data[4] = imu2.accel[1];
     imu_data2.data[5] = imu2.accel[2];
     imu_data2.data[6] = imu2.magnetom[0];
@@ -212,7 +218,7 @@ void commloop() {
     imu_data2.data[8] = imu2.magnetom[2];
     imu_data2.data[9] = imu2.gyro[0];
     imu_data2.data[10] = imu2.gyro[1];
-    imu_data2.data[11] = imu2.gyro[2];*/
+    imu_data2.data[11] = imu2.gyro[2];
 
     imu_pub2.publish(&imu_data2);
   }
@@ -221,8 +227,8 @@ void commloop() {
 void loop() {
 
   nh.spinOnce();
-  imu1.loop(); delayMicroseconds(222);
-  imu2.loop(); delayMicroseconds(222);
+  imu1.loop(); //delayMicroseconds(4);
+  imu2.loop(); //delayMicroseconds(4);
   commloop();
 
 }

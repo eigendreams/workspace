@@ -22,21 +22,27 @@ from encoder import *
 ################################################################################
 from numpy import *
 from numpy.linalg import inv 
+import time
+import atexit
 ################################################################################
 #
 class Motor_log:
     #
     def __init__(self, node_name_default = 'motor_log'):
         #
+        self.f = open(str(time.strftime("%y%m%d%H%M%S")) + ".csv", 'w')
+        atexit.register(self.onclose)
+        #
         rospy.init_node(node_name_default)
         self.nodename = rospy.get_name()
         rospy.loginfo("motor_log starting with name %s", self.nodename)
-        self.rate = float(rospy.get_param("param_global_rate", '10'))
+        self.rate = int(rospy.get_param("param_global_rate", '20'))
         #
         self.times = 0
+        self.enctimes = 0
         #
         # filtro de entradas del encoder
-        self.kf_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : 10}
+        self.kf_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
         self.filter_e1k1  = Kfilter1(self.kf_settings)
         ###
         ###
@@ -51,9 +57,10 @@ class Motor_log:
         self.enc_1 = Encoder(self.enc_settings)
         #
         # Asociaciones con publicadores y suscriptores
-        self.m1 = rospy.Publisher("m1pass", Int16)  # salida al motor 1
+        self.m1 = rospy.Publisher("m1", Int16)  # salida al motor 1
         self.al = rospy.Publisher("al", Int16)
         self.e1ang = rospy.Publisher("e1ang", Float32)  #
+        ###
         self.e1velk1 = rospy.Publisher("e1vel_k1", Float32)  #
         ###
         ###
@@ -64,9 +71,14 @@ class Motor_log:
         ###
         ###
         ###
-        self.val = 4
+        self.val = 10
         #
         self.e1 = rospy.Subscriber("e1", Int16, self.e1cb)  # entrada del encoder 1
+        #
+    def onclose(self):
+        #
+        self.f.close()
+        #
         #
     def e1cb(self, data):
         #
@@ -88,19 +100,21 @@ class Motor_log:
         self.e1velk4.publish((self.filter_e1k4.compute(self.proc_m1))[1, 0])
         ##
         ##
-        ##
-        print(str(self.times * 0.01) + "," + str(100 * self.speed_m1))
+        self.enctimes = self.enctimes + 1
+        self.f.write(str(self.enctimes / self.rate) + "." + str(((self.enctimes % self.rate) * 1000)/self.rate).zfill(3)  + "," + str(self.speed_m1) + '\n')
         #
         #
     def update(self):
         #
         self.times = self.times + 1
         #
-        if ((self.times % 10) == 0):
-            self.val =  self.val
+        if ((self.times % (4 * self.rate)) == 0):
+            self.val =  -self.val
+        #
+        if ((self.times % (1 * self.rate)) == 0):
             self.al.publish(1)
         #
-        self.m1.publish(self.val)                
+        self.m1.publish(10 + self.val)                
         #
         #
     def spin(self):

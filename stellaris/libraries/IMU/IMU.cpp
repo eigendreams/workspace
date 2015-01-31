@@ -38,8 +38,11 @@ void IMU::Compass_Heading()
   mag_x = magnetom[0] * cos_pitch + magnetom[1] * sin_roll * sin_pitch + magnetom[2] * cos_roll * sin_pitch;
   // Tilt compensated magnetic field Y
   mag_y = magnetom[1] * cos_roll - magnetom[2] * sin_roll;
-  // Magnetic Heading
-  MAG_Heading = atan2(-mag_y, mag_x);
+  // Magnetic Headingz
+  float MAG_Heading_TMP = atan2(-mag_y, mag_x);
+  //
+  if (isfinite(MAG_Heading_TMP))
+    MAG_Heading = MAG_Heading_TMP;
 }
 
 /* This file is part of the Razor AHRS Firmware */
@@ -164,9 +167,15 @@ void IMU::Matrix_update(void)
 
 void IMU::Euler_angles(void)
 {
-  pitch = -asin(DCM_Matrix[2][0]);
-  roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
-  yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+  float pitch_TMP = -asin(DCM_Matrix[2][0]);
+  float roll_TMP = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
+  float yaw_TMP = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+  //
+  pitch = pitch_TMP;
+  if (isfinite(roll_TMP))
+    roll = roll_TMP;
+  if (isfinite(yaw_TMP))
+    yaw = yaw_TMP;
 }
 
 /* This file is part of the Razor AHRS Firmware */
@@ -452,16 +461,15 @@ void IMU::Read_Gyro()
     //if (output_errors) Serial.println("!ERR: reading gyroscope");
   }
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 
 void IMU::read_sensors() {
-  delayMicroseconds(333);
   Read_Gyro(); // Read gyroscope
-  delayMicroseconds(333);
+  //delayMicroseconds(4);
   Read_Accel(); // Read accelerometer
-  delayMicroseconds(333);
+  //delayMicroseconds(4);
   Read_Magn(); // Read magnetometer
+  //delayMicroseconds(4);
 }
 
 // Read every sensor and record a time stamp
@@ -477,7 +485,10 @@ void IMU::reset_sensor_fusion() {
   
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
-  pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+  float pitch_TMP = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+  //
+  if (isfinite(pitch_TMP))
+    pitch = pitch_TMP;
   
   // GET ROLL
   // Compensate pitch of gravity vector 
@@ -486,7 +497,10 @@ void IMU::reset_sensor_fusion() {
   // Normally using x-z-plane-component/y-component of compensated gravity vector
   // roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
   // Since we compensated for pitch, x-z-plane-component equals z-component:
-  roll = atan2(temp2[1], temp2[2]);
+  float roll_TMP = atan2(temp2[1], temp2[2]);
+  //
+  if (isfinite(roll_TMP))
+    roll = roll_TMP;
   
   // GET YAW
   Compass_Heading();
@@ -604,13 +618,15 @@ void IMU::loop()
     read_sensors();
 
     // Apply sensor calibration
-    compensate_sensor_errors();
+    //compensate_sensor_errors();
     
     // Run DCM algorithm
-    Compass_Heading(); // Calculate magnetic heading
-    Matrix_update();
-    Normalize();
-    Drift_correction();
-    Euler_angles();
+    //Compass_Heading(); // Calculate magnetic heading
+    //Matrix_update();
+    //Normalize();
+    //Drift_correction();
+    //Euler_angles();
+
+    times += 1;
   }
 }

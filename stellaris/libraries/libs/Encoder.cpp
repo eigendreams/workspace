@@ -80,8 +80,9 @@ unsigned int EncoderClass::read() {
 		// Read the sensors
 		as5043->read();
 
-		// Extract the value of the angle at index
+		// Extract the value of the angle at index and status
 		lecture = as5043->getAngle(index);
+		status  = as5043->getStatus(index);
 
 		// Restore pinCSn and maxdevices
 		as5043->setPinCSn(pinCSnCopy);
@@ -117,6 +118,19 @@ int EncoderClass::getAngle() {
 
 int EncoderClass::getChange() {
 	return change;
+}
+
+int EncoderClass::getStatus() {
+	return status;
+}
+
+int EncoderClass::isValid() {
+	int sum = 0;
+	int stream = (lecture << 6) | (status);
+	for (int ijk = 1; ijk <= 15; ijk++) {
+		sum = sum + ((stream >> ijk) & 1);
+	}
+	return ((~(status >> 3) & 1) & ((status >> 5) & 1) & ((status & 1) == (sum & 1)));
 }
 
 // Returns angle between -abs_map_out and +abs_map_out from last read
@@ -269,4 +283,13 @@ void EncoderClass::begin() {
 	}
 	
 	this->readAngle();
+}
+
+void EncoderClass::restartComm() {
+	int pinCSnCopy = as5043->pincsn;
+	as5043->setPinCSn(pincsn);
+	as5043->closeComm();
+	as5043->begin();
+	as5043->singleAlign();
+	as5043->setPinCSn(pinCSnCopy);
 }
