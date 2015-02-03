@@ -43,7 +43,7 @@ private:
 	
 
 public:
-    Adxl345();
+    Adxl345(int module);
     int accelerometer_init();
 	int measure_mode();
 	int standby_mode();

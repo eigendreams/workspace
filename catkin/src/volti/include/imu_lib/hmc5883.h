@@ -17,7 +17,7 @@ private:
 
 	int hmc5883_init();
 public:
-	MAG();
+	MAG(int module);
 	~MAG();
 
 	int readfullState();

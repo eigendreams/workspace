@@ -42,8 +42,8 @@ using namespace std;
 //char offset_x = 0;
 //char offset_y = 0;
 //char offset_z = 0;
-MAG::MAG() {
-	this->I2CBus = 1;
+MAG::MAG(int module) {
+	this->I2CBus = module;
 	this->I2CAddress = DEVID;
 	this->MagX=0;
 	this->MagY=0;

@@ -153,7 +153,7 @@ class IMU
     short num_gyro_errors = 0;
 
     short module = 1;
-    IMU();
+    IMU(int module);
     
     void Compass_Heading();
     void Normalize(void);

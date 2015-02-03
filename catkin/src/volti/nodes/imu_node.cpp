@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   //ros::Publisher imu_pub = n.advertise<std_msgs::Float32>("i1", 1000);
 
   ros::Rate loop_rate(50);
-  IMU MyImu;
+  IMU MyImu(1);
 
   volti::float32_12 msg;
   //volti::float32_3 msg;

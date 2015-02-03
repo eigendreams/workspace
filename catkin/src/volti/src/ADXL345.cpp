@@ -69,9 +69,9 @@ char offset_z = 0;
 //Put this in .h
 
 
-Adxl345::Adxl345(){
+Adxl345::Adxl345(int module){
 	
-	this->I2CBus = 1;
+	this->I2CBus = module;
 	this->I2CAddress = DEVID;
 	this->X_g=0;
 	this->Y_g=0;

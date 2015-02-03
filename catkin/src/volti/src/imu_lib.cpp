@@ -5,9 +5,9 @@
 
 /* This file is part of the Razor AHRS Firmware */
 
-IMU::IMU()
+IMU::IMU(int module)
 {
-  this->module = 1;
+  this->module = module;
   this->output_mode = OUTPUT__MODE_ANGLES;
   this->output_format = OUTPUT__FORMAT_TEXT;
   this->output_errors = false;
@@ -284,9 +284,9 @@ void IMU::init_rotation_matrix(float m[3][3], float yaw, float pitch, float roll
 
 void IMU::I2C_Init()
 {
-  this->Acelerometro = new Adxl345();
-  this->Gyrometro = new Gyro();
-  this->Magnetometro= new MAG();
+  this->Acelerometro = new Adxl345(module);
+  this->Gyrometro = new Gyro(module);
+  this->Magnetometro= new MAG(module);
 }
 
 /*

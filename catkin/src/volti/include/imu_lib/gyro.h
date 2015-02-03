@@ -87,7 +87,7 @@ private:
     short int writeFS_SEL( short int data);
 
 public:
-    Gyro();
+    Gyro(int module);
     ~Gyro();
 
     int readFullGyro();

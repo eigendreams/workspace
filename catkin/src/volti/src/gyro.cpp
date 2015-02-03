@@ -78,8 +78,8 @@ short int GYRO_YOUT_OFFSET = 0;
 short int GYRO_ZOUT_OFFSET = 0;
 
 
-Gyro::Gyro() {
-	this->I2CBus = 1;
+Gyro::Gyro(int module) {
+	this->I2CBus = module;
 	this->I2CAddress = ITG3200_I2C_ADDRESS;
 	this->GyroX=0;
 	this->GyroY=0;
