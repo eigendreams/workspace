@@ -7,17 +7,15 @@
 IMU::IMU(short module)
 {
   this->module = module;
-  short output_mode = OUTPUT__MODE_ANGLES;
-  short output_format = OUTPUT__FORMAT_TEXT;
+  output_mode = OUTPUT__MODE_ANGLES;
+  output_format = OUTPUT__FORMAT_TEXT;
   boolean output_errors = false;
-  short gyro_num_samples = 0;
-  float DCM_Matrix[3][3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-  float Update_Matrix[3][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
-  short curr_calibration_sensor = 0;
+  gyro_num_samples = 0;
+  curr_calibration_sensor = 0;
   boolean reset_calibration_session_flag = true;
-  short num_accel_errors = 0;
-  short num_magn_errors = 0;
-  short num_gyro_errors = 0;
+  num_accel_errors = 0;
+  num_magn_errors = 0;
+  num_gyro_errors = 0;
 }
 
 void IMU::Compass_Heading()
@@ -618,7 +616,7 @@ void IMU::loop()
     read_sensors();
 
     // Apply sensor calibration
-    //compensate_sensor_errors();
+    compensate_sensor_errors();
     
     // Run DCM algorithm
     //Compass_Heading(); // Calculate magnetic heading

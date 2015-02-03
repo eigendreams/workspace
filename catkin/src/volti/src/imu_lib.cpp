@@ -1,8 +1,8 @@
-//#include "Arduino.h"
-//#include "Wire.h"
 #include "imu_lib.h"
 #include <cmath>
+#include <cfloat>
 #include <unistd.h>
+
 /* This file is part of the Razor AHRS Firmware */
 
 IMU::IMU()
@@ -12,28 +12,16 @@ IMU::IMU()
   this->output_format = OUTPUT__FORMAT_TEXT;
   this->output_errors = false;
   this->gyro_num_samples = 0;
-
-  float A[3][3]={{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-  this->init_matrix(A,this->DCM_Matrix);
-  float B[3][3]={{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}};
-  this->init_matrix(B,this->Update_Matrix);
-
   this->curr_calibration_sensor = 0;
   this->reset_calibration_session_flag = true;
   this->num_accel_errors = 0;
   this->num_magn_errors = 0;
   this->num_gyro_errors = 0;
+
   this->I2C_Init();
 
 }
-void IMU::init_matrix(float array[][3],float A[][3]) {
-    int N=3;
-	for(int i=0;i<N;i++){
-		for(int j=0;j<N;j++){
-			A[i][j]=array[i][j];
-		}
-	}
-}
+
 void IMU::Compass_Heading()
 {
   float mag_x;
@@ -53,7 +41,10 @@ void IMU::Compass_Heading()
   // Tilt compensated magnetic field Y
   mag_y = magnetom[1] * cos_roll - magnetom[2] * sin_roll;
   // Magnetic Heading
-  MAG_Heading = atan2(-mag_y, mag_x);
+  float MAG_Heading_TMP = atan2(-mag_y, mag_x);
+
+  if (std::isfinite(MAG_Heading_TMP))
+    MAG_Heading = MAG_Heading_TMP;
 }
 
 /* This file is part of the Razor AHRS Firmware */
@@ -129,15 +120,17 @@ void IMU::Drift_correction(void)
   Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
   Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
 }
+
 float IMU::constrain(float X, float A, float B) {
-	if(X>=A && X<=B){
-		return X;
-	}else if(X<A){
-		return A;
-	}else{
-	  return B;
-	}
+  if(X>=A && X<=B){
+    return X;
+  }else if(X<A){
+    return A;
+  }else{
+    return B;
+  }
 }
+
 void IMU::Matrix_update(void)
 {
   Gyro_Vector[0]=GYRO_SCALED_RAD(gyro[0]); //gyro x roll
@@ -184,11 +177,16 @@ void IMU::Matrix_update(void)
   }
 }
 
-void IMU::Euler_angles(void)
-{
-  pitch = -asin(DCM_Matrix[2][0]);
-  roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
-  yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+void IMU::Euler_angles(void) {
+  float pitch_TMP = -asin(DCM_Matrix[2][0]);
+  float roll_TMP = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
+  float yaw_TMP = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+  //
+  pitch = pitch_TMP;
+  if (std::isfinite(roll_TMP))
+    roll = roll_TMP;
+  if (std::isfinite(yaw_TMP))
+    yaw = yaw_TMP;
 }
 
 /* This file is part of the Razor AHRS Firmware */
@@ -317,25 +315,25 @@ void IMU::Accel_Init()
 
 void IMU::Read_Accel()
 {
-	this->Acelerometro->readFullAcel();
-    accel[0] = this->Acelerometro->getAcelX();  // X axis (internal sensor y axis)
-    accel[1] = this->Acelerometro->getAcelY();  // Y axis (internal sensor x axis)
-    accel[2] = this->Acelerometro->getAcelZ();  // Z axis (internal sensor z axis)
+  this->Acelerometro->readFullAcel();
+  accel[0] = this->Acelerometro->getAcelX();  // X axis (internal sensor y axis)
+  accel[1] = this->Acelerometro->getAcelY();  // Y axis (internal sensor x axis)
+  accel[2] = this->Acelerometro->getAcelZ();  // Z axis (internal sensor z axis)
 
 }
 
 void IMU::Read_Gyro(){
-	this->Gyrometro->readFullGyro();
-	gyro[0] = this->Gyrometro->getGyroX();  // X axis (internal sensor y axis)
-    gyro[1] = this->Gyrometro->getGyroY();  // Y axis (internal sensor x axis)
-	gyro[2] = this->Gyrometro->getGyroZ();  // Z axis (internal sensor z axis)
+  this->Gyrometro->readFullGyro();
+  gyro[0] = this->Gyrometro->getGyroX();  // X axis (internal sensor y axis)
+  gyro[1] = this->Gyrometro->getGyroY();  // Y axis (internal sensor x axis)
+  gyro[2] = this->Gyrometro->getGyroZ();  // Z axis (internal sensor z axis)
 
 }
 void IMU::Read_Magn(){
-	this->Magnetometro->readfullState();
-	magnetom[0]=this->Magnetometro->getMagX();
-	magnetom[1]=this->Magnetometro->getMagY();
-	magnetom[2]=this->Magnetometro->getMagZ();
+  this->Magnetometro->readfullState();
+  magnetom[0]=this->Magnetometro->getMagX();
+  magnetom[1]=this->Magnetometro->getMagY();
+  magnetom[2]=this->Magnetometro->getMagZ();
 }
 /*
 void IMU::Magn_Init()
@@ -492,7 +490,10 @@ void IMU::reset_sensor_fusion() {
   
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
-  pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+  float pitch_TMP = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+  //
+  if (std::isfinite(pitch_TMP))
+    pitch = pitch_TMP;
   
   // GET ROLL
   // Compensate pitch of gravity vector 
@@ -501,7 +502,10 @@ void IMU::reset_sensor_fusion() {
   // Normally using x-z-plane-component/y-component of compensated gravity vector
   // roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
   // Since we compensated for pitch, x-z-plane-component equals z-component:
-  roll = atan2(temp2[1], temp2[2]);
+  float roll_TMP = atan2(temp2[1], temp2[2]);
+  //
+  if (std::isfinite(roll_TMP))
+    roll = roll_TMP;
   
   // GET YAW
   Compass_Heading();
@@ -611,18 +615,18 @@ void IMU::loop()
 { 
   // Time to read the sensors again?
 
-	//if((millis() - timestamp) >= OUTPUT__DATA_INTERVAL)
+  //if((millis() - timestamp) >= OUTPUT__DATA_INTERVAL)
   //{
-	/*
-    timestamp_old = timestamp;
-    timestamp = millis();
-    if (timestamp > timestamp_old)
-      G_Dt = (float) (timestamp - timestamp_old) / 1000.0f; // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
-    else G_Dt = 0;
-    */
+  //
+  //  timestamp_old = timestamp;
+  //  timestamp = millis();
+  //  if (timestamp > timestamp_old)
+  //    G_Dt = (float) (timestamp - timestamp_old) / 1000.0f; // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
+  //  else G_Dt = 0;
+    
     // Update sensor readings
     //Wire.setModule(module);
-	G_Dt=.1;
+    G_Dt = .02;
     read_sensors();
 
     // Apply sensor calibration
