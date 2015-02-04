@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   ros::Publisher imu1_pub = n.advertise<volti::float32_12>("imu_plate_12", 5);
-  ros::Publisher imu2_pub = n.advertise<volti::float32_12>("imu_pendu_!2", 5);
+  ros::Publisher imu2_pub = n.advertise<volti::float32_12>("imu_pendu_12", 5);
 
   //publicar cada 20 ms
   ros::Rate loop_rate(50);
