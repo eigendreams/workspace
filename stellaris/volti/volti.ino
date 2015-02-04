@@ -186,9 +186,9 @@ void commloop() {
     servo_14.writeMicroseconds( s14_out / 2 + 1500); // m2
     //servo_15.writeMicroseconds( 50 * s15_out + 1500); // mv
 
-    imu_data1.data[0] = TO_DEG(imu1.yaw);
+    imu_data1.data[0] = TO_DEG(imu1.roll);
     imu_data1.data[1] = TO_DEG(imu1.pitch);
-    imu_data1.data[2] = TO_DEG(imu1.roll);
+    imu_data1.data[2] = TO_DEG(imu1.yaw);
     /*imu_data1.data[3] = imu1.accel[0];
     imu_data1.data[4] = imu1.accel[1];
     imu_data1.data[5] = imu1.accel[2];
@@ -201,9 +201,9 @@ void commloop() {
 
     imu_pub1.publish(&imu_data1);
 
-    imu_data2.data[0] = TO_DEG(imu2.yaw);
+    imu_data2.data[0] = TO_DEG(imu2.roll);
     imu_data2.data[1] = TO_DEG(imu2.pitch);
-    imu_data2.data[2] = TO_DEG(imu2.roll);
+    imu_data2.data[2] = TO_DEG(imu2.yaw);
     /*imu_data2.data[3] = imu2.accel[0];
     imu_data2.data[4] = imu2.accel[1];
     imu_data2.data[5] = imu2.accel[2];

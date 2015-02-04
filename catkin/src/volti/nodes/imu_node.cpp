@@ -9,7 +9,6 @@
 #include <cmath>
 
 #include "volti/float32_12.h"
-//#include "volti/float32_3.h"
 
 using namespace std;
 
@@ -19,47 +18,55 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "imu_node");
   ros::NodeHandle n;
-  ros::Publisher imu1_pub = n.advertise<volti::float32_12>("i1", 1000);
-  ros::Publisher imu2_pub = n.advertise<volti::float32_12>("i2", 1000);
+
+  ros::Publisher imu1_pub = n.advertise<volti::float32_12>("imu_plate_12", 5);
+  ros::Publisher imu2_pub = n.advertise<volti::float32_12>("imu_pendu_!2", 5);
+
+  //publicar cada 20 ms
   ros::Rate loop_rate(50);
-  IMU MyImu1(1);
-  IMU MyImu2(2);
-  volti::float32_12 msg1;
-  volti::float32_12 msg2;
+
+  // modulos de salida en el BBB
+  IMU imu_plate(1);
+  IMU imu_pendu(2);
+
+  volti::float32_12 imu_plate_msg;
+  volti::float32_12 imu_pendu_msg;
 
   while (ros::ok())
   {
-    MyImu1.loop();
+    imu_plate.loop();
 
-    msg1.data[0] = MyImu1.yaw * 180 / pi;
-    msg1.data[1] = MyImu1.pitch * 180 / pi;
-    msg1.data[2] = MyImu1.roll * 180 / pi;
-    msg1.data[3] = MyImu1.accel[0];
-    msg1.data[4] = MyImu1.accel[1];
-    msg1.data[5] = MyImu1.accel[2];
-    msg1.data[6] = MyImu1.magnetom[0];
-    msg1.data[7] = MyImu1.magnetom[1];
-    msg1.data[8] = MyImu1.magnetom[2];
-    msg1.data[9] = MyImu1.gyro[0];
-    msg1.data[10] = MyImu1.gyro[1];
-    msg1.data[11] = MyImu1.gyro[2];
-    imu1_pub.publish(msg1);
+    imu_plate_msg.data[0] = imu_plate.roll;
+    imu_plate_msg.data[1] = imu_plate.pitch;
+    imu_plate_msg.data[2] = imu_plate.yaw;
+    imu_plate_msg.data[3] = imu_plate.accel[0] * 9.806 / 256.0;
+    imu_plate_msg.data[4] = imu_plate.accel[1] * 9.806 / 256.0;
+    imu_plate_msg.data[5] = imu_plate.accel[2] * 9.806 / 256.0;
+    imu_plate_msg.data[6] = imu_plate.magnetom[0] * 1;
+    imu_plate_msg.data[7] = imu_plate.magnetom[1] * 1;
+    imu_plate_msg.data[8] = imu_plate.magnetom[2] * 1;
+    imu_plate_msg.data[9] = imu_plate.gyro[0] * 0.06957 * 0.01745329252;
+    imu_plate_msg.data[10] = imu_plate.gyro[1] * 0.06957 * 0.01745329252;
+    imu_plate_msg.data[11] = imu_plate.gyro[2] * 0.06957 * 0.01745329252;
 
-    MyImu2.loop();
+    imu1_pub.publish(imu_plate_msg);
 
-    msg2.data[0] = MyImu2.yaw * 180 / pi;
-    msg2.data[1] = MyImu2.pitch * 180 / pi;
-    msg2.data[2] = MyImu2.roll * 180 / pi;
-    msg2.data[3] = MyImu2.accel[0];
-    msg2.data[4] = MyImu2.accel[1];
-    msg2.data[5] = MyImu2.accel[2];
-    msg2.data[6] = MyImu2.magnetom[0];
-    msg2.data[7] = MyImu2.magnetom[1];
-    msg2.data[8] = MyImu2.magnetom[2];
-    msg2.data[9] = MyImu2.gyro[0];
-    msg2.data[10] = MyImu2.gyro[1];
-    msg2.data[11] = MyImu2.gyro[2];
-    imu2_pub.publish(msg2);
+    imu_pendu.loop();
+
+    imu_pendu_msg.data[0] = imu_pendu.roll;
+    imu_pendu_msg.data[1] = imu_pendu.pitch;
+    imu_pendu_msg.data[2] = imu_pendu.yaw;
+    imu_pendu_msg.data[3] = imu_pendu.accel[0] * 9.806 / 256.0;
+    imu_pendu_msg.data[4] = imu_pendu.accel[1] * 9.806 / 256.0;
+    imu_pendu_msg.data[5] = imu_pendu.accel[2] * 9.806 / 256.0;
+    imu_pendu_msg.data[6] = imu_pendu.magnetom[0] * 1;
+    imu_pendu_msg.data[7] = imu_pendu.magnetom[1] * 1;
+    imu_pendu_msg.data[8] = imu_pendu.magnetom[2] * 1;
+    imu_pendu_msg.data[9] = imu_pendu.gyro[0] * 0.06957 * 0.01745329252;
+    imu_pendu_msg.data[10] = imu_pendu.gyro[1] * 0.06957 * 0.01745329252;
+    imu_pendu_msg.data[11] = imu_pendu.gyro[2] * 0.06957 * 0.01745329252;
+
+    imu2_pub.publish(imu_pendu_msg);
     
     ros::spinOnce();
     loop_rate.sleep();

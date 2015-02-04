@@ -39,7 +39,7 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   // **** get paramters
 
   if (!nh_private_.getParam ("use_mag", use_mag_))
-   use_mag_ = true;
+   use_mag_ = false;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
    publish_tf_ = true;
   if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
@@ -47,7 +47,7 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
-    constant_dt_ = 0.0;
+    constant_dt_ = 0.02;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
 
@@ -72,25 +72,25 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   
   // **** register publishers
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
-    "imu/data", 5);
+    "imu_pendu_proc", 5);
 
   rpy_filtered_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-    "imu/rpy/filtered", 5);
+    "imu_pendu_filtered", 5);
 
   rpy_raw_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-    "imu/rpy/raw", 5);
+    "imu_pendu_raw", 5);
 
   // **** register subscribers
   // Synchronize inputs. Topic subscriptions happen on demand in the connection callback.
   int queue_size = 5;
 
   imu_subscriber_.reset(new ImuSubscriber(
-    nh_, "imu/data_raw", queue_size));
+    nh_, "imu_pendu", queue_size));
 
   if (use_mag_)
   {
     mag_subscriber_.reset(new MagSubscriber(
-      nh_, "imu/mag", queue_size));
+      nh_, "imu_pendu_mag", queue_size));
 
     sync_.reset(new Synchronizer(
       SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
