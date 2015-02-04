@@ -74,7 +74,7 @@ def processIMU1_message(rawMsg):
 
     print('i1 cb')
 
-    yaw = rawMsg.data[0] * 3.1416 / 180 * 0
+    yaw = rawMsg.data[0] * 3.1416 / 180
     pitch = rawMsg.data[1] * 3.1416 / 180
     roll = rawMsg.data[2] * 3.1416 / 180
 
@@ -82,7 +82,6 @@ def processIMU1_message(rawMsg):
     R_pitch_y = array([[cos(pitch), 0, sin(pitch)],[0, 1, 0],[-sin(pitch), 0, cos(pitch)]])
     R_roll_x = array([[1, 0, 0],[0, cos(roll), -sin(roll)],[0, sin(roll), cos(roll)]])
    
-
     x_axis_imu = (dot(R_yaw_z, dot(R_pitch_y, dot(R_roll_x, array([[1],[0],[0]])))))
     y_axis_imu = (dot(R_yaw_z, dot(R_pitch_y, dot(R_roll_x, array([[0],[1],[0]])))))
     z_axis_imu = (dot(R_yaw_z, dot(R_pitch_y, dot(R_roll_x, array([[0],[0],[1]])))))
@@ -95,7 +94,7 @@ def processIMU2_message(rawMsg):
 
     print('i2 cb')
 
-    yaw2 = rawMsg.data[0] * 3.1416 / 180 * 0
+    yaw2 = rawMsg.data[0] * 3.1416 / 180
     pitch2 = rawMsg.data[1] * 3.1416 / 180
     roll2 = rawMsg.data[2] * 3.1416 / 180 
 
@@ -115,5 +114,5 @@ def processIMU2_message(rawMsg):
     y_test_2.axis = y_axis_imu2
     z_test_2.axis = z_axis_imu2
 
-sub1 = rospy.Subscriber('i1', float32_3, processIMU1_message)
-sub2 = rospy.Subscriber('i2', float32_3, processIMU2_message)
+sub1 = rospy.Subscriber('i1', float32_12, processIMU1_message)
+sub2 = rospy.Subscriber('i2', float32_12, processIMU2_message)
