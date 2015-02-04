@@ -8,7 +8,7 @@
 #include "imu_lib.h"
 #include <cmath>
 
-//#include "volti/float32_12.h"
+#include "volti/float32_12.h"
 
 using namespace std;
 
