@@ -13,8 +13,8 @@ rospy.init_node("imu_12_to_imu")
 
 pub_imu_plate     = rospy.Publisher('imu_plate',     Imu, queue_size = 5)
 pub_imu_pendu     = rospy.Publisher('imu_pendu',     Imu, queue_size = 5)
-pub_imu_plate_mag = rospy.Publisher('imu_plate_mag', Imu, queue_size = 5)
-pub_imu_pendu_mag = rospy.Publisher('imu_pendu_mag', Imu, queue_size = 5)
+pub_imu_plate_mag = rospy.Publisher('imu_plate_mag', Vector3Stamped, queue_size = 5)
+pub_imu_pendu_mag = rospy.Publisher('imu_pendu_mag', Vector3Stamped, queue_size = 5)
 
 imu_plate_Msg     = Imu()
 imu_plate_mag_Msg = Vector3Stamped()
