@@ -65,10 +65,10 @@ def imu_plate_12_cb(rawMsg):
     #
     q_imu_plate = quaternion_from_euler(roll_imu_plate, pitch_imu_plate, yaw_imu_plate)
     #    
-    imu_plate_Msg.orientation.x = q[0]
-    imu_plate_Msg.orientation.y = q[1]
-    imu_plate_Msg.orientation.z = q[2]
-    imu_plate_Msg.orientation.w = q[3]
+    imu_plate_Msg.orientation.x = q_imu_plate[0]
+    imu_plate_Msg.orientation.y = q_imu_plate[1]
+    imu_plate_Msg.orientation.z = q_imu_plate[2]
+    imu_plate_Msg.orientation.w = q_imu_plate[3]
     #
     imu_plate_Msg.linear_acceleration.x = float(rawMsg.data[3]) * 9.806 / 256.0 
     imu_plate_Msg.linear_acceleration.y = float(rawMsg.data[4]) * 9.806 / 256.0 
@@ -98,10 +98,10 @@ def imu_pendu_12_cb(rawMsg):
     #
     q_imu_pendu = quaternion_from_euler(roll_imu_pendu, pitch_imu_pendu, yaw_imu_pendu)
     #    
-    imu_pendu_Msg.orientation.x = q[0]
-    imu_pendu_Msg.orientation.y = q[1]
-    imu_pendu_Msg.orientation.z = q[2]
-    imu_pendu_Msg.orientation.w = q[3]
+    imu_pendu_Msg.orientation.x = q_imu_pendu[0]
+    imu_pendu_Msg.orientation.y = q_imu_pendu[1]
+    imu_pendu_Msg.orientation.z = q_imu_pendu[2]
+    imu_pendu_Msg.orientation.w = q_imu_pendu[3]
     #
     imu_pendu_Msg.linear_acceleration.x = float(rawMsg.data[3]) * 9.806 / 256.0 
     imu_pendu_Msg.linear_acceleration.y = float(rawMsg.data[4]) * 9.806 / 256.0 
