@@ -69,8 +69,8 @@ int main(int argc, char **argv)
     imu2_pub.publish(imu_pendu_msg);
     
     ros::spinOnce();
-    loop_rate.sleep();*/
-  }
+    loop_rate.sleep();
+  }*/
 
   return 0;
 }
