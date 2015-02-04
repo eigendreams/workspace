@@ -66,10 +66,10 @@ int main(int argc, char **argv)
     imu_pendu_msg.data[10] = imu_pendu.gyro[1] * 0.06957 * 0.01745329252;
     imu_pendu_msg.data[11] = imu_pendu.gyro[2] * 0.06957 * 0.01745329252;
 
-    imu2_pub.publish(imu_pendu_msg);*/
+    imu2_pub.publish(imu_pendu_msg);
     
     ros::spinOnce();
-    loop_rate.sleep();
+    loop_rate.sleep();*/
   }
 
   return 0;
