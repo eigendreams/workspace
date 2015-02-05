@@ -72,13 +72,13 @@ R_IDEM = array([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
 R_roll_180 = array([[1, 0, 0],[0, cos(3.1416), -sin(3.1416)],[0, sin(3.1416), cos(3.1416)]])
 R_pitch_180 = array([[cos(3.1416), 0, sin(3.1416)],[0, 1, 0],[-sin(3.1416), 0, cos(3.1416)]])
 
-rospy.init_node("imu_3d_dcm_node")
+rospy.init_node("imu_3d_dcm_nyaw_node")
 
 def processIMU1_message(rawMsg):
 
     roll = rawMsg.data[0]
     pitch = rawMsg.data[1]
-    yaw = rawMsg.data[2]
+    yaw = rawMsg.data[2] * 0
 
     R_yaw_z = array([[cos(yaw), sin(yaw), 0], [-sin(yaw), cos(yaw), 0], [0, 0, 1]])
     R_pitch_y = array([[cos(pitch), 0, sin(pitch)],[0, 1, 0],[-sin(pitch), 0, cos(pitch)]])
@@ -96,7 +96,7 @@ def processIMU2_message(rawMsg):
 
     roll2 = rawMsg.data[0]
     pitch2 = rawMsg.data[1]
-    yaw2 = rawMsg.data[2]
+    yaw2 = rawMsg.data[2] * 0
 
     R_yaw_z2 = array([[cos(yaw2), sin(yaw2), 0], [-sin(yaw2), cos(yaw2), 0], [0, 0, 1]])
     R_pitch_y2 = array([[cos(pitch2), 0, sin(pitch2)],[0, 1, 0],[-sin(pitch2), 0, cos(pitch2)]])
