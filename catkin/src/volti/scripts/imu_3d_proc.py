@@ -72,7 +72,7 @@ R_IDEM = array([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
 R_roll_180 = array([[1, 0, 0],[0, cos(3.1416), -sin(3.1416)],[0, sin(3.1416), cos(3.1416)]])
 R_pitch_180 = array([[cos(3.1416), 0, sin(3.1416)],[0, 1, 0],[-sin(3.1416), 0, cos(3.1416)]])
 
-rospy.init_node("display_3D_visualization_node")
+rospy.init_node("imu_3d_proc_node")
 
 def processIMU1_message(rawMsg):
 
