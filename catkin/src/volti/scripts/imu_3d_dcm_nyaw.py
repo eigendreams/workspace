@@ -52,8 +52,8 @@ scene.y=200
 scene.select()
 # Reference axis (x,y,z)
 arrow(color=color.green,axis=(1,0,0), shaftwidth=0.02, fixedwidth=1)
-arrow(color=color.green,axis=(0,-1,0), shaftwidth=0.02 , fixedwidth=1)
-arrow(color=color.green,axis=(0,0,-1), shaftwidth=0.02, fixedwidth=1)
+arrow(color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
+arrow(color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
 # labels
 label(pos=(0,0,0.8),text="Ground",box=0,opacity=0)
 label(pos=(1,0,0),text="X",box=0,opacity=0)
@@ -76,7 +76,7 @@ rospy.init_node("imu_3d_dcm_nyaw_node")
 
 def processIMU1_message(rawMsg):
 
-    roll = rawMsg.data[0]
+    roll = rawMsg.data[0] - 3.1416
     pitch = rawMsg.data[1]
     yaw = rawMsg.data[2] * 0
 
