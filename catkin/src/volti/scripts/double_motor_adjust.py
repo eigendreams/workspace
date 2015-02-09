@@ -142,6 +142,10 @@ class Single_motor:
     def imupenducb(self, data):
         #
         self.rollPendu  = data.data[0] - 3.1416
+        if self.rollPendu > 3.1416:
+            self.rollPendu = self.rollPendu - 2 * 3.1416
+        if self.rollPendu < -3.1416:
+            self.rollPendu = self.rollPendu + 2 * 3.1416
         self.pitchPendu = data.data[1]
         #
     def SRVcallback(self, config, level):
