@@ -135,12 +135,12 @@ class Single_motor:
         #
     def imuplatecb(self, data):
         #
-        self.rollPlate  = data.data[0] - 3.1416
+        self.rollPlate  = data.data[0]
         self.pitchPlate = data.data[1]
         #
     def imupenducb(self, data):
         #
-        self.rollPendu  = data.data[0]
+        self.rollPendu  = data.data[0] - 3.1416
         self.pitchPendu = data.data[1]
         #
     def SRVcallback(self, config, level):
@@ -208,7 +208,7 @@ class Single_motor:
         #
         # self.roll_des_val
         #
-        self.roll_act_val        = self.rollPlate - self.rollPendu + 0.126
+        self.roll_act_val        = self.rollPlate - self.rollPendu - 0.126
         self.rollerror           = self.roll_des_val - self.roll_act_val
         self.X_roll              = self.filter_roll_err.compute(self.rollerror)
         #
@@ -216,8 +216,8 @@ class Single_motor:
         self.roll_derr_filtered  = self.X_roll[1, 0]
         self.roll_dderr_filtered = self.X_roll[2, 0]
         # 
-        self.des_m1 =  self.roll_err_filtered * 6
-        self.des_m2 = -self.roll_err_filtered * 6
+        self.des_m1 = -self.rollerror * 6.
+        self.des_m2 = self.rollerror * 6.
         #
         rospy.loginfo("rolldiff " + str(self.roll_act_val) + " rollerr " + str(self.roll_err_filtered) + " drollerr " + str(self.roll_derr_filtered))
         #
