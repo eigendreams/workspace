@@ -218,7 +218,7 @@ class Single_motor:
         self.out_pos_m1 = self.pid_pos_m1.compute(self.roll_diff_des_val, self.roll_diff_act_val)
         self.limited_out_m1 = constrain(self.out_pos_m1, -500, 500)#self.limit_m1.compute(self.final_out_m1)
         self.m1.publish(self.limited_out_m1)
-        self.out_pos_m2 = -self.pid_pos_m2.compute(self.roll_diff_des_val, self.roll_diff_act_val))
+        self.out_pos_m2 = -self.pid_pos_m2.compute(self.roll_diff_des_val, self.roll_diff_act_val)
         self.limited_out_m2 = constrain(self.out_pos_m2, -500, 500)#self.limit_m1.compute(self.final_out_m1)
         self.m2.publish(self.limited_out_m2)
         #
