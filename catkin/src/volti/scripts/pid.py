@@ -19,7 +19,7 @@ class PID:
         #
         self.umbral = float(settings['umbral'])        # valor por debajo del cual el error podria ser ruido
         self.ki_dec = float(settings['ki_dec'])        # ki de penalizacion
-        self.range  = 1000                             #float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas
+        self.range  = float(settings['range'])         #float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas
         #
         self.kisum          = 0.
         self.error          = 0.
@@ -72,4 +72,4 @@ class PID:
         #
         self.umbral = float(settings['umbral'])        # valor por debajo del cual el error podria ser ruido
         self.ki_dec = float(settings['ki_dec'])        # ki de penalizacion
-        self.range  = 1000#float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas   
+        self.range  = float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas   

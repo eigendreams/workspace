@@ -32,7 +32,7 @@ class Single_motor:
         rospy.init_node(node_name_default)
         self.nodename = rospy.get_name()
         rospy.loginfo("double_motor_test_node starting with name %s", self.nodename)
-        self.rate = int(rospy.get_param("param_global_rate", '20'))
+        self.rate = float(rospy.get_param("param_global_rate", '20'))
         #
         self.times = 0
         #
@@ -52,7 +52,7 @@ class Single_motor:
         # variables de limitacion adicionales
         self.pos_settings['umbral'] = float(rospy.get_param('~umbral_pos', '0'))  
         self.pos_settings['ki_dec'] = float(rospy.get_param('~ki_dec',     '0'))  
-        self.pos_settings['range']  = float(rospy.get_param('~range_pos',  '200'))
+        self.pos_settings['range']  = float(rospy.get_param('~range_pos',  '1000'))
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
         self.vel_settings['kp'] = float(rospy.get_param('~kp_vel',  '0'))           
         self.vel_settings['ki'] = float(rospy.get_param('~ki_vel',  '0'))           
@@ -61,7 +61,7 @@ class Single_motor:
         # variables de limitacion adicionales
         self.vel_settings['umbral'] = float(rospy.get_param('~umbral_vel', '0'))  
         self.vel_settings['ki_dec'] = float(rospy.get_param('~ki_vel',     '0'))  
-        self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '200'))
+        self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '1000'))
         #
         # creando los objetos PID
         self.pid_pos_m1 = PID(self.pos_settings)
@@ -72,7 +72,7 @@ class Single_motor:
         #
         # filtro de entradas del encoder
         self.kf_settings         = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
-        self.kf_rollerr_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : 20}
+        self.kf_rollerr_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
         #
         # filtros kalman de los encoders
         self.filter_e1  = Kfilter(self.kf_settings)
@@ -177,6 +177,8 @@ class Single_motor:
         #
     def e1cb(self, data):
         #
+        return
+        #
         self.value_m1 = data.data
         self.proc_m1 = self.enc_1.compute(self.value_m1)
         self.X_m1 = self.filter_e1.compute(self.proc_m1)
@@ -189,6 +191,8 @@ class Single_motor:
         self.e1vel.publish(self.speed_m1)
         #
     def e2cb(self, data):
+        #
+        return
         #
         self.value_m2 = data.data
         self.proc_m2 = self.enc_2.compute(self.value_m2)
@@ -209,66 +213,13 @@ class Single_motor:
         #
         # self.roll_des_val
         #
-        self.roll_act_val        = self.rollPlate - self.rollPendu - 0.126
-        self.rollerror           = self.roll_des_val - self.roll_act_val
-        self.X_roll              = self.filter_roll_err.compute(self.rollerror)
-        #
-        self.roll_err_filtered   = self.X_roll[0, 0]
-        self.roll_derr_filtered  = self.X_roll[1, 0]
-        self.roll_dderr_filtered = self.X_roll[2, 0]
-        # 
-        self.des_m1 = -self.rollerror * 6.
-        self.des_m2 = self.rollerror * 6.
-        #
-        rospy.loginfo("rolldiff " + str(self.roll_act_val) + " rollerr " + str(self.roll_err_filtered) + " drollerr " + str(self.roll_derr_filtered))
-        #
-        if (self.times < 10):
-            # inicializacion
-            self.angle_lock_m1 = self.angle_m1
-        if (self.des_m1 > self.pos_settings['umbral']):
-            # no estamos manteniendo ningun angulo
-            self.angle_lock_m1 = self.angle_m1
-        else:
-            # deseamos mantener el angulo
-            pass
-        #
-        self.out_pos_m1 = self.pid_pos_m1.compute(self.angle_lock_m1, self.angle_m1, self.speed_m1)
-        self.out_vel_m1 = self.pid_vel_m1.compute(self.des_m1, self.speed_m1, self.accel_m1)
-        #
-        if (self.pos_settings['umbral'] > 0.01):
-            self.final_out_m1 = self.out_pos_m1 * (1. - min(abs(self.des_m1) / self.pos_settings['umbral'], 1)) + self.out_vel_m1 * (min(abs(self.des_m1) / self.pos_settings['umbral'], 1))
-        else:
-            self.final_out_m1 = self.out_vel_m1
-        #
-        #
-        self.limited_out_m1 = constrain(self.final_out_m1, -1000, 1000)#self.limit_m1.compute(self.final_out_m1)
-        #
+        self.roll_diff_act_val  = self.rollPlate - self.rollPendu - 0.126
+        self.roll_diff_des_val  = self.roll_des_val
+        self.out_pos_m1 = self.pid_pos_m1.compute(self.roll_diff_des_val, self.roll_diff_act_val)
+        self.limited_out_m1 = constrain(self.out_pos_m1, -1000, 1000)#self.limit_m1.compute(self.final_out_m1)
         self.m1.publish(self.limited_out_m1)
-        #
-        #
-        #
-        #
-        if (self.times < 10):
-            # inicializacion
-            self.angle_lock_m2 = self.angle_m2
-        if (self.des_m2 > self.pos_settings['umbral']):
-            # no estamos manteniendo ningun angulo
-            self.angle_lock_m2 = self.angle_m2
-        else:
-            # deseamos mantener el angulo
-            pass
-        #
-        self.out_pos_m2 = self.pid_pos_m2.compute(self.angle_lock_m2, self.angle_m2, self.speed_m2)
-        self.out_vel_m2 = self.pid_vel_m2.compute(self.des_m2, self.speed_m2, self.accel_m2)
-        #
-        if (self.pos_settings['umbral'] > 0.01):
-            self.final_out_m2 = self.out_pos_m2 * (1. - min(abs(self.des_m2) / self.pos_settings['umbral'], 1)) + self.out_vel_m2 * (min(abs(self.des_m2) / self.pos_settings['umbral'], 1))
-        else:
-            self.final_out_m2 = self.out_vel_m2
-        #
-        #
-        self.limited_out_m2 = constrain(self.final_out_m2, -1000, 1000)#self.limit_m1.compute(self.final_out_m1)
-        #
+        self.out_pos_m2 = -self.pid_pos_m2.compute(self.roll_diff_des_val, self.roll_diff_act_val))
+        self.limited_out_m2 = constrain(self.out_pos_m2, -1000, 1000)#self.limit_m1.compute(self.final_out_m1)
         self.m2.publish(self.limited_out_m2)
         #
         #
@@ -279,18 +230,11 @@ class Single_motor:
             self.update()
             r.sleep()
             self.times = self.times + 1
-            """
-            if (self.times % self.rate == 0):
-                #
-                rospy.loginfo("ENC1: e=" + str(self.value_m1) + " s=" + str(self.angle_m1) + " v=" + str(self.speed_m1) + " a=" + str(self.accel_m1))
-                rospy.loginfo("PID1: outpos=" + str(self.out_pos_m1) + " outvel=" + str(self.out_vel_m1) + " final=" + str(self.final_out_m1) + " lim=" + str(self.limited_out_m1))
-                rospy.loginfo("POS1: kp=" + str(self.pid_pos_m1.kp) + " kisum=" + str(self.pid_pos_m1.kisum) + " err=" + str(self.pid_pos_m1.error) + " lck=" + str(self.angle_lock_m1))
-                rospy.loginfo("VEL1: kp=" + str(self.pid_vel_m1.kp) + " kisum=" + str(self.pid_vel_m1.kisum) + " err=" + str(self.pid_vel_m1.error))
             #
-            """
-            #
+        #
 if __name__ == '__main__':
     #
     """ main """
     single_motor = Single_motor()
-    single_motor.spin() 
+    single_motor.spin()
+    #
