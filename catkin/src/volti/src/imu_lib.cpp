@@ -135,8 +135,7 @@ void IMU::Matrix_update(void)
 {
   Gyro_Vector[0]=1.1 * GYRO_SCALED_RAD(gyro[0]); //gyro x roll
   Gyro_Vector[1]=1.1 * GYRO_SCALED_RAD(gyro[1]); //gyro y pitch
-  Gyro_Vector[2]=1.1 * ars
-  GYRO_SCALED_RAD(gyro[2]); //gyro z yaw
+  Gyro_Vector[2]=1.1 * GYRO_SCALED_RAD(gyro[2]); //gyro z yaw
   
   Accel_Vector[0]=accel[0];
   Accel_Vector[1]=accel[1];
