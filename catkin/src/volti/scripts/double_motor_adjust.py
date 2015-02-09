@@ -32,7 +32,7 @@ class Single_motor:
         rospy.init_node(node_name_default)
         self.nodename = rospy.get_name()
         rospy.loginfo("double_motor_test_node starting with name %s", self.nodename)
-        self.rate = float(rospy.get_param("param_global_rate", '20'))
+        self.rate = float(rospy.get_param("param_global_rate", '10'))
         #
         self.times = 0
         #
