@@ -142,7 +142,7 @@ void commloop() {
       timedOut = true;
     }
 
-    /*gear1_lec = gear1.read();
+    gear1_lec = gear1.read();
     gear2_lec = gear2.read();
     //
     if (gear1.isValid() != 1) {
@@ -154,7 +154,7 @@ void commloop() {
       gear2.restartComm();
       gear2_lec = gear2.read();
     }
-    //gearv_lec = gearv.read();*/
+    //gearv_lec = gearv.read();
 
     gear1_lec_msg.data = gear1_lec;
     gear2_lec_msg.data = gear2_lec;
