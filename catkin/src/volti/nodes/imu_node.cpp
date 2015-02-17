@@ -227,16 +227,16 @@ int main(int argc, char **argv)
   {
     imu_plate.loop();
 
-    kalman1.compute(imu_plate.roll);
-    kalman2.compute(imu_plate.pitch);
-    kalman3.compute(imu_plate.yaw);
+    //kalman1.compute(imu_plate.roll);
+    //kalman2.compute(imu_plate.pitch);
+    //kalman3.compute(imu_plate.yaw);
 
-    imu_plate_msg.data[0] = kalman1.get();
-    imu_plate_msg.data[1] = kalman2.get();
-    imu_plate_msg.data[2] = kalman3.get();
-    //imu_plate_msg.data[0] = imu_plate.roll;
-    //imu_plate_msg.data[1] = imu_plate.pitch;
-    //imu_plate_msg.data[2] = imu_plate.yaw;
+    //imu_plate_msg.data[0] = kalman1.get();
+    //imu_plate_msg.data[1] = kalman2.get();
+    //imu_plate_msg.data[2] = kalman3.get();
+    imu_plate_msg.data[0] = imu_plate.roll;
+    imu_plate_msg.data[1] = imu_plate.pitch;
+    imu_plate_msg.data[2] = imu_plate.yaw;
     /*imu_plate_msg.data[3] = imu_plate.accel[0] * 9.806 / 256.0;
     imu_plate_msg.data[4] = imu_plate.accel[1] * 9.806 / 256.0;
     imu_plate_msg.data[5] = imu_plate.accel[2] * 9.806 / 256.0;
@@ -250,16 +250,16 @@ int main(int argc, char **argv)
 
     imu_pendu.loop();
 
-    kalman4.compute(imu_pendu.roll);
-    kalman5.compute(imu_pendu.pitch);
-    kalman6.compute(imu_pendu.yaw);
+    //kalman4.compute(imu_pendu.roll);
+    //kalman5.compute(imu_pendu.pitch);
+    //kalman6.compute(imu_pendu.yaw);
 
-    imu_pendu_msg.data[0] = kalman4.get();
-    imu_pendu_msg.data[1] = kalman5.get();
-    imu_pendu_msg.data[2] = kalman6.get();
-    //imu_pendu_msg.data[0] = imu_pendu.roll;
-    //imu_pendu_msg.data[1] = imu_pendu.pitch;
-    //imu_pendu_msg.data[2] = imu_pendu.yaw;
+    //imu_pendu_msg.data[0] = kalman4.get();
+    //imu_pendu_msg.data[1] = kalman5.get();
+    //imu_pendu_msg.data[2] = kalman6.get();
+    imu_pendu_msg.data[0] = imu_pendu.roll;
+    imu_pendu_msg.data[1] = imu_pendu.pitch;
+    imu_pendu_msg.data[2] = imu_pendu.yaw;
     /*imu_pendu_msg.data[3] = imu_pendu.accel[0] * 9.806 / 256.0;
     imu_pendu_msg.data[4] = imu_pendu.accel[1] * 9.806 / 256.0;
     imu_pendu_msg.data[5] = imu_pendu.accel[2] * 9.806 / 256.0;
