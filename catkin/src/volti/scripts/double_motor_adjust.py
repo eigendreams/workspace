@@ -329,6 +329,8 @@ class Double_motor:
         #
         self.times = self.times + 1
         #
+        self.controller()
+        #
 
         #
         # self.roll_des_val
