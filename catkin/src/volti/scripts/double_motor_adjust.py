@@ -260,8 +260,7 @@ class Double_motor:
         #
         #
         #
-        self.velocidad lateral          = (self.speed_m1 - self.speed_m2) / 2 # ESTE VALOR NO ES CONFIABLE, por el juego de las bandas, deberia corregirse con las IMUS
-        #
+        self.velocidad_lateral          = (self.speed_m1 - self.speed_m2) / 2
         #
         #
         self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
