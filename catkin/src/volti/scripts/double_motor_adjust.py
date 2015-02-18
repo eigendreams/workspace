@@ -121,9 +121,9 @@ class Double_motor:
         #
     def angleRange(self, data):
         #
-        if data > 3.1416:
+        if (data > 3.1416):
             return data - 3.1416
-        if data < -3.1416
+        if (data < -3.1416):
             return data + 3.1416
         return data
         #
