@@ -298,8 +298,10 @@ class Double_motor:
         #
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
-        if (self.ang_lat_diff > 0.5 or self.ang_lat_diff < -0.5):
-            self.salida_control_angulo = 0
+        if (self.ang_lat_diff > 0.5):
+            self.salida_control_angulo = constrain(self.salida_control_angulo, -10000, 0)
+        if (self.ang_lat_diff < -0.5):
+            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10000)
         #
         # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
         # pida una nueva posicion de control del angulo
