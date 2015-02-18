@@ -219,9 +219,6 @@ int main(int argc, char **argv)
   Kalman1D kalman4;
   Kalman1D kalman5;
   Kalman1D kalman6;
-  Kalman1D kalman7;
-  Kalman1D kalman8;
-  Kalman1D kalman9;
 
   while (ros::ok())
   {
