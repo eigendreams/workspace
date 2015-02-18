@@ -29,7 +29,7 @@ class Double_motor:
     #
     def __init__(self, node_name_default = 'double_motor_test_node'):
         #
-        self.GRLinit()
+        self.GRLinit(node_name_default)
         self.SRVinit()
         #
         # creando los objetos PID
