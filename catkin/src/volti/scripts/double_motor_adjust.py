@@ -335,8 +335,8 @@ class Double_motor:
         self.out_pos_m1 = self.salida_control_angulo
         self.out_pos_m2 = -self.salida_control_angulo
         #
-        self.m1.publish(self.out_pos_m1 + 0 * 150)
-        self.m2.publish(self.out_pos_m2 + 0 * 150)
+        self.m1.publish(self.out_pos_m1 + 1 * 190)
+        self.m2.publish(self.out_pos_m2 + 1 * 190)
         #
         #
         #
