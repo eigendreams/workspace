@@ -113,7 +113,7 @@ class Double_motor:
         #
     def anglatdescb(self, data):
         #
-        self.tmp_minimal_error = self.ang_lateral_des - self.ang_lat_pend
+        self.tmp_minimal_error = data.data - self.ang_lat_pend
         if (abs(self.tmp_minimal_error) > 0.1):
             self.minimal_error = self.tmp_minimal_error
         #
