@@ -313,6 +313,7 @@ class Double_motor:
             self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10000)
         #
         #
+        rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
         # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
         # pida una nueva posicion de control del angulo
         #
@@ -325,7 +326,7 @@ class Double_motor:
             self.salida_control_angulo = 0
         #
         #
-        rospy.loginfo("minerror: " + str(self.minimal_error))
+        rospy.loginfo("salida: " + str(self.salida_control_angulo) + "minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
         #
         self.salida_control_angulo = constrain(self.salida_control_angulo, -500, 500)
