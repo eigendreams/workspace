@@ -13,4 +13,6 @@
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
   </node>
 
+  <!--launch-prefix="sudo"-->
+
 </launch>

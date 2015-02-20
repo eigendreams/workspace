@@ -166,8 +166,8 @@ void commloop() {
 
     //servo_11.writeMicroseconds(100 * s11_out + 1000); // v1
     //servo_12.writeMicroseconds(100 * s12_out + 1000); // v2
-    servo_13.writeMicroseconds( s13_out / 2 + 1500); // m1
-    servo_14.writeMicroseconds( s14_out / 2 + 1500); // m2
+    servo_13.writeMicroseconds( s13_out / 20 + 1500); // m1
+    servo_14.writeMicroseconds( s14_out / 20 + 1500); // m2
     //servo_15.writeMicroseconds( 50 * s15_out + 1500); // mv
   }
 }
