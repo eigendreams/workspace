@@ -319,10 +319,10 @@ class Double_motor:
         #
         #
         self.actual_error = self.ang_lat_des - self.ang_lat_pend
-        if abs(self.actual_error) < abs(self.minimal_error):
+        if (abs(self.actual_error) < abs(self.minimal_error)):
             self.minimal_error = self.actual_error
         #
-        if abs(self.minimal_error < 0.05):
+        if (abs(self.minimal_error) < 0.05):
             self.salida_control_angulo = 0
         #
         #
