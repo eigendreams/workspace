@@ -270,6 +270,8 @@ class Double_motor:
         self.ang_lat_diff               = self.rollPlate - self.rollPendu - 0.126 # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
         #
         #
+        rospy.loginfo("vel_adelante: " + str(self.velocidad_adelante) + " anglatpend: " + str(self.ang_lat_pend) + " anglatdiff: " + str(self.ang_lat_diff))
+        #
         #
         # el control de angulo del pendulo en roll, no podria ser a traves de los encoders... por el juego de las bandas, en primer lugar... por ende este solo
         # podria ser un controlador de posicion, donde
@@ -330,8 +332,6 @@ class Double_motor:
         self.times = self.times + 1
         #
         self.controller()
-        #
-
         #
         # self.roll_des_val
         #
