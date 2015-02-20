@@ -270,7 +270,7 @@ class Double_motor:
         self.ang_lat_diff               = self.rollPlate - self.rollPendu - 0.126 # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
         #
         #
-        rospy.loginfo("vel_adelante: " + str(self.velocidad_adelante) + " anglatpend: " + str(self.ang_lat_pend) + " anglatdiff: " + str(self.ang_lat_diff))
+        rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
         #
         #
         # el control de angulo del pendulo en roll, no podria ser a traves de los encoders... por el juego de las bandas, en primer lugar... por ende este solo
@@ -304,6 +304,8 @@ class Double_motor:
         if (self.ang_lat_diff < -0.5):
             self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10000)
         #
+        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
+        #
         # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
         # pida una nueva posicion de control del angulo
         #
@@ -315,6 +317,8 @@ class Double_motor:
         if abs(self.minimal_error < 0.05):
             self.salida_control_angulo = 0
         #
+        #
+        rospy.loginfo("minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
         #
         self.salida_control_angulo = constrain(self.salida_control_angulo, -500, 500)
