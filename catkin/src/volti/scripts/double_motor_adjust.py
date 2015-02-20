@@ -323,10 +323,10 @@ class Double_motor:
             self.minimal_error = self.actual_error
         #
         if (abs(self.minimal_error) < 0.05):
-            self.salida_control_angulo = 0
+            self.salida_control_angulo = self.pid_pos_ang.kisum
         #
         #
-        rospy.loginfo("salida: " + str(self.salida_control_angulo) + "minerror: " + str(self.minimal_error))
+        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
         #
         self.salida_control_angulo = constrain(self.salida_control_angulo, -500, 500)
