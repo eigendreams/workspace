@@ -300,6 +300,7 @@ class Double_motor:
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.ang_lat_pend, 0)
+        self.salida_control_angulo = self.salida_control_angulo + 70 * sign(self.salida_control_angulo)
         #
         #
         rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
@@ -334,8 +335,8 @@ class Double_motor:
         self.out_pos_m1 = self.salida_control_angulo
         self.out_pos_m2 = -self.salida_control_angulo
         #
-        self.m1.publish(self.out_pos_m1)
-        self.m2.publish(self.out_pos_m2)
+        self.m1.publish(self.out_pos_m1 + 100)
+        self.m2.publish(self.out_pos_m2 + 100)
         #
         #
         #
