@@ -137,7 +137,7 @@ class Double_motor:
         #self.rollPendu  = self.angleRange(data.data[0] + 3.1416)
         if (data.data[0] < -2):
             self.rollPendu = self.rollPendu + 3.1416
-        if (data.data{0} > 2):
+        if (data.data[0] > 2):
             self.rollPendu = self.rollPendu - 3.1416
         self.pitchPendu = data.data[1]
         #
