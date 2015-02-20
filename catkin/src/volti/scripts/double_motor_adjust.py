@@ -293,7 +293,7 @@ class Double_motor:
         #
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
-        self.salida_control_angulo  = self.pid_pos_ang(self.ang_lat_des, self.ang_lat_pend, 0)
+        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.ang_lat_pend, 0)
         #
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
