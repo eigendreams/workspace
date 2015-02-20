@@ -113,7 +113,7 @@ class Double_motor:
         #
     def anglatdescb(self, data):
         #
-        self.tmp_minimal_error = data.data - self.ang_lat_pend
+        self.tmp_minimal_error = data.data - self.rollPendu
         if (abs(self.tmp_minimal_error) > 0.1):
             self.minimal_error = self.tmp_minimal_error
         #
@@ -297,6 +297,10 @@ class Double_motor:
         # 
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.ang_lat_pend, 0)
         #
+        #
+        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
+        #
+        #
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
         if (self.ang_lat_diff > 0.5):
@@ -304,7 +308,6 @@ class Double_motor:
         if (self.ang_lat_diff < -0.5):
             self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10000)
         #
-        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
         #
         # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
         # pida una nueva posicion de control del angulo
