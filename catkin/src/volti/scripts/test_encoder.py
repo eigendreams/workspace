@@ -41,21 +41,21 @@ def readenc():
 	chainData = 0
 	#
 	GPIO.output(csnpin, GPIO.LOW)
-	usleep(0)
+	
 	GPIO.output(clkpin, GPIO.LOW)
-	usleep(0)
+	pass
 	#
 	for k in range(base_bits):
 		GPIO.output(clkpin, GPIO.HIGH)
-		usleep(0)
+		pass
 		chainData = (chainData << 1) | (GPIO.input(lecpin) & 1)
 		GPIO.output(clkpin, GPIO.LOW)
-		usleep(0)
+		pass
 	#
 	GPIO.output(propin, GPIO.LOW)
-	usleep(0)
+	pass
 	GPIO.output(csnpin, GPIO.HIGH)
-	usleep(0)
+	pass
 	GPIO.output(clkpin, GPIO.HIGH)
 	#
 	return (chainData >> 6)
@@ -66,7 +66,7 @@ starttime = time.time()
 
 for x in range(1000):
 	var = readenc()
-	usleep(0)
+	pass
 
 endtime = time.time()
 
