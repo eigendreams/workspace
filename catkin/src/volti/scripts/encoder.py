@@ -27,15 +27,40 @@ class Encoder:
         #
     def compute(self, measure):
         #
+        if (measure == -1):
+            # tendria que adivinar que el encoder se sigue moviendo, probablemente a una velocidad constante, entonces, para UN SOLO PUNTO DE ERROR
+            #
+            self.output_angle = self.output_angle + self.corrected_change
+            #
+            # no hacemos alguna forma de verificacion de que el cambio, en el proximo ciclo, sea el correcto, para que en dos puntos fallemos, deberiamos
+            # movernos a un cambio de 512 pasos entre esos dos puntos, suponiendo que solo falle el primer punto, por ende, fallariamos a una velocidad de
+            # de movimiento del motor, a un rate de 20 hz, de 512 pasos en un decimo de segundo, lo que serian 5 RPS (creo que es condierable)
+            # si los errores ocntinuan estamos en un problema, alive debera matar los motores en el tiempo que resta
+            #
+            # esto es para que no se pierda el filtro de la velocidad para errores transientes, y nada mas para eso? 
+            #
+            # y que tal que los erroes sigan? no me parece que esto tenga tanto sentido, en este caso lo mejor sea ignorar el dato erroneo
+            # pero estimar o no estimar el angulo destino?
+            # yo propondria que no, pero como hay un controlador de velocidad, pero toma de las imus, pero no se...
+            # 
+            # depende de las pruebas, las pruebas muestran que los errores son en ocasiones solamente puntuales, pero uno de los encoders parecia ser algo
+            # renuente... y daba valores de error, por periodos mas largos, porque??? hacemos verificacion y eso pero no parecia ser suficiente? parecian ser falsos???
+            # deberiamos depender de las imus solamente???
+            #
+            # la naturaleza de los errores parecia ser transiente y puntual, con eso en mente, esta aproximacion esta bien
+            #
+            # ok
+            #
+            return self.output_angle
+        #
         if (self.times == 0):
             self.internal_angle_last    = map(measure, 0., 1023., 0., 2. * pi)
             self.internal_angle         = map(measure, 0., 1023., 0., 2. * pi)
             if (self.offset < 0):
                 self.internal_offset    = map(measure, 0., 1023., 0., 2. * pi)
             else:
-                self.internal_offset    = self.offset
+                self.internal_offset    = map(self.offset, 0., 1023., 0., 2. * pi)
         #
-        self.internal_offset            = map(self.offset, 0., 1023., 0., 2. * pi)
         self.internal_angle_last        = self.internal_angle
         self.internal_angle             = map(measure, 0., 1023., 0., 2. * pi)
         #
@@ -46,7 +71,10 @@ class Encoder:
             if (self.internal_angle_last <= self.internal_angle): # ej saltar de 100 a 900 -> 900 - 100 -> change de 800
                 self.laps = self.laps - 1
         #
+        self.output_angle_last          = self,output_angle
         self.output_angle               = 2 * pi * self.laps + self.internal_angle - self.internal_offset
+        #
+        self.corrected_change = self.output_angle - self.output_angle_last
         #
         self.times                      = self.times + 1
         #

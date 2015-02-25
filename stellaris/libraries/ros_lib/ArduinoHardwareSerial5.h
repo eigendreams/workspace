@@ -41,7 +41,7 @@
 class ArduinoHardware {
   public:
     ArduinoHardware(){
-      baud_ = 57600 / 6; //9600
+      baud_ = 115200; //9600
       //baud_ = 57600;
     }
   

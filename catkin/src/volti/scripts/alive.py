@@ -5,9 +5,9 @@ import rospy
 from std_msgs.msg import Int16
 
 class Alive:
-    
+    #
     def __init__(self, node_name_override = 'alive'):
-		
+		#
         # El nombre del node deberìa poder especificarse como override desde alguna
         # instancia superior, por si acaso, se establece un default razonable.
         # De todos modos, el nombre del nodo que se guarda "internamente" no puede
@@ -22,18 +22,19 @@ class Alive:
         # Quizá algún parámetro superior especifique una frecuencia de salida de datos,
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = rospy.get_param("alive_rate", 1)
-
+        #
         self.alive_val = 1
-
+        #
         # Publicación de la batería como entero
-        self.alivePub = rospy.Publisher('al', Int16)   
-        
+        self.alivePub = rospy.Publisher('al', Int16)
+        #
+        #
     def update(self):
-		
+		#
         self.alivePub.publish(self.alive_val)
-
+        #
     def spin(self):
-		
+		#
         # rospy.Rate y sleep permiten que el nodo pare su ejecución (cuidado, los subscriptores
         # NO están restringidos por el resto del nodo más allá de la función de callback) e 
         # intente ejecutarse cada tantos ms, dados por el rate declarado en el constructor de la
@@ -42,8 +43,7 @@ class Alive:
         while not rospy.is_shutdown():
             self.update()
             r.sleep()
-
-
+        #
 # Invocación del constructor. Básicamente, si este archivo fuera a ejecutarse como "top level", el
 # intérprete le asignaría el "nombre" (protegido) __main__ y ejecutaría las siguientes lineas como
 # LO PRIMERO en el archivo (salvo imports y declaraciones)    
@@ -52,4 +52,3 @@ if __name__ == '__main__':
     alive = Alive()
     alive.spin()
     
-

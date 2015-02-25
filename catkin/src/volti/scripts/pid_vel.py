@@ -7,7 +7,7 @@ from math import *
 from ino_mod import *
 ################################################################################
 #
-class PID:
+class PID_vel:
     #
     # NO DEFAULTS !!!
     #
@@ -21,6 +21,8 @@ class PID:
         self.umbral         = float(settings['umbral'])        # valor por debajo del cual el error podria ser ruido
         self.ki_dec         = float(settings['ki_dec'])        # ki de penalizacion
         self.range          = float(settings['range'])         #float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas
+        #
+        self.rate           = float(settings['rate'])
         #
         self.kisum          = 0.
         self.error          = 0.
@@ -36,7 +38,10 @@ class PID:
         self.error = desired - actual
         #
         if (accel == None):
-            self.derror = self.error - self.last_error
+            # multiply by rate to keep unit consistency
+            # evaluate to change to
+            # self.derror = (self.actual - self.last_actual) * self.rate
+            self.derror = (self.error - self.last_error) * self.rate
         else:
             self.derror = accel
         #
@@ -44,7 +49,6 @@ class PID:
         #
         if (self.times <= 1):
             self.derror = 0
-        #
         self.times = self.times + 1
         #
         self.kisum = constrain(self.kisum + self.error * (self.ki if (sign(self.kisum) == sign(self.error)) else self.ki_dec), -self.range, self.range)
@@ -64,15 +68,18 @@ class PID:
         #
         self.pid_out = 0.
         self.kisum = 0.
+        self.times = 0
         #
         #
     def resetting(self, settings):
         #
-        self.kp = float(settings['kp'])
-        self.ki = float(settings['ki'])
-        self.kd = float(settings['kd'])
-        self.km = float(settings['km'])
+        self.kp             = float(settings['kp'])
+        self.ki             = float(settings['ki'])
+        self.kd             = float(settings['kd'])
+        self.km             = float(settings['km'])
         #
-        self.umbral = float(settings['umbral'])        # valor por debajo del cual el error podria ser ruido
-        self.ki_dec = float(settings['ki_dec'])        # ki de penalizacion
-        self.range  = float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas   
+        self.umbral         = float(settings['umbral'])        # valor por debajo del cual el error podria ser ruido
+        self.ki_dec         = float(settings['ki_dec'])        # ki de penalizacion
+        self.range          = float(settings['range'])         # maxima salida posible, se panalizara primero a la parte integral y luego a la demas
+        #
+        self.rate           = float(settings['rate'])

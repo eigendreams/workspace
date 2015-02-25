@@ -79,6 +79,17 @@ ros::Publisher gear2_lec_pub("e2", &gear2_lec_msg);
 //ros::Publisher gearv_lec_pub("ev", &gearv_lec_msg);
 
 void setup() {
+  
+  //servo_11.attach(11);
+  //servo_12.attach(12);
+  servo_13.attach(13);
+  servo_14.attach(14);
+  //servo_15.attach(15);
+  
+  servo_13.writeMicroseconds( 1500 ); // m1
+  servo_14.writeMicroseconds( 1500 ); // m2
+
+  timedOut = true;
 
   nh.initNode();
 
@@ -97,12 +108,6 @@ void setup() {
   pinMode(34, OUTPUT);
   pinMode(33, OUTPUT);
   pinMode(32, OUTPUT);
-
-  //servo_11.attach(11);
-  //servo_12.attach(12);
-  servo_13.attach(13);
-  servo_14.attach(14);
-  //servo_15.attach(15);
 
   //nh.subscribe(s11_out_sub);
   //nh.subscribe(s12_out_sub);
@@ -144,15 +149,21 @@ void commloop() {
 
     gear1_lec = gear1.read();
     gear2_lec = gear2.read();
-    //
+    
     if (gear1.isValid() != 1) {
       gear1.restartComm();
       gear1_lec = gear1.read();
+      if (gear1.isValid() != 1) {
+        gear1_lec = -1; // raise error code
+      }
     }
     //
     if (gear2.isValid() != 1) {
       gear2.restartComm();
       gear2_lec = gear2.read();
+      if (gear2.isValid() != 1) {
+        gear2_lec = -1; // raise error code
+      }
     }
     //gearv_lec = gearv.read();
 
@@ -166,9 +177,18 @@ void commloop() {
 
     //servo_11.writeMicroseconds(100 * s11_out + 1000); // v1
     //servo_12.writeMicroseconds(100 * s12_out + 1000); // v2
-    servo_13.writeMicroseconds( s13_out / 20 + 1500); // m1
-    servo_14.writeMicroseconds( s14_out / 20 + 1500); // m2
+    //////servo_13.writeMicroseconds( s13_out / 20 + 1500); // m1
+    //////servo_14.writeMicroseconds( s14_out / 20 + 1500); // m2
     //servo_15.writeMicroseconds( 50 * s15_out + 1500); // mv
+
+    if (timedOut) {
+      servo_13.writeMicroseconds( 1500 ); // m1
+      servo_14.writeMicroseconds( 1500 ); // m2
+    }
+    else {
+      servo_13.writeMicroseconds( s13_out / 20 + 1500); // m1 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
+      servo_14.writeMicroseconds( s14_out / 20 + 1500); // m2 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
+    }
   }
 }
 

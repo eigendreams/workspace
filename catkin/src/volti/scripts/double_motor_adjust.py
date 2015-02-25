@@ -14,9 +14,10 @@ from volti.cfg import PIDConfig
 ################################################################################
 from ino_mod import *
 from kfilter import *
-from limit   import *
-from pid     import *
+from pid_pos import *
+from pid_vel import *
 from encoder import *
+from profile import *
 ################################################################################
 from numpy import *
 from numpy.linalg import inv 
@@ -33,12 +34,13 @@ class Double_motor:
         self.SRVinit()
         #
         # creando los objetos PID
-        self.pid_pos_m1     = PID(self.pos_settings)
-        self.pid_vel_m1     = PID(self.vel_settings)
-        self.pid_pos_m2     = PID(self.pos_settings)
-        self.pid_vel_m2     = PID(self.vel_settings)
+        self.pid_pos_m1          = PID_pos(self.pos_settings)
+        self.pid_vel_m1          = PID_vel(self.vel_settings)
+        self.pid_pos_m2          = PID_pos(self.pos_settings)
+        self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
-        self.pid_pos_ang    = PID(self.pos_settings)
+        self.pid_vel_vel         = PID_vel(self.vel_settings)
+        self.pid_pos_ang         = PID_pos(self.pos_settings)
         #
         # filtro de entradas del encoder
         self.kf_settings         = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
@@ -55,10 +57,10 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.lim_settings = {'output_limit_max' : 100, 'rate' : self.rate, 'a' : 10, 'b' : 2}
+        self.profile_settings = {'max_output' : 10, 'max_speed' : 10, 'rate' : self.rate, 'heal_time_at_0pc' : 10, 'stable_point_pc' : 10}
         #
-        self.limit_m1 = Limit(self.lim_settings)
-        self.limit_m2 = Limit(self.lim_settings)
+        self.profile_m1 = Profile(self.lim_settings)
+        self.profile_m2 = Profile(self.lim_settings)
         #
         self.des_m1 = 0
         self.value_m1 = 0
@@ -114,7 +116,7 @@ class Double_motor:
     def anglatdescb(self, data):
         #
         self.tmp_minimal_error = data.data - self.rollPendu
-        if (abs(self.tmp_minimal_error) > 0.1):
+        if (abs(self.tmp_minimal_error) > 0.05):
             self.minimal_error = self.tmp_minimal_error
         #
         self.ang_lat_des = data.data
@@ -158,45 +160,44 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
-        self.vel_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
+        self.vel_settings = {'kp' : 0,         'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.pos_settings['kp'] = float(rospy.get_param('~kp_pos',  '0'))           
-        self.pos_settings['ki'] = float(rospy.get_param('~ki_pos',  '0'))           
-        self.pos_settings['kd'] = float(rospy.get_param('~kd_pos',  '0'))           
-        self.pos_settings['km'] = float(rospy.get_param('~km_pos',  '0'))           
+        self.pos_settings['kp0rps'] = float(rospy.get_param('~kp0rps_pos',  '0'))      
+        self.pos_settings['kp1rps'] = float(rospy.get_param('~kp1rps_pos',  '0'))      
+        self.pos_settings['ki']     = float(rospy.get_param('~ki_pos',  '0'))           
+        self.pos_settings['kd']     = float(rospy.get_param('~kd_pos',  '0'))                    
         # variables de limitacion adicionales
         self.pos_settings['umbral'] = float(rospy.get_param('~umbral_pos', '0'))  
         self.pos_settings['ki_dec'] = float(rospy.get_param('~ki_dec',     '0'))  
-        self.pos_settings['range']  = float(rospy.get_param('~range_pos',  '1000'))
+        self.pos_settings['range']  = float(rospy.get_param('~range_pos',  '10'))
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.vel_settings['kp'] = float(rospy.get_param('~kp_vel',  '0'))           
-        self.vel_settings['ki'] = float(rospy.get_param('~ki_vel',  '0'))           
-        self.vel_settings['kd'] = float(rospy.get_param('~kd_vel',  '0'))           
-        self.vel_settings['km'] = float(rospy.get_param('~km_vel',  '0'))           
+        self.vel_settings['kp']     = float(rospy.get_param('~kp_vel',  '0'))           
+        self.vel_settings['ki']     = float(rospy.get_param('~ki_vel',  '0'))           
+        self.vel_settings['kd']     = float(rospy.get_param('~kd_vel',  '0'))           
+        self.vel_settings['km']     = float(rospy.get_param('~km_vel',  '0'))           
         # variables de limitacion adicionales
         self.vel_settings['umbral'] = float(rospy.get_param('~umbral_vel', '0'))  
         self.vel_settings['ki_dec'] = float(rospy.get_param('~ki_vel',     '0'))  
-        self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '1000'))
+        self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '10'))
         #
     def SRVcallback(self, config, level):
         #
-        rospy.loginfo("""POS Reconfiugre Request: {kp_pos}, {ki_pos}, {kd_pos}, {km_pos}, {umbral_pos}, {ki_dec_pos}, {range_pos}""".format(**config))
-        rospy.loginfo("""VEL Reconfiugre Request: {kp_vel}, {ki_vel}, {kd_vel}, {km_vel}, {umbral_vel}, {ki_dec_vel}, {range_vel}""".format(**config))
+        rospy.loginfo("reconfiguring")
         #
-        self.pos_settings['kp'] = float(config['kp_pos'])           
-        self.pos_settings['ki'] = float(config['ki_pos'])           
-        self.pos_settings['kd'] = float(config['kd_pos'])           
-        self.pos_settings['km'] = float(config['km_pos'])        
+        self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
+        self.pos_settings['kp1rps'] = float(config['kp1rps_pos'])      
+        self.pos_settings['ki']     = float(config['ki_pos'])           
+        self.pos_settings['kd']     = float(config['kd_pos'])              
         # variables de limitacion adicionales
         self.pos_settings['umbral'] = float(config['umbral_pos'])
         self.pos_settings['ki_dec'] = float(config['ki_dec_pos'])
         self.pos_settings['range']  = float(config['range_pos'])
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.vel_settings['kp'] = float(config['kp_vel'])          
-        self.vel_settings['ki'] = float(config['ki_vel'])          
-        self.vel_settings['kd'] = float(config['kd_vel'])          
-        self.vel_settings['km'] = float(config['km_vel'])         
+        self.vel_settings['kp']     = float(config['kp_vel'])          
+        self.vel_settings['ki']     = float(config['ki_vel'])          
+        self.vel_settings['kd']     = float(config['kd_vel'])          
+        self.vel_settings['km']     = float(config['km_vel'])         
         # variables de limitacion adicionales
         self.vel_settings['umbral'] = float(config['umbral_vel'])
         self.vel_settings['ki_dec'] = float(config['ki_dec_vel'])
@@ -209,6 +210,7 @@ class Double_motor:
         self.pid_vel_m2.resetting(self.vel_settings)
         #
         self.pid_pos_ang.resetting(self.pos_settings)
+        self.pid_vel_vel.resetting(self.vel_settings)
         #
         return config
         #
@@ -257,24 +259,11 @@ class Double_motor:
         # datos: e1, e2, rolls, pitchs
         # 
         self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
-        #                                                                     velocidad hacia adelante, las imus podrian funcionar solamente para el control del
-        #                                                                     angulo, y por ende indirectamente en la velocidad, pero solo por control de posicion
-        #                                                                     esta relacion es mas o menos exclusiva, a mi parecer
-        self.angulo_pendulo_adelante    = self.pitchPendu   # este valor podria servir para un control de veloicdad de la esfera pero habria que ser cuidadososo
-        #
-        #
-        #
-        self.velocidad_lateral          = (self.speed_m1 - self.speed_m2) / 2
-        #
-        #
         self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
-        #
-        #
-        #
         self.ang_lat_diff               = self.rollPlate - self.rollPendu - 0.126 # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
         #
         #
-        rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
+        #rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
         #
         #
         # el control de angulo del pendulo en roll, no podria ser a traves de los encoders... por el juego de las bandas, en primer lugar... por ende este solo
@@ -300,26 +289,28 @@ class Double_motor:
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.ang_lat_diff, 0)
-        self.salida_control_angulo = self.salida_control_angulo + 0 * sign(self.salida_control_angulo)
+        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
+        #
+        #self.salida_control_angulo  = self.salida_control_angulo + 0 * sign(self.salida_control_angulo)
         #
         #
-        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
+        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
         #
         #
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
         if (self.ang_lat_diff > 0.4):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, -10000, 0)
+            self.salida_control_angulo = constrain(self.salida_control_angulo, -10, 0)
         if (self.ang_lat_diff < -0.4):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10000)
+            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10)
         #
         #
-        rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
+        #rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
         # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
         # pida una nueva posicion de control del angulo
         #
         #
-        self.actual_error = self.ang_lat_des - self.ang_lat_pend
+        self.actual_error = self.ang_lat_des - self.ang_lat_diff
         if (abs(self.actual_error) < abs(self.minimal_error)):
             self.minimal_error = self.actual_error
         #
@@ -327,17 +318,17 @@ class Double_motor:
             self.salida_control_angulo = self.pid_pos_ang.kisum
         #
         #
-        rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
+        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
         #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -60, 60)
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -3, 3)
+        self.salida_control_vel    = constrain(self.salida_control_vel, -3, 3)
         #
-        self.out_pos_m1 = self.salida_control_angulo
-        self.out_pos_m2 = -self.salida_control_angulo
+        self.out_pos_m1 = self.salida_control_angulo + self.salida_control_vel
+        self.out_pos_m2 = -self.salida_control_angulo + self.salida_control_vel
         #
-        self.m1.publish(self.out_pos_m1 + 1 * 190)
-        self.m2.publish(self.out_pos_m2 + 1 * 190)
-        #
+        self.m1.publish(int((self.out_pos_m1) * 100)
+        self.m2.publish(int((self.out_pos_m2) * 100)
         #
         #
     def update(self):
