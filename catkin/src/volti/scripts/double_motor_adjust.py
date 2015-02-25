@@ -111,6 +111,12 @@ class Double_motor:
         self.subImuPlate = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
         self.subImuPendu = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
         #
+        self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
+        self.rollPlatePub = rospy.Publisher( "rplate", Float32)
+        self.anglatdifPub = rospy.Publisher( "angdif", Float32)
+        self.minierrorPub = rospy.Publisher( "minerr", Float32)
+        self.veladesumPub = rospy.Publisher( "velade", Float32)
+        #
     def veldeldescb(self, data):
         #
         self.vel_del_des = data.data
@@ -312,16 +318,25 @@ class Double_motor:
         # pida una nueva posicion de control del angulo
         #
         #
-        self.actual_error = self.ang_lat_des - self.ang_lat_diff
-        if (abs(self.actual_error) < abs(self.minimal_error)):
-            self.minimal_error = self.actual_error
+        #self.actual_error = self.ang_lat_des - self.ang_lat_diff
+        #if (abs(self.actual_error) < abs(self.minimal_error)):
+        #    self.minimal_error = self.actual_error
         #
-        if (abs(self.minimal_error) < 0.05):
-            self.salida_control_angulo = self.pid_pos_ang.kisum
+        #if (abs(self.minimal_error) < 0.05):
+        #    self.salida_control_angulo = self.pid_pos_ang.kisum
         #
         #
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
+        #
+        #
+        self.rollPenduPub.publish(self.rollPendu)
+        self.rollPlatePub.publish(self.rollPlate)
+        self.anglatdifPub.publish(self.ang_lat_diff)
+        self.minierrorPub.publish(self.minimal_error)
+        self.veladesumPub.publish(self.velocidad_adelante) 
+        #
+        #
         #
         self.salida_control_angulo = constrain(self.salida_control_angulo, -3, 3)
         self.salida_control_vel    = constrain(self.salida_control_vel, -3, 3)
