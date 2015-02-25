@@ -61,8 +61,8 @@ class Double_motor:
         # Objeto de limitacion de la salida a los motores
         self.profile_settings = {'max_output' : 10, 'max_speed' : 10, 'rate' : self.rate, 'heal_time_at_0pc' : 10, 'stable_point_pc' : 10}
         #
-        self.profile_m1 = Profile(self.lim_settings)
-        self.profile_m2 = Profile(self.lim_settings)
+        self.profile_m1 = Profile(self.profile_settings)
+        self.profile_m2 = Profile(self.profile_settings)
         #
         self.des_m1 = 0
         self.value_m1 = 0
