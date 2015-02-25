@@ -220,9 +220,14 @@ int main(int argc, char **argv)
   Kalman1D kalman5;
   Kalman1D kalman6;
 
+  int unsigned long times = 0;
+
   while (ros::ok())
   {
     imu_plate.loop();
+    imu_pendu.loop();
+
+    if (times % 5 == 0) {
 
     //kalman1.compute(imu_plate.roll);
     //kalman2.compute(imu_plate.pitch);
@@ -245,7 +250,7 @@ int main(int argc, char **argv)
     imu_plate_msg.data[11] = imu_plate.gyro[2] * 0.06957 * 0.01745329252;*/
     imu1_pub.publish(imu_plate_msg);
 
-    imu_pendu.loop();
+    
 
     //kalman4.compute(imu_pendu.roll);
     //kalman5.compute(imu_pendu.pitch);
@@ -267,9 +272,10 @@ int main(int argc, char **argv)
     imu_pendu_msg.data[10] = imu_pendu.gyro[1] * 0.06957 * 0.01745329252;
     imu_pendu_msg.data[11] = imu_pendu.gyro[2] * 0.06957 * 0.01745329252;*/
     imu2_pub.publish(imu_pendu_msg);
-    
-    ros::spinOnce();
 
+    }
+
+    ros::spinOnce();
     loop_rate.sleep();
   }
 
