@@ -227,6 +227,8 @@ int main(int argc, char **argv)
     imu_plate.loop();
     imu_pendu.loop();
 
+    times++;
+
     if (times % 5 == 0) {
 
     //kalman1.compute(imu_plate.roll);
