@@ -160,8 +160,8 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
-        self.vel_settings = {'kp' : 0,         'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0}
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
+        self.vel_settings = {'kp' : 0,         'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
         self.pos_settings['kp0rps'] = float(rospy.get_param('~kp0rps_pos',  '0'))      
         self.pos_settings['kp1rps'] = float(rospy.get_param('~kp1rps_pos',  '0'))      
