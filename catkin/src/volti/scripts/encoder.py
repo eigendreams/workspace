@@ -25,6 +25,7 @@ class Encoder:
         self.angle  = 0
         self.laps   = 0
         self.output_angle = 0
+        self.corrected_change = 0
         #
     def compute(self, measure):
         #
