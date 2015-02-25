@@ -73,7 +73,7 @@ class Encoder:
             if (self.internal_angle_last <= self.internal_angle): # ej saltar de 100 a 900 -> 900 - 100 -> change de 800
                 self.laps = self.laps - 1
         #
-        self.output_angle_last          = self,output_angle
+        self.output_angle_last          = self.output_angle
         self.output_angle               = 2 * pi * self.laps + self.internal_angle - self.internal_offset
         #
         self.corrected_change = self.output_angle - self.output_angle_last
