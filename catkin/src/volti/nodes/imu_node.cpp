@@ -204,7 +204,7 @@ int main(int argc, char **argv)
   ros::Publisher imu2_pub = n.advertise<volti::float32_3>("imu_plate_3", 1);
 
   //publicar cada 20 ms
-  ros::Rate loop_rate(50);
+  ros::Rate loop_rate(20);
 
   // modulos de salida en el BBB
   IMU imu_plate(1);
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 
     times++;
 
-    if (times % 5 == 0) {
+    if (times % 2 == 0) {
 
     //kalman1.compute(imu_plate.roll);
     //kalman2.compute(imu_plate.pitch);

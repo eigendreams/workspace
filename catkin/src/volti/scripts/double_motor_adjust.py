@@ -230,7 +230,7 @@ class Double_motor:
         #
         self.angle_m1 = self.X_m1[0, 0]
         self.speed_m1 = self.X_m1[1, 0]
-        self.accel_m1 = self.X_m1[2, 0]
+        #self.accel_m1 = self.X_m1[2, 0]
         #
         #self.e1ang.publish(self.angle_m1)
         #self.e1vel.publish(self.speed_m1)
@@ -243,7 +243,7 @@ class Double_motor:
         #
         self.angle_m2 = self.X_m2[0, 0]
         self.speed_m2 = self.X_m2[1, 0]
-        self.accel_m2 = self.X_m2[2, 0]
+        #self.accel_m2 = self.X_m2[2, 0]
         #
         #self.e2ang.publish(self.angle_m2)
         #self.e2vel.publish(self.speed_m2)
@@ -328,6 +328,7 @@ class Double_motor:
         #
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
         # aplica un constrain de salida al motor
+        #
         #
         #
         self.rollPenduPub.publish(self.rollPendu)
