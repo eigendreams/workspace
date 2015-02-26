@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>volti</name>
+  <name>volti_msgs</name>
   <version>0.0.1</version>
   <description>The volti package provides some basic tools for the volti robot</description>
   <maintainer email="jakob.culebro@gmail.com">jakob</maintainer>
@@ -12,7 +12,6 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>joy</build_depend>
-  <build_depend>volti_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>roscpp</run_depend>

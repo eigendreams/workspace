@@ -12,6 +12,7 @@ find_package(
 		joy 
 		message_generation 
 		dynamic_reconfigure
+		volti_msgs
 )
 
 set(ROS_BUILD_TYPE Release)
@@ -39,6 +40,7 @@ catkin_package(
     	message_runtime
     	roscpp 
     	std_msgs
+	volti_msgs
 )
 
 include_directories(

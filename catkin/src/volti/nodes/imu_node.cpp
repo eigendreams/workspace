@@ -8,7 +8,7 @@
 #include "imu_lib.h"
 #include <cmath>
 
-#include "volti/float32_3.h"
+#include "volti_msgs/float32_3.h"
 
 using namespace std;
 
@@ -200,8 +200,8 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "imu_node");
   ros::NodeHandle n;
 
-  ros::Publisher imu1_pub = n.advertise<volti::float32_3>("imu_pendu_3", 1);
-  ros::Publisher imu2_pub = n.advertise<volti::float32_3>("imu_plate_3", 1);
+  ros::Publisher imu1_pub = n.advertise<volti_msgs::float32_3>("imu_pendu_3", 1);
+  ros::Publisher imu2_pub = n.advertise<volti_msgs::float32_3>("imu_plate_3", 1);
 
   //publicar cada 20 ms
   ros::Rate loop_rate(20);
