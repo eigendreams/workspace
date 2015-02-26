@@ -305,6 +305,7 @@ class Double_motor:
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
         #
         #
+        #
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
         if (self.ang_lat_diff > 0.4):
