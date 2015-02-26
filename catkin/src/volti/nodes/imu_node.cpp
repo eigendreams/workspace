@@ -210,8 +210,8 @@ int main(int argc, char **argv)
   IMU imu_plate(1);
   IMU imu_pendu(2);
 
-  volti::float32_3 imu_plate_msg;
-  volti::float32_3 imu_pendu_msg;
+  volti_msgs::float32_3 imu_plate_msg;
+  volti_msgs::float32_3 imu_pendu_msg;
 
   Kalman1D kalman1;
   Kalman1D kalman2;
