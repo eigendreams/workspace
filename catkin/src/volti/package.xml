@@ -20,4 +20,5 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>joy</run_depend>
+  <run_depend>volti_msgs</run_depend>
 </package>
