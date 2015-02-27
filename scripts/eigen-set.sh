@@ -17,3 +17,4 @@ sed -i "$LINEN"s@.*@"$LINE3"@ /etc/network/interfaces
 LINEN=$(($LINEN + 1))
 sed -i "$LINEN"s@.*@"$LINE4"@ /etc/network/interfaces
 
+service network-interface restart INTERFACE=wlan0
