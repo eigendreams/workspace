@@ -86,3 +86,8 @@ chmod 777 -R *
 apt-get update
 apt-get dist-upgrade
 apt-get -y install gcc build-essential linux-headers-generic linux-headers-`uname -r`
+
+/home/ubuntu/workspace/scripts/ap_setup.sh
+
+wget http://node-arm.herokuapp.com/node_latest_armhf.deb
+sudo dpkg -i node_latest_armhf.deb
