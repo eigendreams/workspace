@@ -20,7 +20,7 @@ find_package(
 #set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 generate_dynamic_reconfigure_options(
-    cfg/PIDvel.cfg
+    cfg/PID.cfg
 )
 
 add_message_files( FILES float32_12.msg float32_3.msg )
