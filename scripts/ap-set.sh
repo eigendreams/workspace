@@ -6,7 +6,7 @@ TLINEN=$( grep -n "#set-area" /etc/network/interfaces | cut -c1-2)
 TLINE1="iface wlan0 inet static"
 TLINE2="    address 192.168.10.1"
 TLINE3="    netmask 255.255.255.0"
-TLINE4="pre-up iptables-restore < /etc/iptables.ipv4.nat"
+TLINE4="#pre-up iptables-restore < /etc/iptables.ipv4.nat"
 
 TLINEN=$(($TLINEN + 1))
 sed -i "$TLINEN"s@.*@"$TLINE1"@ /etc/network/interfaces
