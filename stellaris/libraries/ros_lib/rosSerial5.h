@@ -48,10 +48,6 @@ namespace ros
 
   typedef NodeHandle_<ArduinoHardware, 8, 8, 100, 100> NodeHandle;
 
-#elif defined(__AVR_ATmega32U4__)
-
-  typedef NodeHandle_<ArduinoHardware, 25, 25, 280, 280> NodeHandle;
-
 #else
 
   typedef NodeHandle_<ArduinoHardware> NodeHandle;

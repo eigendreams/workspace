@@ -58,3 +58,6 @@ apt-get -y install gcc build-essential linux-headers-generic linux-headers-`unam
 
 wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 sudo dpkg -i node_latest_armhf.deb
+
+sudo usermod -a -G tty ubuntu
+sudo usermod -a -G dialout ubuntu
