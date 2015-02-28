@@ -15,19 +15,15 @@ find_package(
 		volti_msgs
 )
 
-set(ROS_BUILD_TYPE Release)
+#set(ROS_BUILD_TYPE Release)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+#set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-generate_dynamic_reconfigure_options(
-    cfg/PIDvel.cfg
-)
+#generate_dynamic_reconfigure_options(
+#    cfg/PIDvel.cfg
+#)
 
-add_message_files(
-	FILES
-	float32_12.msg
-	float32_3.msg
-)
+add_message_files( FILES float32_12.msg float32_3.msg )
 
 generate_messages(
 	DEPENDENCIES
