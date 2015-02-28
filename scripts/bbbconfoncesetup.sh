@@ -5,6 +5,8 @@ cd /home/ubuntu
 echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/tail
 
 echo "#" >> .bashrc
+echo "#" >> .bashrc
+echo "#" >> .bashrc
 echo "source /opt/ros/indigo/setup.bash" >> .bashrc
 echo "source ~/workspace/catkin/devel/setup.bash" >> .bashrc
 echo "export ROS_WORKSPACE=$ROS_WORKSPACE:~/workspace/catkin" >> .bashrc
@@ -14,6 +16,8 @@ echo "export ROS_MASTER_URI=http://arm:11311" >> .bashrc
 echo "export EDITOR='nano -w'" >> .bashrc
 echo "export ROSLAUNCH_SSH_UNKNOWN=1" >> .bashrc
 
+echo "#" >> /etc/network/interfaces
+echo "#" >> /etc/network/interfaces
 echo "#" >> /etc/network/interfaces
 echo "# WiFi Example" >> /etc/network/interfaces
 echo "auto wlan0" >> /etc/network/interfaces
