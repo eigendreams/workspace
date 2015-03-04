@@ -309,9 +309,9 @@ class Double_motor:
         # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
         #
         if (self.ang_lat_diff > 0.4):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, -10, 0)
+            self.salida_control_angulo = constrain(self.salida_control_angulo, -13, 0)
         if (self.ang_lat_diff < -0.4):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 10)
+            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 13)
         #
         #
         #rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
@@ -340,8 +340,8 @@ class Double_motor:
         #
         #
         #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -10, 10)
-        self.salida_control_vel    = constrain(self.salida_control_vel, -10, 10)
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -13, 13)
+        self.salida_control_vel    = constrain(self.salida_control_vel, -13, 13)
         #
         self.out_pos_m1 = self.salida_control_angulo + self.salida_control_vel
         self.out_pos_m2 = -self.salida_control_angulo + self.salida_control_vel
