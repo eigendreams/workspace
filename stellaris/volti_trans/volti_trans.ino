@@ -15,6 +15,8 @@ unsigned long milisLastMsg = 0;
 unsigned long millisTock = 0;
 bool timedOut = false;
 
+int keeper = 0;
+
 // vol1 vol2 mot1 mot2 motv
 //Servo servo_11;
 //Servo servo_12;
@@ -62,6 +64,7 @@ void alive_cb( const std_msgs::Int16& dmsg) {
     digitalWrite(GREEN_LED, HIGH);
     milisLastMsg = millis();
     timedOut = false;
+    keeper = 1;
   }
 } 
 ros::Subscriber<std_msgs::Int16> alive_sub("al", alive_cb);
@@ -79,15 +82,6 @@ ros::Publisher gear2_lec_pub("e2", &gear2_lec_msg);
 //ros::Publisher gearv_lec_pub("ev", &gearv_lec_msg);
 
 void setup() {
-  
-  //servo_11.attach(11);
-  //servo_12.attach(12);
-  servo_13.attach(13);
-  servo_14.attach(14);
-  //servo_15.attach(15);
-  
-  servo_13.writeMicroseconds( 1500 ); // m1
-  servo_14.writeMicroseconds( 1500 ); // m2
 
   timedOut = true;
 
@@ -145,6 +139,8 @@ void commloop() {
       //s15_out = 0;  // mv
 
       timedOut = true;
+      
+      keeper = 0;
     }
 
     gear1_lec = gear1.read();
