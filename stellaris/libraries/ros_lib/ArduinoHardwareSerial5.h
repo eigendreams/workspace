@@ -41,8 +41,8 @@
 class ArduinoHardware {
   public:
     ArduinoHardware(){
-      baud_ = 9600; //9600
-      //baud_ = 57600;
+      //baud_ = 57600 * 2;
+      baud_ = 9600;
     }
   
     void setBaud(long baud){
@@ -54,23 +54,23 @@ class ArduinoHardware {
     }
 
     void init(){
-      //Serial.begin(baud_);
       Serial5.begin(baud_);
+      //Serial5.begin(baud_);
     }
 
     int read(){
-      //if (Serial.available() > 0)
-      //  return Serial.read();
       if (Serial5.available() > 0)
         return Serial5.read();
+      //if (Serial5.available() > 0)
+      //  return Serial5.read();
       else
         return -1;
     }
 
     void write(uint8_t* data, int length){
       for(int i=0; i<length; i++)
-        //Serial.write(data[i]);
         Serial5.write(data[i]);
+        //Serial5.write(data[i]);
     }
 
     unsigned long time(){
