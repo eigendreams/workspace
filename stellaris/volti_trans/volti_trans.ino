@@ -15,7 +15,7 @@ unsigned long milisLastMsg = 0;
 unsigned long millisTock = 0;
 bool timedOut = false;
 
-int keeper = 0;
+unsigned long times = 0;
 
 // vol1 vol2 mot1 mot2 motv
 //Servo servo_11;
@@ -64,7 +64,7 @@ void alive_cb( const std_msgs::Int16& dmsg) {
     digitalWrite(GREEN_LED, HIGH);
     milisLastMsg = millis();
     timedOut = false;
-    keeper = 1;
+    times++;
   }
 } 
 ros::Subscriber<std_msgs::Int16> alive_sub("al", alive_cb);
@@ -124,10 +124,10 @@ void setup() {
 void commloop() {
 
   if (millisTock <= millis()) {
-
+    
     millisTock += 50;
 
-    if (millis() - milisLastMsg >= 3000) {
+    if (millis() - milisLastMsg > 2000) {
 
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
@@ -140,7 +140,7 @@ void commloop() {
 
       timedOut = true;
       
-      keeper = 0;
+      times == 0;
     }
 
     gear1_lec = gear1.read();
