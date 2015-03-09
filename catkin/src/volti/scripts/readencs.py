@@ -84,6 +84,6 @@ class Read_encoders:
 # LO PRIMERO en el archivo (salvo imports y declaraciones)    
 if __name__ == '__main__':
     """ main """
-    alive = Alive()
-    alive.spin()
+    readencs = Read_encoders()
+    readencs.spin()
     
