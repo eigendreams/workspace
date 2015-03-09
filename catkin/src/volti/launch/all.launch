@@ -7,13 +7,10 @@
         <param name="~baud" value="9600" />
   </node>
 
-
   <node pkg="volti" type="imu_node" name="imu_node" respawn="true">
   </node>
 
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
   </node>
-
-  <!--launch-prefix="sudo"-->
 
 </launch>
