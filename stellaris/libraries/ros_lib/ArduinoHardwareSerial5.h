@@ -42,7 +42,7 @@ class ArduinoHardware {
   public:
     ArduinoHardware(){
       //baud_ = 57600 * 2;
-      baud_ = 57600;
+      baud_ = 9600;
     }
   
     void setBaud(long baud){

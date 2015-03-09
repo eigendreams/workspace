@@ -25,7 +25,7 @@ Servo servo_14;
 //Servo servo_15;
 
 // CLK, DO, PROG
-AS5043Class AS5043obj(15, 25, 26);
+AS5043Class AS5043obj(23, 25, 26);
 // CSN
 EncoderClass gear1(&AS5043obj, 34, 485, 1004, -100);
 EncoderClass gear2(&AS5043obj, 33, 485, 1004, -100);
