@@ -3,7 +3,7 @@
 <launch>
 
   <node pkg="rosserial_python" type="serial_node.py" name="serial_node" respawn="true">
-        <param name="~port" value="/dev/ttyO5" />
+        <param name="~port" value="/dev/ttyO4" />
         <param name="~baud" value="57600" />
   </node>
 

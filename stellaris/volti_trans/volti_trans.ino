@@ -170,6 +170,7 @@ void commloop() {
         gear2_lec = -1; // raise error code
       }
     }
+    
     //gearv_lec = gearv.read();
 
     gear1_lec_msg.data = gear1_lec;
