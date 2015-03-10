@@ -29,6 +29,7 @@ class Read_encoders:
         self.do  = "P9_25"
         self.clk = "P9_23"
         #
+        #
         GPIO.cleanup()
         GPIO.setup(self.cs1, GPIO.OUT)
         GPIO.setup(self.cs2, GPIO.OUT)
