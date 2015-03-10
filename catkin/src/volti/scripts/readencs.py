@@ -44,8 +44,8 @@ class Read_encoders:
         self.e2val = 0
         #
         # Publicación de la batería como entero
-        self.e1Pub = rospy.Publisher('el', Int16)
-        self.e2Pub = rospy.Publisher('e2', Int16)
+        self.e1Pub = rospy.Publisher("el", Int16)
+        self.e2Pub = rospy.Publisher("e2", Int16)
         #
     def readSingle(self, pincsn):
         #
@@ -66,8 +66,8 @@ class Read_encoders:
         #
     def update(self):
 		#
-        self.e1val = self.readSingle(self.cs1)
-        self.e2val = self.readSingle(self.cs2)
+        #self.e1val = self.readSingle(self.cs1)
+        #self.e2val = self.readSingle(self.cs2)
         self.e1Pub.publish(self.e1val)
         self.e2Pub.publish(self.e2val)
         #
