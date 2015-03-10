@@ -36,8 +36,8 @@ class Read_encoders:
         GPIO.setup(self.clk, GPIO.OUT)
         # 
         #
-        self.closeComm(self.cs1)
-        self.closeComm(self.cs2)
+        self.closeComm(self, self.cs1)
+        self.closeComm(self, self.cs2)
         #
         self.e1val = 0
         self.e2val = 0
