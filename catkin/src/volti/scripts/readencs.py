@@ -34,6 +34,7 @@ class Read_encoders:
         GPIO.setup(self.cs2, GPIO.OUT)
         GPIO.setup(self.do,  GPIO.IN)
         GPIO.setup(self.clk, GPIO.OUT)
+        # 
         #
         self.closeComm()
         #
