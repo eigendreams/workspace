@@ -2,7 +2,7 @@
 
 <launch>
 
-  <node pkg="volti" type="preencs.sh" name="readencs" respawn="false" launch-prefix="sudo">
+  <node pkg="volti" type="preencs.sh" name="readencs" respawn="false" launch-prefix="sudo -E">
   </node>
 
 </launch>
