@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 
 import rospy
+import time
+usleep = lambda x: time.sleep(x/1000000.0)
 from std_msgs.msg import Int16
 import Adafruit_BBIO.GPIO as GPIO
 
@@ -57,7 +59,7 @@ class Read_encoders:
             self.chainData = (self.chainData << 1) | GPIO.input(self.do)
             GPIO.output(self.clk, GPIO.LOW)
         self.closeComm(pincsn)
-        return self.chainData
+        return (self.chainData >> 6)
         #
     def closeComm(self, pincsn):
         #

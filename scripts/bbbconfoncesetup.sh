@@ -39,3 +39,6 @@ echo "wpa-driver wext" >> /etc/network/interfaces
 echo "wpa-ssid finder-network" >> /etc/network/interfaces
 echo "wpa-psk a5b0c0e94a9975fc505a73a41f15b2409f30cbe1bafd6cdad9094dcbb3f886f6" >> 
 /etc/network/interfaces
+
+echo "optargs=quiet drm.debug=7 capemgr.enable_partno=BB-I2C1,BB-I2C0,BB-I2C2,BB-UART4,BB-UART5" >> /uEnv.txt
+echo "cape_disable=capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN" >> /uEnv.txt
