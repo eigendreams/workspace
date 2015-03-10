@@ -30,6 +30,7 @@ class Read_encoders:
         self.clk = "P9_23"
         #
         #
+        """
         GPIO.cleanup()
         GPIO.setup(self.cs1, GPIO.OUT)
         GPIO.setup(self.cs2, GPIO.OUT)
@@ -40,6 +41,7 @@ class Read_encoders:
         self.closeComm(self.cs1)
         self.closeComm(self.cs2)
         #
+        """
         self.e1val = 0
         self.e2val = 0
         #
@@ -47,6 +49,7 @@ class Read_encoders:
         self.e1Pub = rospy.Publisher("el", Int16)
         self.e2Pub = rospy.Publisher("e2", Int16)
         #
+    """
     def readSingle(self, pincsn):
         #
         self.chainData = 0
@@ -64,6 +67,7 @@ class Read_encoders:
         GPIO.output(pincsn,   GPIO.HIGH)
         GPIO.output(self.clk, GPIO.HIGH)
         #
+    """
     def update(self):
 		#
         #self.e1val = self.readSingle(self.cs1)
