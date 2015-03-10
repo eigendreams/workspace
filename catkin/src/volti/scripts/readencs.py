@@ -49,7 +49,6 @@ class Read_encoders:
         self.e1Pub = rospy.Publisher("el", Int16)
         self.e2Pub = rospy.Publisher("e2", Int16)
         #
-    """
     def readSingle(self, pincsn):
         #
         self.chainData = 0
@@ -67,11 +66,11 @@ class Read_encoders:
         GPIO.output(pincsn,   GPIO.HIGH)
         GPIO.output(self.clk, GPIO.HIGH)
         #
-    """
     def update(self):
 		#
         #self.e1val = self.readSingle(self.cs1)
         #self.e2val = self.readSingle(self.cs2)
+        rospy.loginfo("updating") 
         self.e1Pub.publish(self.e1val)
         self.e2Pub.publish(self.e2val)
         #
