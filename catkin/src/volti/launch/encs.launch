@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <node pkg="volti" type="readencs.py" name="readencs" respawn="true" launch-prefix="sudo">
+  </node>
+
+</launch>
