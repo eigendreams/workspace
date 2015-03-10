@@ -22,7 +22,7 @@ class Read_encoders:
         rospy.loginfo("Node starting with name %s", self.nodename) 
         # Quizá algún parámetro superior especifique una frecuencia de salida de datos,
         # por default, si no se encuentra, se usa una de 1 Hz 
-        self.rate = rospy.get_param("rate", 10)
+        self.rate = float(rospy.get_param("rate", 10))
         #
         self.cs1 = "P9_31"
         self.cs2 = "P9_29"
