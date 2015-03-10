@@ -1,3 +1,3 @@
 #! /bin/bash
 source /home/ubuntu/.bashrc
-rosrun volti readencs.py
+/home/ubuntu/workspace/catkin/src/volti/scripts/readencs.py
