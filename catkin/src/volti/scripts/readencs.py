@@ -35,7 +35,7 @@ class Read_encoders:
         GPIO.setup(self.do,  GPIO.IN)
         GPIO.setup(self.clk, GPIO.OUT)
         #
-        closeComm()
+        self.closeComm()
         #
         self.e1val = 0
         self.e2val = 0
@@ -53,7 +53,7 @@ class Read_encoders:
             GPIO.output(self.clk, GPIO.HIGH)
             self.chainData = (self.chainData << 1) | GPIO.input(self.do)
             GPIO.output(self.clk, GPIO.LOW)
-        closeComm(pincsn)
+        self.closeComm(pincsn)
         return self.chainData
         #
     def closeComm(self, pincsn):
