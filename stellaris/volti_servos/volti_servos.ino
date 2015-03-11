@@ -112,10 +112,10 @@ void commloop() {
     // read the servos data, in microseconds
     lec1 = Serial5.read();
     lec2 = Serial5.read();
-    uint16_t s1data = (lec1 << 8) | lec2;
+    int16_t s1data = (lec1 << 8) | lec2;
     lec1 = Serial5.read();
     lec2 = Serial5.read();
-    uint16_t s2data = (lec1 << 8) | lec2;
+    int16_t s2data = (lec1 << 8) | lec2;
     // verify the checksum
     lec1 = Serial5.read();
     lec2 = Serial5.read();
