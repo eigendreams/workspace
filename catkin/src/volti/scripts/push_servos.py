@@ -26,7 +26,7 @@ class Push_servos:
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = float(rospy.get_param("rate", 10))
         #
-        self.ser = serial.Serial('/dev/ttyO4', 921600)
+        self.ser = serial.Serial('/dev/ttyO4', 115200)
         #
         self.m1val = 0
         self.m2val = 0

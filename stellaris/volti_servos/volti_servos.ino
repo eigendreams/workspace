@@ -20,6 +20,7 @@ volatile int s14_out = 0;  // m2
 
 void setup() {
   
+  Serial.begin(9600);
   Serial5.begin(921600);
  
   servo_13.attach(13);
@@ -67,8 +68,15 @@ void alive() {
 
 int serialstatus = 0;
 uint16_t word1 = 0;
+int debug = 0;
 
 void commloop() {
+  
+  if (Serial.available()) {
+   if (Serial.read() == 'r') {
+    debug = 1;
+   } 
+  }
   
   // PROT FF AL HL HL CHKSUM = 10 bytes
   if (Serial5.available() >= 10){
@@ -106,11 +114,14 @@ void commloop() {
     uint16_t s1data = (Serial5.read() << 8) | Serial5.read();
     uint16_t s2data = (Serial5.read() << 8) | Serial5.read();
     // verify the checksum
-    uint16_t checksum = (Serial5.read() << 8) | Serial5.read();
-    uint16_t localchecksum = aldata + s1data + s2data;
+    uint16_t checksumH;
+    uint16_t checksumL;
+    //
+    uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) && 255;
+    uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) && 255;
     
     // TODO add more aldata rules
-    if (checksum == localchecksum) {
+    if ((checksumH == localchecksumH) && (checksumL == localchecksumL)) {
       if (aldata == 1) {
         s13_out = s1data;
         s14_out = s2data;
@@ -128,7 +139,7 @@ void loop() {
     
     millisTock += 50;
     
-    if (millis() - milisLastMsg > 2000) {
+    if (millis() - milisLastMsg > 1500) {
       // shut down all
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
