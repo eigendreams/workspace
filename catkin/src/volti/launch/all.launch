@@ -11,7 +11,4 @@
   <node pkg="volti" type="push_servos.py" name="push_servos" respawn="true">
   </node>
 
-  <node pkg="volti" type="control_iface.py" name="control_iface" respawn="true">
-  </node>
-
 </launch>
