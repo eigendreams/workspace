@@ -31,7 +31,7 @@ class Push_servos:
         self.m1val = 0
         self.m2val = 0
         self.alval = 0
-        self.datar = [255,255,0,0,0,0,0,0,0,0]
+        self.datar = [255,127,0,0,0,0,0,0,0,0]
         #
         self.inittime = rospy.get_time()
         self.timelastal = -1000

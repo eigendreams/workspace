@@ -20,7 +20,7 @@ volatile int s14_out = 0;  // m2
 
 void setup() {
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial5.begin(115200);
  
   servo_13.attach(13);
@@ -69,6 +69,8 @@ void alive() {
 int serialstatus = 0;
 uint16_t word1 = 0;
 int debug = 0;
+int lec1 = 0;
+int lec2 = 0;
 
 void commloop() {
   
@@ -84,12 +86,15 @@ void commloop() {
   // PROT FF AL HL HL CHKSUM = 10 bytes
   if (Serial5.available() >= 10){
     
+    lec1 = Serial5.read();
+    word1 = (word1 << 8) | lec1;
     if (word1 != 0xFFFF) {
       while(Serial5.available()) {
-        word1 = (word1 << 8) | Serial5.read();
+        lec1 = Serial5.read();
+        word1 = (word1 << 8) | lec1;
         if (word1 == 0xFFFF) {
           if (Serial5.available() < 8) {
-           delay(10);
+           delay(50);
           }
           break;
         }
@@ -101,46 +106,48 @@ void commloop() {
     }
     
     // read alive status
-    uint16_t aldata = (Serial5.read() << 8) | Serial5.read();
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t aldata = (lec1 << 8) | lec2;
     // read the servos data, in microseconds
-    uint16_t s1data = (Serial5.read() << 8) | Serial5.read();
-    uint16_t s2data = (Serial5.read() << 8) | Serial5.read();
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t s1data = (lec1 << 8) | lec2;
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t s2data = (lec1 << 8) | lec2;
     // verify the checksum
-    uint16_t checksumH;
-    uint16_t checksumL;
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t checksumH = lec1;
+    uint16_t checksumL = lec2;
     //
     uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) & 255;
     uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) & 255;
+    //
+    uint16_t checksum = (checksumH << 8) | checksumL;
+    uint16_t localchecksum = (localchecksumH << 8) | localchecksumL;
     
     if (debug) {
-     Serial.print(highByte(word1));
-     Serial.print(" "); 
-     Serial.print(lowByte(word1));
-     Serial.print(" "); 
-     Serial.print(highByte(aldata));
-     Serial.print(" "); 
-     Serial.print(lowByte(aldata));
-     Serial.print(" "); 
-     Serial.print(highByte(s1data));
-     Serial.print(" "); 
-     Serial.print(lowByte(s1data));
-     Serial.print(" "); 
-     Serial.print(highByte(s2data));
-     Serial.print(" "); 
-     Serial.print(lowByte(s2data));
-     Serial.print(" "); 
-     Serial.print(checksumH);
-     Serial.print(" "); 
-     Serial.print(checksumL);
-     Serial.print(" local: "); 
-     Serial.print(localchecksumH);
-     Serial.print(" "); 
-     Serial.print(localchecksumL);
+     Serial.print(" w "); 
+     Serial.print((word1));
+     Serial.print(" a "); 
+     Serial.print((aldata));
+     Serial.print(" s1 "); 
+     Serial.print((s1data));
+     Serial.print(" s2 "); 
+     Serial.print((s2data));
+     Serial.print(" c "); 
+     Serial.print(checksum);;
+     Serial.print(" l "); 
+     Serial.print(localchecksum);
+     Serial.print(" b "); 
+     Serial.print(Serial5.available());
      Serial.println(""); 
     }
     
     // TODO add more aldata rules
-    if ((checksumH == localchecksumH) && (checksumL == localchecksumL)) {
+    if (checksum == localchecksum) {
       if (aldata == 1) {
         s13_out = s1data;
         s14_out = s2data;
