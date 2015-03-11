@@ -89,8 +89,8 @@ class Servos:
 # LO PRIMERO en el archivo (salvo imports y declaraciones) 
 
 def onclose():
-    PWM.start("P9_22", 0, 50)
-    PWM.start("P9_21", 0, 50)
+    PWM.start("P9_22", 7.5, 50)
+    PWM.start("P9_21", 7.5, 50)
 
 if __name__ == '__main__':
     """ main """
