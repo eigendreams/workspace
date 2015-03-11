@@ -66,8 +66,10 @@ class Servos:
             self.alval = 0
         #
         if (self.alval != 0):
-            PWM.set_duty_cycle(self.m1pin, self.getpercent(self.m1val / 100.))
-            PWM.set_duty_cycle(self.m2pin, self.getpercent(self.m2val / 100.))
+            #PWM.set_duty_cycle(self.m1pin, self.getpercent(self.m1val / 100.))
+            #PWM.set_duty_cycle(self.m2pin, self.getpercent(self.m2val / 100.))
+            PWM.start(self.m1pin, self.getpercent(self.m1val / 100.), 50)
+            PWM.start(self.m2pin, self.getpercent(self.m2val / 100.), 50)
         #
     def spin(self):
         #
@@ -76,9 +78,6 @@ class Servos:
         # intente ejecutarse cada tantos ms, dados por el rate declarado en el constructor de la
         # clase. Ahorra recursos
         r = rospy.Rate(self.rate)
-        #
-        PWM.start(self.m1pin, 7.5, 50)
-        PWM.start(self.m2pin, 7.5, 50)
         #
         while not rospy.is_shutdown():
             self.update()
