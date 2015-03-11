@@ -87,11 +87,11 @@ void commloop() {
     
     lec1 = Serial5.read();
     word1 = (word1 << 8) | lec1;
-    if (word1 != 0xFF7F) {
+    if (word1 != 0x7530) {
       while(Serial5.available()) {
         lec1 = Serial5.read();
         word1 = (word1 << 8) | lec1;
-        if (word1 == 0xFF7F) {
+        if (word1 == 0x7530) {
           if (Serial5.available() < 8) {
            delay(10);
           }
