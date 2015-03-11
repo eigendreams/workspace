@@ -30,9 +30,6 @@ class Servos:
         self.m1pin = "P9_22"
         self.m2pin = "P9_21"
         #
-        PWM.start(self.m1pin, 7.5, 50)
-        PWM.start(self.m2pin, 7.5, 50)
-        #
         self.m1val = 0
         self.m2val = 0
         self.alval = 0
@@ -79,6 +76,10 @@ class Servos:
         # intente ejecutarse cada tantos ms, dados por el rate declarado en el constructor de la
         # clase. Ahorra recursos
         r = rospy.Rate(self.rate)
+        #
+        PWM.start(self.m1pin, 7.5, 50)
+        PWM.start(self.m2pin, 7.5, 50)
+        #
         while not rospy.is_shutdown():
             self.update()
             r.sleep()
