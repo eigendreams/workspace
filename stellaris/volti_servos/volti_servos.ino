@@ -21,7 +21,7 @@ volatile int s14_out = 0;  // m2
 void setup() {
   
   Serial.begin(9600);
-  Serial5.begin(57600);
+  Serial5.begin(115200);
  
   servo_13.attach(13);
   servo_14.attach(14);
@@ -84,31 +84,20 @@ void commloop() {
   // PROT FF AL HL HL CHKSUM = 10 bytes
   if (Serial5.available() >= 10){
     
-    if (serialstatus == 0) {
-        
-      word1 = (Serial5.read() << 8) | Serial5.read();
-    }
-    
-    // discard data till match
     if (word1 != 0xFFFF) {
-      
-      while(true){
-        
-        if (Serial5.available() < 1) {
-          serialstatus = 1;
-          break;
-        }
-        
+      while(Serial5.available()) {
         word1 = (word1 << 8) | Serial5.read();
-        
         if (word1 == 0xFFFF) {
-          serialstatus = 2;
+          if (Serial5.available() < 8) {
+           delay(10);
+          }
           break;
         }
       }
-      delay(1); // wait for full stream
-    } else {
-      serialstatus = 0;
+    }
+    
+    if (Serial5.available() < 8) {
+      return; 
     }
     
     // read alive status
@@ -136,7 +125,7 @@ void commloop() {
      Serial.print(" "); 
      Serial.print(lowByte(s1data));
      Serial.print(" "); 
-     Serial.print(lowByte(s2data));
+     Serial.print(highByte(s2data));
      Serial.print(" "); 
      Serial.print(lowByte(s2data));
      Serial.print(" "); 
@@ -158,7 +147,7 @@ void commloop() {
         alive();
       }
     }
-  } 
+  }
 }
 
 void loop() {
