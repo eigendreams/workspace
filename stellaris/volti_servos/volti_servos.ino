@@ -85,6 +85,7 @@ void commloop() {
   // PROT FF AL HL HL CHKSUM = 10 bytes
   if (Serial5.available() >= 10){
     
+    // 0x7530 = 30000
     lec1 = Serial5.read();
     word1 = (word1 << 8) | lec1;
     if (word1 != 0x7530) {

@@ -2,15 +2,16 @@
 
 <launch>
 
-  <node pkg="rosserial_python" type="serial_node.py" name="serial_node" respawn="true">
-        <param name="~port" value="/dev/ttyO4" />
-        <param name="~baud" value="9600" />
-  </node>
-
   <node pkg="volti" type="imu_node" name="imu_node" respawn="true">
   </node>
 
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
+  </node>
+
+  <node pkg="volti" type="push_servos.py" name="push_servos" respawn="true">
+  </node>
+
+  <node pkg="volti" type="control_iface.py" name="control_iface" respawn="true">
   </node>
 
 </launch>
