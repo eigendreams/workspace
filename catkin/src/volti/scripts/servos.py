@@ -7,6 +7,7 @@ usleep = lambda x: time.sleep(x/1000000.0)
 from std_msgs.msg import Int16
 import Adafruit_BBIO.PWM as PWM
 from ino_mod import *
+import atexit
 
 class Servos:
     #
@@ -85,9 +86,15 @@ class Servos:
         #
 # Invocación del constructor. Básicamente, si este archivo fuera a ejecutarse como "top level", el
 # intérprete le asignaría el "nombre" (protegido) __main__ y ejecutaría las siguientes lineas como
-# LO PRIMERO en el archivo (salvo imports y declaraciones)    
+# LO PRIMERO en el archivo (salvo imports y declaraciones) 
+
+def onclose():
+    PWM.start(self.m1pin, 0, 50)
+    PWM.start(self.m2pin, 0, 50)
+
 if __name__ == '__main__':
     """ main """
+    atexit.register(onclose())
     servos = Servos()
     servos.spin()
     
