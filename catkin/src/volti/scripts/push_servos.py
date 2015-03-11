@@ -4,6 +4,7 @@
 import rospy
 import time
 import serial
+from ino_mod import *
 from std_msgs.msg import Int16
 
 class Push_servos:
@@ -32,6 +33,9 @@ class Push_servos:
         self.alval = 0
         self.datar = [255,255,0,0,0,0,0,0,0,0]
         #
+        self.inittime = rospy.get_time()
+        self.timelastal = -1000
+        #
         self.m1sub = rospy.Subscriber("m1", Int16, self.m1cb)
         self.m2sub = rospy.Subscriber("m2", Int16, self.m2cb)
         self.alsub = rospy.Subscriber("al", Int16, self.alcb)
@@ -46,10 +50,14 @@ class Push_servos:
         #
     def alcb(self, data):
         #
+        self.timelastal = millis(self.inittime)
         self.alval = data.data
         #
     def update(self):
 		#
+        if ((millis(self.inittime) - self.timelastal) > 1500):
+            self.alval = 0
+        #
         self.datar[2]  = (self.alval >> 8) & 255
         self.datar[3]  = (self.alval >> 0) & 255
         self.datar[4]  = (self.m1val >> 8) & 255
