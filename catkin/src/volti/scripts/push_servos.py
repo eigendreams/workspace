@@ -46,7 +46,7 @@ class Push_servos:
         #
     def alcb(self, data):
         #
-        self.alval = 0
+        self.alval = data.data
         #
     def update(self):
 		#
@@ -58,6 +58,8 @@ class Push_servos:
         self.datar[7]  = (self.m2val >> 0) & 255
         self.datar[8]  = ((self.alval + self.m1val + self.m2val) >> 8) & 255
         self.datar[9]  = ((self.alval + self.m1val + self.m2val) >> 0) & 255
+        #
+        rospy.loginfo(str(self.datar)) 
         #
         self.ser.write(self.datar)
         #
