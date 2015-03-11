@@ -32,9 +32,9 @@ class Push_servos:
         self.alval = 0
         self.datar = [255,255,0,0,0,0,0,0,0,0]
         #
-        self.m1sub = rospy.Subscriber("m1", Int16, m1cb)
-        self.m2sub = rospy.Subscriber("m2", Int16, m2cb)
-        self.alsub = rospy.Subscriber("al", Int16, alcb)
+        self.m1sub = rospy.Subscriber("m1", Int16, self.m1cb)
+        self.m2sub = rospy.Subscriber("m2", Int16, self.m2cb)
+        self.alsub = rospy.Subscriber("al", Int16, self.alcb)
         #
     def m1cb(self,data):
         #
