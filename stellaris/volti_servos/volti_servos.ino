@@ -21,7 +21,7 @@ volatile int s14_out = 0;  // m2
 void setup() {
   
   Serial.begin(9600);
-  Serial5.begin(921600);
+  Serial5.begin(57600);
  
   servo_13.attach(13);
   servo_14.attach(14);
@@ -76,6 +76,9 @@ void commloop() {
    if (Serial.read() == 'r') {
     debug = 1;
    } 
+   else {
+    debug = 0; 
+   }
   }
   
   // PROT FF AL HL HL CHKSUM = 10 bytes
@@ -117,8 +120,35 @@ void commloop() {
     uint16_t checksumH;
     uint16_t checksumL;
     //
-    uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) && 255;
-    uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) && 255;
+    uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) & 255;
+    uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) & 255;
+    
+    if (debug) {
+     Serial.print(highByte(word1));
+     Serial.print(" "); 
+     Serial.print(lowByte(word1));
+     Serial.print(" "); 
+     Serial.print(highByte(aldata));
+     Serial.print(" "); 
+     Serial.print(lowByte(aldata));
+     Serial.print(" "); 
+     Serial.print(highByte(s1data));
+     Serial.print(" "); 
+     Serial.print(lowByte(s1data));
+     Serial.print(" "); 
+     Serial.print(lowByte(s2data));
+     Serial.print(" "); 
+     Serial.print(lowByte(s2data));
+     Serial.print(" "); 
+     Serial.print(checksumH);
+     Serial.print(" "); 
+     Serial.print(checksumL);
+     Serial.print(" local: "); 
+     Serial.print(localchecksumH);
+     Serial.print(" "); 
+     Serial.print(localchecksumL);
+     Serial.println(""); 
+    }
     
     // TODO add more aldata rules
     if ((checksumH == localchecksumH) && (checksumL == localchecksumL)) {
