@@ -66,7 +66,6 @@ void alive() {
     timescont++;
 } 
 
-int serialstatus = 0;
 uint16_t word1 = 0;
 int debug = 0;
 int lec1 = 0;
