@@ -30,7 +30,7 @@ from volti.msg import float32_12
 #
 class Double_motor:
     #
-    def __init__(self, node_name_default = 'double_motor_test_node'):
+    def __init__(self, node_name_default = 'double_motor_adjust'):
         #
         self.GRLinit(node_name_default)
         self.SRVinit()
@@ -59,7 +59,7 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.profile_settings = {'max_output' : 10, 'max_speed' : 10, 'rate' : self.rate, 'heal_time_at_0pc' : 10, 'stable_point_pc' : 10}
+        self.profile_settings = {'max_output' : 13, 'max_speed' : 13, 'rate' : self.rate, 'heal_time_at_0pc' : 13, 'stable_point_pc' : 13}
         #
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
@@ -103,19 +103,20 @@ class Double_motor:
         #
         #self.vdes = rospy.Subscriber("vdes", Float32, self.vdescb)  # velocidad deseada adelante atras
         #
-        self.veldeldessub = rospy.Subscriber("vel_delante_des", Float32, self.veldeldescb)
-        self.anglatdessub = rospy.Subscriber("ang_lateral_des", Float32, self.anglatdescb)
         #
         self.srv = Server(PIDConfig, self.SRVcallback)
         #
+        #self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
+        #self.rollPlatePub = rospy.Publisher( "rplate", Float32)
+        #self.anglatdifPub = rospy.Publisher( "angdif", Float32)
+        #self.minierrorPub = rospy.Publisher( "minerr", Float32)
+        #self.veladesumPub = rospy.Publisher( "velade", Float32)
+        #
+        self.veldeldessub = rospy.Subscriber("vel_delante_des", Float32, self.veldeldescb)
+        self.anglatdessub = rospy.Subscriber("ang_lateral_des", Float32, self.anglatdescb)
+        #
         self.subImuPlate = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
         self.subImuPendu = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
-        #
-        self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
-        self.rollPlatePub = rospy.Publisher( "rplate", Float32)
-        self.anglatdifPub = rospy.Publisher( "angdif", Float32)
-        self.minierrorPub = rospy.Publisher( "minerr", Float32)
-        self.veladesumPub = rospy.Publisher( "velade", Float32)
         #
     def veldeldescb(self, data):
         #
@@ -123,9 +124,7 @@ class Double_motor:
         #
     def anglatdescb(self, data):
         #
-        self.tmp_minimal_error = data.data - self.rollPendu
-        if (abs(self.tmp_minimal_error) > 0.05):
-            self.minimal_error = self.tmp_minimal_error
+        self.minimal_error = 1
         #
         self.ang_lat_des = data.data
         #
@@ -157,7 +156,7 @@ class Double_motor:
         self.nodename = rospy.get_name()
         rospy.loginfo("Started node %s", self.nodename)
         #
-        self.rate = float(rospy.get_param("param_global_rate", '10'))
+        self.rate = float(rospy.get_param("rate", '10'))
         self.times = 0
         #
     def SRVinit(self):
@@ -211,11 +210,11 @@ class Double_motor:
         self.vel_settings['ki_dec'] = float(config['ki_dec_vel'])
         self.vel_settings['range']  = float(config['range_vel'])
         #
-        self.pid_pos_m1.resetting(self.pos_settings)
-        self.pid_vel_m1.resetting(self.vel_settings)
+        #self.pid_pos_m1.resetting(self.pos_settings)
+        #self.pid_vel_m1.resetting(self.vel_settings)
         #
-        self.pid_pos_m2.resetting(self.pos_settings)
-        self.pid_vel_m2.resetting(self.vel_settings)
+        #self.pid_pos_m2.resetting(self.pos_settings)
+        #self.pid_vel_m2.resetting(self.vel_settings)
         #
         self.pid_pos_ang.resetting(self.pos_settings)
         self.pid_vel_vel.resetting(self.vel_settings)
@@ -332,11 +331,11 @@ class Double_motor:
         #
         #
         #
-        self.rollPenduPub.publish(self.rollPendu)
-        self.rollPlatePub.publish(self.rollPlate)
-        self.anglatdifPub.publish(self.ang_lat_diff)
-        self.minierrorPub.publish(self.minimal_error)
-        self.veladesumPub.publish(self.velocidad_adelante) 
+        #self.rollPenduPub.publish(self.rollPendu)
+        #self.rollPlatePub.publish(self.rollPlate)
+        #self.anglatdifPub.publish(self.ang_lat_diff)
+        #self.minierrorPub.publish(self.minimal_error)
+        #self.veladesumPub.publish(self.velocidad_adelante) 
         #
         #
         #
@@ -344,8 +343,8 @@ class Double_motor:
         self.salida_control_vel    = constrain(self.salida_control_vel, -13, 13)
         #
         #
-        self.out_pos_m1 = -self.salida_control_angulo + self.salida_control_vel
-        self.out_pos_m2 = self.salida_control_angulo + self.salida_control_vel
+        self.out_pos_m1 = self.profile_m1(-self.salida_control_angulo + self.salida_control_vel)
+        self.out_pos_m2 = self.profile_m2( self.salida_control_angulo + self.salida_control_vel)
         #
         self.m1.publish(int((self.out_pos_m1) * 100))
         self.m2.publish(int((self.out_pos_m2) * 100))
