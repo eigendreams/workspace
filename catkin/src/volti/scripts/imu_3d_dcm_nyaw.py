@@ -74,9 +74,18 @@ R_pitch_180 = array([[cos(3.1416), 0, sin(3.1416)],[0, 1, 0],[-sin(3.1416), 0, c
 
 rospy.init_node("imu_3d_dcm_nyaw_node")
 
+def angleRange(data):
+    #
+    if (data > 3.1416):
+        return data - 3.1416
+    if (data < -3.1416):
+        return data + 3.1416
+    return data
+    #
+
 def processIMU1_message(rawMsg):
 
-    roll = rawMsg.data[0] - 3.1416
+    roll = angleRange(rawMsg.data[0])
     pitch = rawMsg.data[1]
     yaw = rawMsg.data[2] * 0
 

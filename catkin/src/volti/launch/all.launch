@@ -1,9 +1,20 @@
 <?xml version="1.0"?>
 
 <launch>
+	
 
-  <node pkg="volti" type="imu_node" name="imu_node" respawn="true">
+  <node pkg="volti" type="imu_node" name="imu_plate" respawn="true">
+  	<remap from="rate"  to="20"/>
+  	<remap from="topic" to="imu_plate_3"/>
+  	<remap from="i2c"   to="1"/>
   </node>
+
+  <node pkg="volti" type="imu_node" name="imu_pendu" respawn="true">
+  	<remap from="rate"  to="20"/>
+  	<remap from="topic" to="imu_pendu_3"/>
+  	<remap from="i2c"   to="2"/>
+  </node>
+
 
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
   </node>
@@ -12,6 +23,9 @@
   </node>
 
   <node pkg="volti" type="readencs.py" name="readencs" respawn="true">
+  </node>
+
+  <node pkg="volti" type="control_iface.py" name="control_iface" respawn="true">
   </node>
 
 </launch>

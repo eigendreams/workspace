@@ -55,7 +55,7 @@ class Push_servos:
         #
     def update(self):
 		#
-        if ((millis(self.inittime) - self.timelastal) > 1500):
+        if ((millis(self.inittime) - self.timelastal) > 1000):
             self.alval = 0
         #
         self.datar[2]  = (self.alval >> 8) & 255

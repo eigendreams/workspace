@@ -95,12 +95,12 @@ void commloop() {
     byte1 = Serial5.read();
     byte2 = Serial5.read();
     uint16_t checksum = (byte1 << 8) | byte2;
+
     // calculate the checksum
-    uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) & 255;
-    uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) & 255;
-    uint16_t localchecksum = (localchecksumH << 8) | localchecksumL;
+    uint16_t localchecksum = ((long)aldata + (long)s1data + (long)s2data);
     
     if (debug == 1) {
+      // Consumes up to 536 bits or 4.652 ms at 115200 bauds
      Serial.print(" id "); 
      Serial.print(start);
      Serial.print(" al "); 

@@ -18,14 +18,13 @@ class Alive:
         # loginfo sirve como medio de DEBUGGING, y para guardar un registro de la
         # ejecución del programa. Por ejemplo, algón overnodo podría hacer uso del log
         # para arreglar errores
-        rospy.loginfo("alive starting with name %s", self.nodename) 
+        rospy.loginfo("Node starting with name %s", self.nodename) 
         # Quizá algún parámetro superior especifique una frecuencia de salida de datos,
         # por default, si no se encuentra, se usa una de 1 Hz 
         self.rate = rospy.get_param("alive_rate", 1)
-        #
+        # Por defecto usamos un valor de 1 Hz, tal vez en el futuro pueda cambiarse
         self.alive_val = 1
-        #
-        # Publicación de la batería como entero
+        # Todos los programas entienden al como el topic de alive
         self.alivePub = rospy.Publisher('al', Int16)
         #
         #
@@ -39,6 +38,7 @@ class Alive:
         # NO están restringidos por el resto del nodo más allá de la función de callback) e 
         # intente ejecutarse cada tantos ms, dados por el rate declarado en el constructor de la
         # clase. Ahorra recursos
+        #
         r = rospy.Rate(self.rate)
         while not rospy.is_shutdown():
             self.update()
