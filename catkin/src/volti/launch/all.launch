@@ -11,4 +11,7 @@
   <node pkg="volti" type="push_servos.py" name="push_servos" respawn="true">
   </node>
 
+  <node pkg="volti" type="readencs.py" name="readencs" respawn="true">
+  </node>
+
 </launch>

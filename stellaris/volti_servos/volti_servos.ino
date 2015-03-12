@@ -11,10 +11,6 @@ bool timedOut = false;
 Servo servo_13;
 Servo servo_14;
 
-AS5043Class AS5043obj(23, 25, 26);
-EncoderClass gear1(&AS5043obj, 34, 485, 1004, -100);
-EncoderClass gear2(&AS5043obj, 33, 485, 1004, -100);
-
 volatile int s13_out = 0;  // m1
 volatile int s14_out = 0;  // m2
 
@@ -34,22 +30,10 @@ void setup() {
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
 
-  pinMode(11, OUTPUT);
-  pinMode(12, OUTPUT);
   pinMode(13, OUTPUT);
   pinMode(14, OUTPUT);
-  pinMode(15, OUTPUT);
-
-  pinMode(15, OUTPUT);
-  pinMode(25, INPUT);
-  pinMode(26, OUTPUT);
-  pinMode(34, OUTPUT);
-  pinMode(33, OUTPUT);
-  pinMode(32, OUTPUT);
 
   delay(50);
-
-  AS5043obj.begin();
 
   millisTock = millis();
   
