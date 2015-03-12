@@ -370,6 +370,9 @@ class Double_motor:
         #self.m2.publish(self.limited_out_m2)
         #
         #
+        #
+        #
+        #
     def spin(self):
         #
         r = rospy.Rate(self.rate)
