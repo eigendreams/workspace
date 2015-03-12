@@ -70,7 +70,7 @@ class Read_encoders:
 		#
         self.e1val = self.readSingle(self.cs1)
         self.e2val = self.readSingle(self.cs2)
-        rospy.loginfo("updating") 
+        #rospy.loginfo("updating") 
         self.e1Pub.publish(self.e1val)
         self.e2Pub.publish(self.e2val)
         #
