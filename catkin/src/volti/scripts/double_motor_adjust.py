@@ -318,12 +318,11 @@ class Double_motor:
         # pida una nueva posicion de control del angulo
         #
         #
-        #self.actual_error = self.ang_lat_des - self.ang_lat_diff
-        #if (abs(self.actual_error) < abs(self.minimal_error)):
-        #    self.minimal_error = self.actual_error
+        self.actual_error = self.ang_lat_des - self.ang_lat_diff
+        if (abs(self.actual_error) < self.minimal_error):
+            self.minimal_error = abs(self.actual_error)
         #
-        #if (abs(self.minimal_error) < 0.05):
-        #    self.salida_control_angulo = self.pid_pos_ang.kisum
+        self.tmp_constrain = 13 - 6 * (1 - self.minimal_error)
         #
         #
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
@@ -339,7 +338,7 @@ class Double_motor:
         #
         #
         #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -13, 13)
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
         self.salida_control_vel    = constrain(self.salida_control_vel, -13, 13)
         #
         #
