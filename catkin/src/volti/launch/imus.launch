@@ -2,17 +2,9 @@
 
 <launch>
 
-  <node pkg="volti" type="imu_node" name="imu_plate" respawn="true">
-    <param name="rate" value="20" />
-    <param name="topic" value="imu_plate_3" />
-    <param name="i2c" value="1" />
-  </node>
+  <node pkg="volti" type="imu_plate" name="imu_plate" respawn="true">
 
-  <node pkg="volti" type="imu_node" name="imu_pendu" respawn="true">
-    <param name="rate" value="20" />
-    <param name="topic" value="imu_pendu_3" />
-    <param name="i2c" value="2" />
+  <node pkg="volti" type="imu_pendu" name="imu_pendu" respawn="true">
   </node>
-
 
 </launch>
