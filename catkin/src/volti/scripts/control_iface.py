@@ -32,7 +32,7 @@ class Control_interface:
         self.angle_des  = 0
         self.vel_des    = 0
         #
-        elf.inittime = rospy.get_time()
+        self.inittime = rospy.get_time()
         self.timelastjoy = -1000
         #
         self.timed_out = True
