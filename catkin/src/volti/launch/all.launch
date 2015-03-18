@@ -3,15 +3,19 @@
 <launch>
 
   <node pkg="volti" type="imu_node" name="imu_plate" respawn="true">
-  	<remap from="rate"  to="20"/>
-  	<remap from="topic" to="imu_plate_3"/>
-  	<remap from="i2c"   to="1"/>
+    <rosparam>
+        rate: 20
+        topic: imu_plate_3
+        i2c: 1
+  	</rosparam>
   </node>
 
   <node pkg="volti" type="imu_node" name="imu_pendu" respawn="true">
-  	<remap from="rate"  to="20"/>
-  	<remap from="topic" to="imu_pendu_3"/>
-  	<remap from="i2c"   to="2"/>
+    <rosparam>
+        rate: 20
+        topic: imu_pendu_3
+        i2c: 2
+    </rosparam>
   </node>
 
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
