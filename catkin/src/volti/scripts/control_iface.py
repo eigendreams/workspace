@@ -48,7 +48,7 @@ class Control_interface:
         # from -1 to +1, gives from -0.4 to 0.4
         self.angle_des   = map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -0.4, 0.4)
         # from -1 to +1, gives -4 to 4
-        self.vel_des     = data.axes[self.axes_names['right_stick_ver']] * 4
+        self.vel_des     = data.axes[self.axes_names['right_stick_ver']] * 1
         #
     def update(self):
         #
