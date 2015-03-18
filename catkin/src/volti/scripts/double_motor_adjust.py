@@ -342,8 +342,8 @@ class Double_motor:
         self.salida_control_vel    = constrain(self.salida_control_vel, -13, 13)
         #
         #
-        self.out_pos_m1 = self.profile_m1(-self.salida_control_angulo + self.salida_control_vel)
-        self.out_pos_m2 = self.profile_m2( self.salida_control_angulo + self.salida_control_vel)
+        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_control_vel)
+        self.out_pos_m2 = self.profile_m2.compute( self.salida_control_angulo + self.salida_control_vel)
         #
         self.m1.publish(int((self.out_pos_m1) * 100))
         self.m2.publish(int((self.out_pos_m2) * 100))
