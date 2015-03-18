@@ -69,3 +69,13 @@ add_executable(imu_node
 	nodes/imu_node.cpp
 )
 target_link_libraries(imu_node imu_lib ${catkin_LIBRARIES})
+
+add_executable(imu_plate
+	nodes/imu_plate.cpp
+)
+target_link_libraries(imu_plate imu_lib ${catkin_LIBRARIES})
+
+add_executable(imu_pendu
+	nodes/imu_pendu.cpp
+)
+target_link_libraries(imu_pendu imu_lib ${catkin_LIBRARIES})
