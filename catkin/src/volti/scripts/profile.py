@@ -112,7 +112,7 @@ class Profile:
         self.output_change = self.output_actual - self.last_output_actual
         #
         if (abs(self.output_change) > self.max_speed / self.rate):
-        	self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / rate, self.last_output_actual + self.max_speed / rate)      
+        	self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / rate)      
         #
         return self.output_actual
         #
