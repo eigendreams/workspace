@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
   string topic_name;
   int    i2c_num;
 
-  nh.param("~/rate", rate_num, int(20));
-  nh.param("~/topic", topic_name, string("imu_3"));
-  nh.param("~/i2c", i2c_num, int(1));
+  nh.param("~rate", rate_num, int(20));
+  nh.param("~topic", topic_name, string("imu_3"));
+  nh.param("~i2c", i2c_num, int(1));
 
   ros::Publisher imu_pub = nh.advertise<volti_msgs::float32_3>(topic_name.c_str(), 1);
   ros::Rate loop_rate(rate_num);
