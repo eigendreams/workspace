@@ -15,7 +15,7 @@ float pi= 3.1415926535897;
 
 int main(int argc, char **argv) {
 
-  ros::init(argc, argv, "imu_pendu_3");
+  ros::init(argc, argv, "imu_pendu");
   ros::NodeHandle nh;
 
   int    rate_num;
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
   nh.param("rate", rate_num, int(20));
   nh.param("topic", topic_name, string("imu_pendu_3"));
-  nh.param("i2c", i2c_num, int(2);
+  nh.param("i2c", i2c_num, int(2));
 
   ros::Publisher imu_pub = nh.advertise<volti_msgs::float32_3>(topic_name.c_str(), 1);
   ros::Rate loop_rate(rate_num);
