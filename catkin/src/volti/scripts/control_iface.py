@@ -35,14 +35,18 @@ class Control_interface:
         elf.inittime = rospy.get_time()
         self.timelastjoy = -1000
         #
+        self.timed_out = True
+        #
         self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)        
         #
     def joyCb(self, data):
 		#
         self.timelastjoy = millis(self.inittime)
         #
+        self.timed_out   + False
+        #
         # from -1 to +1, gives from -0.4 to 0.4
-        self.angle_des   = constrain(data.axes[self.axes_names['left_stick_hor']] / 2.5, -0.4, 0.4)
+        self.angle_des   = map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -0.4, 0.4)
         # from -1 to +1, gives -4 to 4
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']] * 4
         #
@@ -50,10 +54,14 @@ class Control_interface:
         #
         # we timed out! 2s to give room to wifi and processing delays, skip publishing, maybe control was disconnected?
         if ((millis(self.inittime) - self.timelastjoy) > 2000):
+            if not self.timed_out :
+                self.veldespub.publish(0)
+                self.angdespub.publish(0)
+            self.timed_out = True
             return
         #
         self.angdespub.publish(self.angle_des)
-        self.veldespub.publish(self.vel_des);
+        self.veldespub.publish(self.vel_des)
         #
     def spin(self):
 		#

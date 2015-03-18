@@ -2,9 +2,11 @@
 #include "AS5043.h"
 #include "Encoder.h"
 
+unsigned long milisLast = 0;
 unsigned long milisLastMsg = 0;
 unsigned long millisTock = 0;
-bool          timedOut = false;
+unsigned long timescont = 0;
+bool timedOut = false;
 
 Servo servo_13;
 Servo servo_14;
@@ -17,8 +19,8 @@ void setup() {
   Serial.begin(115200);
   Serial5.begin(115200);
  
-  servo_13.attach(13);  // m1
-  servo_14.attach(14);  // m2
+  servo_13.attach(13);
+  servo_14.attach(14);
   
   servo_13.writeMicroseconds( 1500 ); // m1
   servo_14.writeMicroseconds( 1500 ); // m2
@@ -34,86 +36,76 @@ void setup() {
   millisTock = millis();
 }
 
-uint16_t start = 0;
-int      debug = 0;
-int      byte1 = 0;
-int      byte2 = 0;
+uint16_t word1 = 0;
+int debug = 0;
+int lec1 = 0;
+int lec2 = 0;
 
 void commloop() {
   
   if (Serial.available()) {
-   if (Serial.read() == '1') {
-    debug = 1;
-   } 
-   else {
-    debug = 0; 
-   }
+    debug = Serial.read();
   }
   
-  // PROT FF AL HL HL CHKSUM = 10 bytes, 80 bits -> 694.4 us per string
-  // assuming 115200 bauds, faster may risk noise errors and such
+  // PROT FF AL HL HL CHKSUM = 10 bytes
   if (Serial5.available() >= 10){
     
     // 0x7530 = 30000
-    // 30000 es imposible como checksum
-    // los valores de los servos DEBEN estar entre -10000 y 10000
-    // Las siguientes lineas permiten consumir el buffer hasta hallar
-    // el punto de inicio correcto sin desperdiciar parte de la trama
-    // it's preaty neat, in my opinion
-    byte1 = Serial5.read();
-    start = (start << 8) | byte1;
-    if (start != 0x7530) {
+    lec1 = Serial5.read();
+    word1 = (word1 << 8) | lec1;
+    if (word1 != 0x7530) {
       while(Serial5.available()) {
-        byte1 = Serial5.read();
-        start = (start << 8) | byte1;
-        if (start == 0x7530) {
+        lec1 = Serial5.read();
+        word1 = (word1 << 8) | lec1;
+        if (word1 == 0x7530) {
           if (Serial5.available() < 8) {
-           delay(10); // wait for the next data string
+           delay(10); // espera por la trama de ocmunicaciones completa
+           if (Serial5.available() < 8) { // no se consiguio la trama
+             return;  // stop
+           }
           }
           break;
         }
       }
     }
     
-    if (Serial5.available() < 8) {
-      return; // maybe the communication broke? the program stopped? the system crashed?
-    }
-    
     // read alive status
-    byte1 = Serial5.read();
-    byte2 = Serial5.read();
-    uint16_t aldata = (byte1 << 8) | byte2;
-    // read the servos data, in microseconds, SIGNED
-    byte1 = Serial5.read();
-    byte2 = Serial5.read();
-    int16_t s1data = (byte1 << 8) | byte2;
-    // read the servos data, in microseconds, SIGNED
-    byte1 = Serial5.read();
-    byte2 = Serial5.read();
-    int16_t s2data = (byte1 << 8) | byte2;
-    // read the checksum
-    byte1 = Serial5.read();
-    byte2 = Serial5.read();
-    uint16_t checksum = (byte1 << 8) | byte2;
-
-    // calculate the checksum
-    uint16_t localchecksum = ((long)aldata + (long)s1data + (long)s2data);
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t aldata = (lec1 << 8) | lec2;
+    // read the servos data, in microseconds
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    int16_t s1data = (lec1 << 8) | lec2;
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    int16_t s2data = (lec1 << 8) | lec2;
+    // verify the checksum
+    lec1 = Serial5.read();
+    lec2 = Serial5.read();
+    uint16_t checksumH = lec1;
+    uint16_t checksumL = lec2;
+    //
+    uint16_t localchecksumH = (((long)aldata + (long)s1data + (long)s2data) >> 8) & 255;
+    uint16_t localchecksumL = (((long)aldata + (long)s1data + (long)s2data) >> 0) & 255;
+    //
+    uint16_t checksum = (checksumH << 8) | checksumL;
+    uint16_t localchecksum = (localchecksumH << 8) | localchecksumL;
     
-    if (debug == 1) {
-      // Consumes up to 536 bits or 4.652 ms at 115200 bauds
-     Serial.print(" id "); 
-     Serial.print(start);
-     Serial.print(" al "); 
-     Serial.print(aldata);
+    if (debug == '1') {
+     Serial.print(" w "); 
+     Serial.print((word1));
+     Serial.print(" a "); 
+     Serial.print((aldata));
      Serial.print(" s1 "); 
-     Serial.print(s1data);
+     Serial.print((s1data));
      Serial.print(" s2 "); 
-     Serial.print(s2data);
-     Serial.print(" ch "); 
+     Serial.print((s2data));
+     Serial.print(" c "); 
      Serial.print(checksum);;
-     Serial.print(" || sh "); 
+     Serial.print(" l "); 
      Serial.print(localchecksum);
-     Serial.print(" bf "); 
+     Serial.print(" b "); 
      Serial.print(Serial5.available());
      Serial.println(""); 
     }
@@ -123,12 +115,13 @@ void commloop() {
       if (aldata == 1) {
         s13_out = s1data;
         s14_out = s2data;
-        // show status in LEDs
+        // show status
         digitalWrite(RED_LED, LOW);
         digitalWrite(GREEN_LED, HIGH);
         // record msg time
         milisLastMsg = millis();
         timedOut = false;
+        timescont++;
       }
     }
   }
@@ -139,25 +132,20 @@ void loop() {
   commloop();
   
   if (millisTock <= millis()) {
-
-    millisTock += 40;
+    
+    millisTock += 50;
     
     if ((millis() - milisLastMsg) > 1000) {
-      // shut down everything
+      // shut down all
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
       s13_out = 0;  // m1
       s14_out = 0;  // m2
       timedOut = true;
+      timescont = 0;
     }
     
-    if (timedOut) {
-      servo_13.writeMicroseconds( 1500 ); // m1
-      servo_14.writeMicroseconds( 1500 ); // m2
-    }
-    else {
-      servo_13.writeMicroseconds( s13_out / 20 + 1500 ); // m1 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
-      servo_14.writeMicroseconds( s14_out / 20 + 1500 ); // m2 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
-    }
+    servo_13.writeMicroseconds( s13_out / 20 + 1500); // m1 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
+    servo_14.writeMicroseconds( s14_out / 20 + 1500); // m2 // 100 points would be a 1 percent, 5 of 500 us, min of 0.2 percent
   }
 }

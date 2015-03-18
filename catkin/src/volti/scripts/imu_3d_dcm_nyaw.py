@@ -76,9 +76,9 @@ rospy.init_node("imu_3d_dcm_nyaw_node")
 
 def angleRange(data):
     #
-    if (data > 3.1416):
+    if (data > 0):
         return data - 3.1416
-    if (data < -3.1416):
+    if (data < 0):
         return data + 3.1416
     return data
     #

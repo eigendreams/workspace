@@ -130,9 +130,9 @@ class Double_motor:
         #
     def angleRange(self, data):
         #
-        if (data > 3.1416):
+        if (data > 0):
             return data - 3.1416
-        if (data < -3.1416):
+        if (data < 0):
             return data + 3.1416
         return data
         #
@@ -144,9 +144,9 @@ class Double_motor:
     def imupenducb(self, data):
         #
         #self.rollPendu  = self.angleRange(data.data[0] + 3.1416)
-        if (data.data[0] < -2):
+        if (data.data[0] < 0):
             self.rollPendu = data.data[0] + 3.1416
-        if (data.data[0] > 2):
+        if (data.data[0] > 0):
             self.rollPendu = data.data[0] - 3.1416
         self.pitchPendu = data.data[1]
         #

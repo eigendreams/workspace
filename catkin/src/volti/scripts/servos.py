@@ -64,11 +64,9 @@ class Servos:
     def update(self):
         #
         if ((millis(self.inittime) - self.timelastal) > 1500):
-            self.alval = 0
-        #
-        if (self.alval != 0):
-            #PWM.set_duty_cycle(self.m1pin, self.getpercent(self.m1val / 100.))
-            #PWM.set_duty_cycle(self.m2pin, self.getpercent(self.m2val / 100.))
+            PWM.start(self.m1pin, self.getpercent(7.5, 50)
+            PWM.start(self.m2pin, self.getpercent(7.5, 50)
+        else:
             PWM.start(self.m1pin, self.getpercent(self.m1val / 100.), 50)
             PWM.start(self.m2pin, self.getpercent(self.m2val / 100.), 50)
         #

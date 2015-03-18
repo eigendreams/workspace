@@ -31,6 +31,7 @@ class Push_servos:
         self.m1val = 0
         self.m2val = 0
         self.alval = 0
+        # 0x7530 = 30000
         self.datar = [0x75,0x30,0,0,0,0,0,0,0,0]
         #
         self.inittime = rospy.get_time()
@@ -57,6 +58,8 @@ class Push_servos:
 		#
         if ((millis(self.inittime) - self.timelastal) > 1000):
             self.alval = 0
+            self.m1val = 0
+            self.m2val = 0
         #
         self.datar[2]  = (self.alval >> 8) & 255
         self.datar[3]  = (self.alval >> 0) & 255
