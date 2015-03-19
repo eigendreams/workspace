@@ -43,7 +43,7 @@ class Control_interface:
 		#
         self.timelastjoy = millis(self.inittime)
         #
-        self.timed_out   + False
+        self.timed_out   = False
         #
         # from -1 to +1, gives from -0.4 to 0.4
         self.angle_des   = map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -0.4, 0.4)
@@ -53,7 +53,7 @@ class Control_interface:
     def update(self):
         #
         # we timed out! 2s to give room to wifi and processing delays, skip publishing, maybe control was disconnected?
-        if ((millis(self.inittime) - self.timelastjoy) > 2000):
+        if ((millis(self.inittime) - self.timelastjoy) > 1000):
             if not self.timed_out :
                 self.veldespub.publish(0)
                 self.angdespub.publish(0)
