@@ -17,13 +17,11 @@ class Control_interface:
         rospy.init_node(node_name_override)
         self.nodename = rospy.get_name()
         rospy.loginfo("Node starting with name %s", self.nodename) 
-        self.rate = float(rospy.get_param("rate", 10))
+        self.rate = float(rospy.get_param("rate", 5))
         #
         # I'm using the names as defined in the ros wiki, seems fine to me
-        self.axes_names     = {'left_stick_hor':0, 'left_stick_ver':1, 'LT':2, 'right_stick_hor':3, 
-                            'right_stick_ver':4, 'RT':5, 'cross_hor':6, 'cross_ver':7}
-        self.buttons_names  = {'A':0, 'B':1, 'X':2, 'Y':3, 'LB':4, 'RB':5, 'back':6, 'start':7, 'power':8, 
-                            'btn_stick_left':9, 'btn_stick_right':10}
+        self.axes_names     = {'left_stick_hor':0, 'left_stick_ver':1, 'LT':2, 'right_stick_hor':3, 'right_stick_ver':4, 'RT':5, 'cross_hor':6, 'cross_ver':7}
+        self.buttons_names  = {'A':0, 'B':1, 'X':2, 'Y':3, 'LB':4, 'RB':5, 'back':6, 'start':7, 'power':8, 'btn_stick_left':9, 'btn_stick_right':10}
         #
         # I think, what happens if comm is lost? then this comm channels should stop
         self.veldespub  = rospy.Publisher("vel_delante_des", Float32)
@@ -53,7 +51,7 @@ class Control_interface:
     def update(self):
         #
         # we timed out! 2s to give room to wifi and processing delays, skip publishing, maybe control was disconnected?
-        if ((millis(self.inittime) - self.timelastjoy) > 1000):
+        if ((millis(self.inittime) - self.timelastjoy) > 2000):
             if not self.timed_out :
                 self.veldespub.publish(0)
                 self.angdespub.publish(0)
