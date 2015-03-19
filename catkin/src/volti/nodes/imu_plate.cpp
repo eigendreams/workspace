@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     times++;
 
     // publish every 100 ms, wait till end of first period
-    if ((times % (rate_num / 10)) == 0) {
+    if ((times % (rate_num / 10)) == 1) {
 
       imu_msg.data[0] = imu.roll;
       imu_msg.data[1] = imu.pitch;

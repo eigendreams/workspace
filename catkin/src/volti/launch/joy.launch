@@ -8,8 +8,8 @@
     <param name="deadzone" value="0.1" />
     <param name="autorepeat rate (Hz)" value="0" />
     <param name="coalesce interval (s)" value="0.1" />
-    <param name="recent joystick event rate (Hz)" value="5" />
-    <param name="recent publication rate (Hz)" value="5" />
+    <param name="recent joystick event rate (Hz)" value="1" />
+    <param name="recent publication rate (Hz)" value="1" />
   </node>
 
 </launch>
