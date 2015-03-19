@@ -12,4 +12,7 @@
     <param name="recent publication rate (Hz)" value="1" />
   </node>
 
+  <node pkg="volti" type="control_iface.py" name="control_iface" respawn="true">
+  </node>
+
 </launch>

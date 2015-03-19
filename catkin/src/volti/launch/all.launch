@@ -14,7 +14,4 @@
   <node pkg="volti" type="readencs.py" name="readencs" respawn="true">
   </node>
 
-  <node pkg="volti" type="control_iface.py" name="control_iface" respawn="true">
-  </node>
-
 </launch>
