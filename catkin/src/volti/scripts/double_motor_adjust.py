@@ -156,7 +156,7 @@ class Double_motor:
         self.nodename = rospy.get_name()
         rospy.loginfo("Started node %s", self.nodename)
         #
-        self.rate = float(rospy.get_param("rate", '10'))
+        self.rate = float(rospy.get_param("rate", 10))
         self.times = 0
         #
     def SRVinit(self):
