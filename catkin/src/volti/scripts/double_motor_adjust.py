@@ -106,8 +106,8 @@ class Double_motor:
         #
         self.srv = Server(PIDConfig, self.SRVcallback)
         #
-        #self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
-        #self.rollPlatePub = rospy.Publisher( "rplate", Float32)
+        self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
+        self.rollPlatePub = rospy.Publisher( "rplate", Float32)
         #self.anglatdifPub = rospy.Publisher( "angdif", Float32)
         #self.minierrorPub = rospy.Publisher( "minerr", Float32)
         #self.veladesumPub = rospy.Publisher( "velade", Float32)
@@ -330,8 +330,8 @@ class Double_motor:
         #
         #
         #
-        #self.rollPenduPub.publish(self.rollPendu)
-        #self.rollPlatePub.publish(self.rollPlate)
+        self.rollPenduPub.publish(self.rollPendu)
+        self.rollPlatePub.publish(self.rollPlate)
         #self.anglatdifPub.publish(self.ang_lat_diff)
         #self.minierrorPub.publish(self.minimal_error)
         #self.veladesumPub.publish(self.velocidad_adelante) 
