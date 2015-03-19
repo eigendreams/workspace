@@ -59,7 +59,7 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.profile_settings = {'max_output' : 13, 'max_speed' : 7, 'rate' : self.rate, 'heal_time_at_0pc' : 13, 'stable_point_pc' : 13}
+        self.profile_settings = {'max_output' : 13, 'max_speed' : 13, 'rate' : self.rate, 'heal_time_at_0pc' : 13, 'stable_point_pc' : 13}
         #
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
