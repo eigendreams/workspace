@@ -2,10 +2,7 @@
 
 <launch>
 
-  <node pkg="volti" type="imu_plate" name="imu_plate" respawn="true">
-  </node>
-  
-  <node pkg="volti" type="imu_pendu" name="imu_pendu" respawn="true">
+  <node pkg="volti" type="imu_node" name="imu_node" respawn="true">
   </node>
 
   <node pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
