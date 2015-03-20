@@ -322,7 +322,7 @@ class Double_motor:
         if (abs(self.actual_error) < self.minimal_error):
             self.minimal_error = abs(self.actual_error)
         #
-        self.tmp_constrain = 13 - 3 * (1 - self.minimal_error)
+        self.tmp_constrain = 13 - 4 * (1 - self.minimal_error)
         #
         #
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
