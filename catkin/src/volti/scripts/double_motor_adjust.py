@@ -268,7 +268,6 @@ class Double_motor:
         self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
         self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
         self.ang_lat_diff               = self.rollPlate - self.rollPendu - 0.126 # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
-        self.ang_lat_diff               = -0.3
         #
         #
         #rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
