@@ -66,7 +66,7 @@ class Profile:
     #
     # {'max_output' : 20, 'max_speed' : 10, 'rate' : 20, 'max_output_at_0RPS' : 30, 'max_output_at_1RPS' : 10, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20})
     #
-    def __init__(self, settings = {'max_output' : 10, 'max_speed' : 10, 'rate' : 10, 'heal_time_at_0pc' : 10, 'stable_point_pc' : 10}):
+    def __init__(self, settings = {'max_output' : 20, 'max_speed' : 20, 'rate' : 20, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}):
         #
         self.max_output 		= float(settings['max_output'])
         self.max_speed   		= float(settings['max_speed'])
@@ -80,11 +80,16 @@ class Profile:
         self.last_output_des    = 0.
         self.output_limit   	= 0.
         #
+        self.x_extend           = self.stable_point_pc
+        self.y_extend           = -100. / self.heal_time_at_0pc
+        self.m_signed           = self.y_extend / self.x_extend
+        self.y0_offset          = 100. / self.heal_time_at_0pc
+        #
     def gainFcn(self, data):
         #
         # give me the pc gain per second
         #
-        return (100 / self.heal_time_at_0pc - data * (100 / self.heal_time_at_0pc) / self.stable_point_pc)
+        return (self.y0_offset + self.m_signed * abs(data))
         #
     def compute(self, data):
         #
@@ -123,3 +128,9 @@ class Profile:
         self.rate               = float(settings['rate'])
         self.heal_time_at_0pc   = float(settings['heal_time_at_0pc'])
         self.stable_point_pc    = float(settings['stable_point_pc'])
+        #
+        self.x_extend           = self.stable_point_pc
+        self.y_extend           = -100. / self.heal_time_at_0pc
+        self.m_signed           = self.y_extend / self.x_extend
+        self.y0_offset          = 100. / self.heal_time_at_0pc
+        #

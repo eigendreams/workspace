@@ -28,6 +28,7 @@ class Control_interface:
         self.angdespub  = rospy.Publisher("ang_lateral_des", Float32)
         #
         self.angle_des  = 0
+        self.angle_des_change = 0
         self.vel_des    = 0
         #
         self.inittime = rospy.get_time()
@@ -44,20 +45,24 @@ class Control_interface:
         self.timed_out   = False
         #
         # from -1 to +1, gives from -0.4 to 0.4
-        self.angle_des   = map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -0.4, 0.4)
+        self.angle_des_change   = -map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -0.1, 0.1)
         # from -1 to +1, gives -4 to 4
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']] * 1
         #
     def update(self):
         #
         # we timed out! 2s to give room to wifi and processing delays, skip publishing, maybe control was disconnected?
+        """
         if ((millis(self.inittime) - self.timelastjoy) > 2000):
             if not self.timed_out :
                 self.veldespub.publish(0)
                 self.angdespub.publish(0)
             self.timed_out = True
             return
+        """
         #
+        self.angle_des = self.angle_des + self.angle_des_change
+        self.angle_des = constrain(self.angle_des, -0.4, 0.4)
         self.angdespub.publish(self.angle_des)
         self.veldespub.publish(self.vel_des)
         #
