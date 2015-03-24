@@ -67,15 +67,15 @@ class Control_interface:
         #
         if (data.buttons[self.buttons_names['RB']] is 1 and self.lastrb is 0):
             self.rbtog = int(not self.rbtog)
-        seld.lastrb = data.buttons[self.buttons_names['RB']]
+        self.lastrb = data.buttons[self.buttons_names['RB']]
         #
         if (data.buttons[self.buttons_names['LB']] is 1 and self.lastlb is 0):
             self.lbtog = int(not self.lbtog)
-        seld.lastlb = data.buttons[self.buttons_names['LB']]
+        self.lastlb = data.buttons[self.buttons_names['LB']]
         #
         if (data.buttons[self.buttons_names['power']] is 1 and self.lastpow is 0):
             self.powtog = int(not self.powtog)
-        seld.lastpow = data.buttons[self.buttons_names['power']]
+        self.lastpow = data.buttons[self.buttons_names['power']]
         #
         self.rtval = (data.axes[self.axes_names['RT']] + 1) / 2.
         self.ltval = (data.axes[self.axes_names['LT']] + 1) / 2.
