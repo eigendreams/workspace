@@ -8,16 +8,16 @@
 	<machine name="c2_opt" address="jakob-think" env-loader="/opt/ros/indigo/env.sh"/>
 	<machine name="c2_src" address="jakob-think" env-loader="/home/jakob/workspace/catkin/devel/env.sh"/>
 
-    <node machine="c1_src" pkg="volti" type="imu_node" name="imu_node" respawn="true" launch-prefix="sudo">
+    <node machine="c1_src" pkg="volti" type="imu_node" name="imu_node" respawn="true" launch-prefix="sudo -i">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true" launch-prefix="sudo">
+    <node machine="c1_src" pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true" launch-prefix="sudo -i">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="push_servos.py" name="push_servos" respawn="true" launch-prefix="sudo">
+    <node machine="c1_src" pkg="volti" type="push_servos.py" name="push_servos" respawn="true" launch-prefix="sudo -i">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="readencs.py" name="readencs" respawn="true" launch-prefix="sudo">
+    <node machine="c1_src" pkg="volti" type="readencs.py" name="readencs" respawn="true" launch-prefix="sudo -i">
     </node>
 
      <!-- joy node -->
