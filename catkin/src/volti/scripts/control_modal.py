@@ -33,7 +33,12 @@ class Control_interface:
         self.angmult    = rospy.Publisher("ang_mult", Float32)
         self.velmult    = rospy.Publisher("vel_mult", Float32)
         #
+        self.alpub      = rospy.Publisher("al", Int16)
+        #
         self.conmode    = rospy.Publisher("con_mode", Int16)
+        #
+        self.btog = 0
+        self.lastb = 0
         #
         self.rbtog = 0
         self.lbtog = 0
@@ -77,6 +82,10 @@ class Control_interface:
             self.powtog = int(not self.powtog)
         self.lastpow = data.buttons[self.buttons_names['power']]
         #
+        if (data.buttons[self.buttons_names['B']] is 1 and self.lastb is 0):
+            self.btog = int(not self.btog)
+        self.lastb = data.buttons[self.buttons_names['B']]
+        #
         self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
         self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
@@ -96,7 +105,7 @@ class Control_interface:
             return
         """
         # publish the control mode, if 0 control is used, if 1 pwm values are passed directly and the motor control node waits 
-        self.conmode.publish(self.powtog)
+        self.conmode.publish(self.btog)
         #
         self.angmultval = constrain( (1 + self.ltval) * (1 + self.lbtog), 1, 2)
         self.velmultval = constrain( (1 + self.rtval + self.rbtog), 1, 2)
@@ -112,6 +121,8 @@ class Control_interface:
         else:
             self.angdespub.publish(self.angle_des * 0.4)
             self.veldespub.publish(self.vel_des   * 1.0)
+        #
+        self.alpub.publish(self.powtog)
         #
     def spin(self):
 		#
