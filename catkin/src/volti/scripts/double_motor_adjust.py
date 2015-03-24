@@ -90,6 +90,16 @@ class Double_motor:
         #
         self.minimal_error = 0
         #
+        self.powtog = 0
+        #
+        self.powsub = rospy.Subscriber("con_mode", Int16, self.modecb)
+        #
+        self.angmultval = 1
+        self.velmultval = 1
+        #
+        self.angmultsub = rospy.Subscriber("ang_mult", Float32, self.angmultcb)
+        self.velmultsub = rospy.Subscriber("vel_mult", Float32, self.velmultcb)
+        #
         # Asociaciones con publicadores y suscriptores
         self.m1    = rospy.Publisher( "m1",    Int16)              # salida al motor 1
         self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
@@ -106,6 +116,31 @@ class Double_motor:
         #
         self.srv = Server(PIDConfig, self.SRVcallback)
         #
+        """
+        self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
+        self.pos_settings['kp1rps'] = float(config['kp1rps_pos'])      
+        self.pos_settings['ki']     = float(config['ki_pos'])           
+        self.pos_settings['kd']     = float(config['kd_pos'])              
+        # variables de limitacion adicionales
+        self.pos_settings['umbral'] = float(config['umbral_pos'])
+        self.pos_settings['ki_dec'] = float(config['ki_dec_pos'])
+        self.pos_settings['range']  = float(config['range_pos'])
+        # parametros de posicion, hacer parametros posteriormente, usar dynamic
+        self.vel_settings['kp']     = float(config['kp_vel'])          
+        self.vel_settings['ki']     = float(config['ki_vel'])          
+        self.vel_settings['kd']     = float(config['kd_vel'])          
+        self.vel_settings['km']     = float(config['km_vel'])         
+        # variables de limitacion adicionales
+        self.vel_settings['umbral'] = float(config['umbral_vel'])
+        self.vel_settings['ki_dec'] = float(config['ki_dec_vel'])
+        self.vel_settings['range']  = float(config['range_vel'])
+        """
+        #
+        self.normalizedkp0rps = 1
+        self.normalizedkp1rps = 1
+        self.normalizedkpvel  = 1
+        self.normalizedkmvel  = 1
+        #
         self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
         self.rollPlatePub = rospy.Publisher( "rplate", Float32)
         self.anglatdifPub = rospy.Publisher( "angdif", Float32)
@@ -117,6 +152,18 @@ class Double_motor:
         #
         self.subImuPlate = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
         self.subImuPendu = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
+        #
+    def angmultcb(self, data):
+        #
+        self.angmultval = data.data
+        #
+    def velmultval(self, data):
+        #
+        self.velmultval = data.data
+        #
+    def modecb(self, data):
+        #
+        self.powtog = data.data
         #
     def veldeldescb(self, data):
         #
@@ -192,6 +239,12 @@ class Double_motor:
         #
         rospy.loginfo("reconfiguring")
         #
+        #values catched from mouse event from rqt_gui
+        self.normalizedkp0rps = float(config['kp0rps_pos'])      
+        self.normalizedkp1rps = float(config['kp1rps_pos']) 
+        self.normalizedkpvel  = float(config['kp_vel'])
+        self.normalizedkmvel  = float(config['km_vel']) 
+        #
         self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
         self.pos_settings['kp1rps'] = float(config['kp1rps_pos'])      
         self.pos_settings['ki']     = float(config['ki_pos'])           
@@ -248,6 +301,7 @@ class Double_motor:
         #self.e2vel.publish(self.speed_m2)
         #
     def controller(self):
+        #
         #
         # Quiero controlar el angulo de roll del pendulo, pero verificar contra el angulo de roll de plate para evitar colisiones
         # este control es solamente de posicion, la parte del angulo de pitch se deriva de un controlador de velocidad, que se 
@@ -349,6 +403,12 @@ class Double_motor:
         self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_control_vel)
         self.out_pos_m2 = self.profile_m2.compute( self.salida_control_angulo + self.salida_control_vel)
         #
+        #
+        # the control interface is publishing motor pwm values directly
+        # though, I would prefer to vanish the integral term in this case, and fix the desired angle and speed, etc.
+        if (self.con_mode is 1):
+            return
+        #
         self.m1.publish(int((self.out_pos_m1) * 100))
         self.m2.publish(int((self.out_pos_m2) * 100))
         #
@@ -358,6 +418,33 @@ class Double_motor:
         self.times = self.times + 1
         #
         self.controller()
+        #
+        # the interaction between modifying the values in rqt at the same time that with the joystick could
+        # lead to runaway exponential growth, not catched by the rqt applet, be careful
+        #
+        # a possible solutino would be to avoid setting the paramters, and just pass to the pid reconfigure methods, but
+        # i feel that would be expensive
+        #
+        # you dont know if that is necessary...
+        #
+        # because the methods are not updated outside of a dyn reconf event!!!
+        # a call here would be expensive, but useful regardless...
+        #        
+        # do every second? its not another node, after all, overhead should be smalll
+        #
+        rospy.set_param('kp0rps', self.normalizedkp0rps * self.angmultval / self.rate)
+        rospy.set_param('kp1rps', self.normalizedkp1rps * self.angmultval / self.rate)
+        rospy.set_param('kp_vel', self.normalizedkpvel  * self.velmultval / self.rate)
+        rospy.set_param('km_vel', self.normalizedkmvel  * self.velmultval / self.rate)
+        #
+        self.pos_settings['kp0rps'] = self.normalizedkp0rps * self.angmultval / self.rate    
+        self.pos_settings['kp1rps'] = self.normalizedkp1rps * self.angmultval / self.rate
+        self.vel_settings['kp']     = self.normalizedkpvel  * self.velmultval / self.rate
+        self.vel_settings['km']     = self.normalizedkmvel  * self.velmultval / self.rate
+        #
+        self.pid_pos_ang.resetting(self.pos_settings)
+        self.pid_vel_vel.resetting(self.vel_settings)
+        #
         #
         # self.roll_des_val
         #
