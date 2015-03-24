@@ -77,8 +77,8 @@ class Control_interface:
             self.powtog = int(not self.powtog)
         self.lastpow = data.buttons[self.buttons_names['power']]
         #
-        self.rtval = (data.axes[self.axes_names['RT']] + 1) / 2.
-        self.ltval = (data.axes[self.axes_names['LT']] + 1) / 2.
+        self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
+        self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
         self.angle_des_change   = data.axes[self.axes_names['left_stick_hor']]
         #
