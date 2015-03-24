@@ -60,7 +60,15 @@ class Control_interface:
         #
         self.timed_out = True
         #
-        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)        
+        self.angdifval = 0
+        #
+        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb) 
+        #
+        self.anglatdifPub = rospy.Subscriber( "angdif", Float32, angdifcb)       
+        #
+    def angdifcb(self, data):
+        #
+        self.angdifval = data.data
         #
     def joyCb(self, data):
 		#
@@ -123,6 +131,11 @@ class Control_interface:
             self.lastrb = 0
         #
         if (self.btog is 1):
+            #
+            if (data.data > 0.41):
+                self.angle_des_change = constrain(self.angle_des_change, -13, 0)
+            if (data.data < -0.41):
+                self.angle_des_change = constrain(self.angle_des_change, 0, 13)
             #
             self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
             self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
