@@ -114,7 +114,7 @@ class Control_interface:
         self.velmult.publish(self.velmultval)
         #
         # we wish to send pwm directly or send control commands
-        if (self.powtog is 1):
+        if (self.btog is 1):
             #
             self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
             self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
