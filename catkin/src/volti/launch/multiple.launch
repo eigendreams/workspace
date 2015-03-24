@@ -3,21 +3,21 @@
 <launch>
 
 	<!-- machine tags -->
-	<machine name="c1_opt" address="arm" env-loader="/opt/ros/indigo/env.sh" user="root" password="temppwd"/>
-	<machine name="c1_src" address="arm" env-loader="/home/ubuntu/workspace/catkin/devel/env.sh" user="root" password="temppwd" default="true"/>
+	<machine name="c1_opt" address="arm" env-loader="/opt/ros/indigo/env.sh" user="ubuntu" password="temppwd"/>
+	<machine name="c1_src" address="arm" env-loader="/home/ubuntu/workspace/catkin/devel/env.sh" user="ubuntu" password="temppwd" default="true"/>
 	<machine name="c2_opt" address="jakob-think" env-loader="/opt/ros/indigo/env.sh"/>
 	<machine name="c2_src" address="jakob-think" env-loader="/home/jakob/workspace/catkin/devel/env.sh"/>
 
-    <node machine="c1_src" pkg="volti" type="imu_node" name="imu_node" respawn="true">
+    <node machine="c1_src" pkg="volti" type="imu_node" name="imu_node" respawn="true" launch-prefix="sudo">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true">
+    <node machine="c1_src" pkg="volti" type="double_motor_adjust.py" name="double_motor_adjust" respawn="true" launch-prefix="sudo">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="push_servos.py" name="push_servos" respawn="true">
+    <node machine="c1_src" pkg="volti" type="push_servos.py" name="push_servos" respawn="true" launch-prefix="sudo">
     </node>
     
-    <node machine="c1_src" pkg="volti" type="readencs.py" name="readencs" respawn="true">
+    <node machine="c1_src" pkg="volti" type="readencs.py" name="readencs" respawn="true" launch-prefix="sudo">
     </node>
 
      <!-- joy node -->
