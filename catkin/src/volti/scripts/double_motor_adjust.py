@@ -433,7 +433,6 @@ class Double_motor:
         #        
         # do every second? its not another node, after all, overhead should be smalll
         #
-        # does not works
         rospy.set_param(self.nodename + '/kp0rps', self.normalizedkp0rps * self.angmultval)
         rospy.set_param(self.nodename + '/kp1rps', self.normalizedkp1rps * self.angmultval)
         rospy.set_param(self.nodename + '/kp_vel', self.normalizedkpvel  * self.velmultval)

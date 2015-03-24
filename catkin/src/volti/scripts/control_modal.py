@@ -98,7 +98,7 @@ class Control_interface:
         # publish the control mode, if 0 control is used, if 1 pwm values are passed directly and the motor control node waits 
         self.conmode.publish(self.powtog)
         #
-        self.angmultval = constrain( (1 + self.ltval + self.lbtog), 1, 2)
+        self.angmultval = constrain( (1 + self.ltval) * (1 + self.lbtog), 1, 2)
         self.velmultval = constrain( (1 + self.rtval + self.rbtog), 1, 2)
         # the multiply values have to published anyway, yo be cathced and processed in the control nodes
         self.angmult.publish(self.angmultval)
@@ -106,8 +106,9 @@ class Control_interface:
         #
         # we wish to send pwm directly or send control commands
         if (self.powtog is 1):
-            self.m1.publish(constrain(self.vel_des * 10 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
-            self.m2.publish(constrain(self.vel_des * 10 * self.velmultval * 100 + self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
+            #
+            self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
+            self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
         else:
             self.angdespub.publish(self.angle_des * 0.4)
             self.veldespub.publish(self.vel_des   * 1.0)
