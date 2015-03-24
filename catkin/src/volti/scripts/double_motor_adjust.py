@@ -157,7 +157,7 @@ class Double_motor:
         #
         self.angmultval = data.data
         #
-    def velmultval(self, data):
+    def velmultcb(self, data):
         #
         self.velmultval = data.data
         #
