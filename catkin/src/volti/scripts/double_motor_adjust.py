@@ -433,22 +433,21 @@ class Double_motor:
         #        
         # do every second? its not another node, after all, overhead should be smalll
         #
-        if (self.times % 10 is 0):
-            # does not works
-            """
-            rospy.set_param('kp0rps', self.normalizedkp0rps * self.angmultval)
-            rospy.set_param('kp1rps', self.normalizedkp1rps * self.angmultval)
-            rospy.set_param('kp_vel', self.normalizedkpvel  * self.velmultval)
-            rospy.set_param('km_vel', self.normalizedkmvel  * self.velmultval)
-            """
-            #
-            self.pos_settings['kp0rps'] = self.normalizedkp0rps * self.angmultval    
-            self.pos_settings['kp1rps'] = self.normalizedkp1rps * self.angmultval
-            self.vel_settings['kp']     = self.normalizedkpvel  * self.velmultval
-            self.vel_settings['km']     = self.normalizedkmvel  * self.velmultval
-            #
-            self.pid_pos_ang.resetting(self.pos_settings)
-            self.pid_vel_vel.resetting(self.vel_settings)
+        # does not works
+        """
+        rospy.set_param('kp0rps', self.normalizedkp0rps * self.angmultval)
+        rospy.set_param('kp1rps', self.normalizedkp1rps * self.angmultval)
+        rospy.set_param('kp_vel', self.normalizedkpvel  * self.velmultval)
+        rospy.set_param('km_vel', self.normalizedkmvel  * self.velmultval)
+        """
+        #
+        self.pos_settings['kp0rps'] = self.normalizedkp0rps * self.angmultval    
+        self.pos_settings['kp1rps'] = self.normalizedkp1rps * self.angmultval
+        self.vel_settings['kp']     = self.normalizedkpvel  * self.velmultval
+        self.vel_settings['km']     = self.normalizedkmvel  * self.velmultval
+        #
+        self.pid_pos_ang.resetting(self.pos_settings)
+        self.pid_vel_vel.resetting(self.vel_settings)
         #
         #
         # self.roll_des_val
