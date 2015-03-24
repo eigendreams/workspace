@@ -91,6 +91,7 @@ class Double_motor:
         self.minimal_error = 0
         #
         self.powtog = 0
+        sel.con_mode = 0
         #
         self.powsub = rospy.Subscriber("con_mode", Int16, self.modecb)
         #
@@ -163,7 +164,7 @@ class Double_motor:
         #
     def modecb(self, data):
         #
-        self.powtog = data.data
+        self.con_mode = data.data
         #
     def veldeldescb(self, data):
         #
