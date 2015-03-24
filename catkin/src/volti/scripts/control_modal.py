@@ -114,6 +114,14 @@ class Control_interface:
         self.velmult.publish(self.velmultval)
         #
         # we wish to send pwm directly or send control commands
+        #
+        # if toggled, reset multipliers buttons to 0
+        if (self.btog != self.lastb):
+            self.lbtog = 0
+            self.rbtog = 0
+            self.lastlb = 0
+            self.lastrb = 0
+        #
         if (self.btog is 1):
             #
             self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))

@@ -123,6 +123,17 @@ void commloop() {
         timedOut = false;
         timescont++;
       }
+      if (aldata == 0) {
+        s13_out = 0;
+        s14_out = 0;
+        // show status
+        digitalWrite(RED_LED, HIGH);
+        digitalWrite(GREEN_LED, LOW);
+        // record msg time
+        milisLastMsg = millis();
+        timedOut = false;
+        timescont++;
+      }
     }
   }
 }
