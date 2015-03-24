@@ -36,6 +36,7 @@ class Push_servos:
         #
         self.inittime = rospy.get_time()
         self.timelastal = -1000
+        self.timelastnal = -1000
         #
         self.m1sub = rospy.Subscriber("m1", Int16, self.m1cb)
         self.m2sub = rospy.Subscriber("m2", Int16, self.m2cb)
@@ -57,6 +58,12 @@ class Push_servos:
     def update(self):
 		#
         if ((millis(self.inittime) - self.timelastal) > 1000):
+            self.alval = 0
+            self.m1val = 0
+            self.m2val = 0
+            self.timelastnal = millis(self.inittime)
+        # wait a little after each disconnect to avoid jitter
+        if ((millis(self.inittime) - self.timelastnal) < 2500):
             self.alval = 0
             self.m1val = 0
             self.m2val = 0

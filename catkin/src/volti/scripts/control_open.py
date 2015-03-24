@@ -44,9 +44,10 @@ class Control_interface:
         self.timed_out   = False
         #
         # from -1 to +1, gives from -0.4 to 0.4
-        self.angle_des_change   = -map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -13, 13)
+        self.angle_des_change   = -map(data.axes[self.axes_names['left_stick_hor']], -1, 1, -5, 5)
         # from -1 to +1, gives -4 to 4
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']] * 13
+
         #
     def update(self):
         #
@@ -60,8 +61,8 @@ class Control_interface:
             return
         """
         #
-        self.m1.publish(self.vel_des * 100 - self.angle_des_change * 100 )
-        self.m2.publish(self.vel_des * 100 + self.angle_des_change * 100)
+        self.m1.publish(constrain(self.vel_des * 100 - self.angle_des_change * 100,-2000, 2000))
+        self.m2.publish(constrain(self.vel_des * 100 + self.angle_des_change * 100,-2000, 2000))
         #
     def spin(self):
 		#
