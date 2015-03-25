@@ -350,7 +350,7 @@ class Double_motor:
         #
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
-        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.ang_lat_diff, 0)
+        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.rollPlate, 0)
         self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
         #
         self.outpidangPub.publish(self.salida_control_angulo)
@@ -377,7 +377,7 @@ class Double_motor:
         # pida una nueva posicion de control del angulo
         #
         #
-        self.actual_error = self.ang_lat_des - self.ang_lat_diff
+        self.actual_error = self.ang_lat_des - self.rollPlate
         if (abs(self.actual_error) < self.minimal_error):
             self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
         #
