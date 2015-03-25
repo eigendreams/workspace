@@ -98,7 +98,7 @@ class Control_interface:
         self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
         self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
-        self.angle_des   = -data.axes[self.axes_names['left_stick_hor']]
+        self.angle_des_change   = -data.axes[self.axes_names['left_stick_hor']]
         #
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']]
         #
