@@ -119,7 +119,7 @@ class Profile:
         if (abs(self.output_change) > self.max_speed / self.rate):
             #
             # if increasing the output
-            if (sign(self.output_actual) == sign(self.output_change))
+            if (sign(self.last_output_actual) == sign(self.output_change)):
         	   self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / self.rate)
         # try to make the diminishing option faster than the increasing one
         #
