@@ -39,6 +39,8 @@ class Control_interface:
         #
         self.btog = 0
         self.lastb = 0
+        self.lastbtog = 0
+        self.btogchanged = 0
         #
         self.rbtog = 0
         self.lbtog = 0
@@ -50,6 +52,8 @@ class Control_interface:
         #
         self.powtog = 0
         self.lastpow = 0
+        self.lastpowtog = 0
+        self.powtogchanged = 0
         #
         self.angle_des  = 0
         self.angle_des_change = 0
@@ -64,7 +68,7 @@ class Control_interface:
         #
         self.joySub = rospy.Subscriber("joy", Joy, self.joyCb) 
         #
-        self.angdifsub = rospy.Subscriber( "angdif", Float32, angdifcb)       
+        self.angdifsub = rospy.Subscriber( "angdif", Float32, self.angdifcb)       
         #
     def angdifcb(self, data):
         #
@@ -86,18 +90,23 @@ class Control_interface:
             self.lbtog = int(not self.lbtog)
         self.lastlb = data.buttons[self.buttons_names['LB']]
         #
+        self.lastpowtog = self.powtog
         if (data.buttons[self.buttons_names['power']] is 1 and self.lastpow is 0):
             self.powtog = int(not self.powtog)
+        self.powtogchanged = self.lastpowtog or not (self.powtog == self.lastpowtog)
         self.lastpow = data.buttons[self.buttons_names['power']]
         #
+        #
+        self.lastbtog = self.btog
         if (data.buttons[self.buttons_names['B']] is 1 and self.lastb is 0):
             self.btog = int(not self.btog)
+        self.btogchanged = 0 or not (self.btog == self.lastbtog)
         self.lastb = data.buttons[self.buttons_names['B']]
         #
         self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
         self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
-        self.angle_des_change   = data.axes[self.axes_names['left_stick_hor']]
+        self.angle_des   = -data.axes[self.axes_names['left_stick_hor']]
         #
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']]
         #
@@ -124,11 +133,23 @@ class Control_interface:
         # we wish to send pwm directly or send control commands
         #
         # if toggled, reset multipliers buttons to 0
-        if (self.btog != self.lastb):
+        if (self.btogchanged):
             self.lbtog = 0
             self.rbtog = 0
             self.lastlb = 0
             self.lastrb = 0
+            #self.btogchanged = 0
+        #
+        #
+        #if (self.powtogchanged):
+        #    self.m1.publish(0);
+        #    self.m2.publish(0);
+        #    self.alpub.publish(1)
+        #    self.powtogchanged = 0
+        #    return
+        #else:
+        self.alpub.publish(self.powtog)
+        #
         #
         if (self.btog is 1):
             #
@@ -142,9 +163,7 @@ class Control_interface:
         else:
             self.angdespub.publish(self.angle_des * 0.4)
             self.veldespub.publish(self.vel_des   * 1.0)
-        #
-        self.alpub.publish(self.powtog)
-        #
+            #
     def spin(self):
 		#
         r = rospy.Rate(self.rate)
