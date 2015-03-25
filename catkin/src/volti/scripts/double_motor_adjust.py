@@ -59,7 +59,7 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.profile_settings = {'max_output' : 20, 'max_speed' : 7, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
+        self.profile_settings = {'max_output' : 20, 'max_speed' : 8, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
         #
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
@@ -379,9 +379,9 @@ class Double_motor:
         #
         self.actual_error = self.ang_lat_des - self.ang_lat_diff
         if (abs(self.actual_error) < self.minimal_error):
-            self.minimal_error = abs(self.actual_error)
+            self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
         #
-        self.tmp_constrain = 20 - 13 * (1 - self.minimal_error)
+        self.tmp_constrain = 20 - 13 * (0.4 - self.minimal_error)
         #
         #
         #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
