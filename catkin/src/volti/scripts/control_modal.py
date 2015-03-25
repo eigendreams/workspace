@@ -125,11 +125,11 @@ class Control_interface:
         # we wish to send pwm directly or send control commands
         #
         # if toggled, reset multipliers buttons to 0
-        if (self.btogchanged):
-            self.lbtog = 0
-            self.rbtog = 0
-            self.lastlb = 0
-            self.lastrb = 0
+        #if (self.btogchanged):
+        #    self.lbtog = 0
+        #    self.rbtog = 0
+        #    self.lastlb = 0
+        #    self.lastrb = 0
             #self.btogchanged = 0
         #
         #
