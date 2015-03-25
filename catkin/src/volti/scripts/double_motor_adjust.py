@@ -397,7 +397,7 @@ class Double_motor:
         #
         #
         #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
+        self.salida_control_angulo = 0 * constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
         self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
         #
         #
