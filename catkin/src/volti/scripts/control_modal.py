@@ -76,38 +76,22 @@ class Control_interface:
         #
     def joyCb(self, data):
 		#
-        """
-        self.timelastjoy = millis(self.inittime)
-        #
-        self.timed_out   = False
-        """
-        #
-        if (data.buttons[self.buttons_names['RB']] is 1 and self.lastrb is 0):
-            self.rbtog = int(not self.rbtog)
-        self.lastrb = data.buttons[self.buttons_names['RB']]
-        #
-        if (data.buttons[self.buttons_names['LB']] is 1 and self.lastlb is 0):
-            self.lbtog = int(not self.lbtog)
-        self.lastlb = data.buttons[self.buttons_names['LB']]
-        #
         self.lastpowtog = self.powtog
         if (data.buttons[self.buttons_names['power']] is 1 and self.lastpow is 0):
             self.powtog = int(not self.powtog)
-        self.powtogchanged = self.lastpowtog or not (self.powtog == self.lastpowtog)
+            self.powtogchanged = True
         self.lastpow = data.buttons[self.buttons_names['power']]
-        #
         #
         self.lastbtog = self.btog
         if (data.buttons[self.buttons_names['B']] is 1 and self.lastb is 0):
             self.btog = int(not self.btog)
-        self.btogchanged = 0 or not (self.btog == self.lastbtog)
+            self.btogchanged = True
         self.lastb = data.buttons[self.buttons_names['B']]
         #
         self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
         self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
         self.angle_des   = -data.axes[self.axes_names['left_stick_hor']]
-        #
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']]
         #
     def update(self):
@@ -126,6 +110,7 @@ class Control_interface:
         #
         self.angmultval = constrain( (1 + self.ltval) * (1 + self.lastlb), 1, 4)
         self.velmultval = constrain( (1 + self.rtval + self.lastrb), 1, 2)
+        #
         # the multiply values have to published anyway, yo be cathced and processed in the control nodes
         self.angmult.publish(self.angmultval)
         self.velmult.publish(self.velmultval)
@@ -138,18 +123,16 @@ class Control_interface:
             self.rbtog = 0
             self.lastlb = 0
             self.lastrb = 0
-            #self.btogchanged = 0
+            self.btogchanged = 0
         #
-        #
-        #if (self.powtogchanged):
-        #    self.m1.publish(0);
-        #    self.m2.publish(0);
-        #    self.alpub.publish(1)
-        #    self.powtogchanged = 0
-        #    return
-        #else:
-        self.alpub.publish(self.powtog)
-        #
+        if (self.powtogchanged):
+            self.m1.publish(0);
+            self.m2.publish(0);
+            self.alpub.publish(1)
+            self.powtogchanged = 0
+            return
+        else:
+            self.alpub.publish(self.powtog)
         #
         if (self.btog is 1):
             #
