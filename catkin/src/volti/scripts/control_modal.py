@@ -125,14 +125,14 @@ class Control_interface:
             self.lastrb = 0
             self.btogchanged = 0
         #
-        if (self.powtogchanged):
-            self.m1.publish(0);
-            self.m2.publish(0);
-            self.alpub.publish(1)
-            self.powtogchanged = 0
-            return
-        else:
-            self.alpub.publish(self.powtog)
+        #if (self.powtogchanged):
+        #    self.m1.publish(0);
+        #    self.m2.publish(0);
+        #    self.alpub.publish(1)
+        #    self.powtogchanged = 0
+        #    return
+        #else:
+        #    self.alpub.publish(self.powtog)
         #
         if (self.btog is 1):
             #
