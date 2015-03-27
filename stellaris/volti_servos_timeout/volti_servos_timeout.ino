@@ -112,27 +112,22 @@ void commloop() {
     
     // TODO add more aldata rules
     if (checksum == localchecksum) {
+      // show status
+      digitalWrite(GREEN_LED, HIGH);
+      milisLastMsg = millis();
+      timedOut = false;
+        
       if (aldata == 1) {
+        digitalWrite(RED_LED, LOW);
         s13_out = s1data;
         s14_out = s2data;
-        // show status
-        digitalWrite(RED_LED, LOW);
-        digitalWrite(GREEN_LED, HIGH);
         // record msg time
-        milisLastMsg = millis();
-        timedOut = false;
         timescont++;
       }
       if (aldata == 0) {
+        digitalWrite(RED_LED, HIGH);
         s13_out = 0;
         s14_out = 0;
-        // show status
-        digitalWrite(RED_LED, HIGH);
-        digitalWrite(GREEN_LED, LOW);
-        // record msg time
-        milisLastMsg = millis();
-        timedOut = false;
-        timescont++;
       }
     }
   }
@@ -146,7 +141,7 @@ void loop() {
     
     millisTock += 50;
     
-    if ((millis() - milisLastMsg) > 1000) {
+    if ((millis() - milisLastMsg) > 500) {
       // shut down all
       digitalWrite(RED_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);

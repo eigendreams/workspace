@@ -13,6 +13,7 @@ from std_msgs.msg import Float32
 from dynamic_reconfigure.server import Server
 ################################################################################
 from volti.cfg import PIDConfig
+#from volti.cfg import ENCConfig
 ################################################################################
 from ino_mod import *
 from kfilter import *
@@ -46,7 +47,6 @@ class Double_motor:
         #
         # filtro de entradas del encoder
         self.kf_settings         = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
-        self.kf_rollerr_settings = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
         #
         # filtros kalman de los encoders
         self.filter_e1           = Kfilter(self.kf_settings)
@@ -116,6 +116,7 @@ class Double_motor:
         #
         #
         self.srv = Server(PIDConfig, self.SRVcallback)
+        #self.srvenc = Server(ENCConfig, self.ENCcallback)
         #
         """
         self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
@@ -236,6 +237,19 @@ class Double_motor:
         self.vel_settings['ki_dec'] = float(rospy.get_param('~ki_vel',     '0'))  
         self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '10'))
         #
+    def ENCcallback(self, config, level):
+        #
+        rospy.loginfo("reconiguring encoders")
+        #
+        self.kf_settings['P0'] = float(config['P0'])
+        self.kf_settings['Q'] = float(config['Q'])
+        self.kf_settings['R'] = float(config['R'])
+        self.kf_settings['rate'] = float(config['rate'])
+        #
+        self.filter_e1.resetting(self.kf_settings)
+        #
+        return config
+        #h
     def SRVcallback(self, config, level):
         #
         rospy.loginfo("reconfiguring")

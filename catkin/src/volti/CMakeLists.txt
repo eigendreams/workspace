@@ -21,6 +21,7 @@ find_package(
 
 generate_dynamic_reconfigure_options(
     cfg/PID.cfg
+    cfg/ENC.cfg
 )
 
 add_message_files( FILES float32_12.msg float32_3.msg )
