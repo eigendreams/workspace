@@ -60,7 +60,7 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.profile_settings = {'max_output' : 20, 'max_speed' : 1000, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
+        self.profile_settings = {'max_output' : 20, 'max_speed' : 10000, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
         #
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
@@ -367,6 +367,7 @@ class Double_motor:
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var, 0)
+        self.salida_control_angulo  - self.salida_control_angulo + sign(salida_control_angulo) * 5
         self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
         #
         self.outpidangPub.publish(self.salida_control_angulo)
