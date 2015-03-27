@@ -42,18 +42,18 @@ class PID_pos:
         self.actual = actual
         self.last_actual = self.actual
         #
-        if (speed == None):
+        #if (speed == None):
             # multiply by rate to make units consoistent
             # TODO eval to change to
             # self.derror = (self.actual - self.last_actual) * self.rate
             # to keep consistency
             # i recommend to pass the speed value from the encoders??? error prone, noise, from the imus??? slow, not really motor speed
             # leave it like this, but pass the speed if possible from a higer level 
-            self.derror = (self.error - self.last_error) * self.rate
-            self.dactual = (self.actual - self.last_actual) * self.rate
-        else:
-            self.derror = speed
-            self.dactual = (self.actual - self.last_actual) * self.rate
+        self.derror = (self.error - self.last_error) * self.rate
+        self.dactual = (self.actual - self.last_actual) * self.rate
+        #else:
+        #    self.derror = speed
+        #    self.dactual = (self.actual - self.last_actual) * self.rate
         #
         # to avoid a kick if the derivate value is present and last error is unknown
         #
