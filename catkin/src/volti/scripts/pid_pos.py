@@ -35,7 +35,7 @@ class PID_pos:
         self.times          = 0.
         #
         #
-    def compute(self, desired, actual, speed):
+    def compute(self, desired, actual, speed = None):
         #
         self.error = desired - actual
         self.last_error = self.error
