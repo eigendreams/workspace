@@ -198,6 +198,7 @@ class Double_motor:
             self.rollPendu = data.data[0] + 3.1416
         if (data.data[0] > 0):
             self.rollPendu = data.data[0] - 3.1416
+        self.rollPendu = self.rollPendu + 0.07
         self.pitchPendu = data.data[1]
         #
     def GRLinit(self, node_name_default):
@@ -334,7 +335,7 @@ class Double_motor:
         # 
         self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
         self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
-        self.ang_lat_diff               = self.rollPlate - self.rollPendu - 0.126 # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
+        self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
         #
         #
         self.control_var                = self.rollPlate
