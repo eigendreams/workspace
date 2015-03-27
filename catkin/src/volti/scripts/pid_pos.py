@@ -71,7 +71,7 @@ class PID_pos:
         # parte integral normal pero que se resetea cuando llegue a banda, solo resetear
         # si el error esta en aumento, se usa la ki positiva, y el termino integral crece
         #if (sign(self.error) > 0 and sign(self.kisum) > 0):
-        self.kisum = self.kisum + self.error * self.ki
+        self.kisum = constrain(self.kisum + self.error * self.ki, self.range / 4., self.range / 4.)
         #if (sign(self.error) < 0 and sign(self.kisum) < 0):
         #    self.kisum = self.kisum + self.error * self.ki
         #
@@ -83,7 +83,7 @@ class PID_pos:
         #
         #
         #if (sign(self.error) > 0 and sign(self.kisum2) > 0):
-        self.kisum2 = self.kisum2 + self.error * self.ki
+        self.kisum2 = constrain(self.kisum2 + self.error * self.ki, -self.range, self.range)
         #if (sign(self.error) < 0 and sign(self.kisum2) < 0):
         #    self.kisum2 = self.kisum2 + self.error * self.ki
         #
