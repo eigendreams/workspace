@@ -188,7 +188,7 @@ class Double_motor:
         #
     def imuplatecb(self, data):
         #
-        self.rollPlate  = data.data[0]
+        self.rollPlate  = data.data[0] - 0.06
         self.pitchPlate = data.data[1]
         #
     def imupenducb(self, data):
