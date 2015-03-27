@@ -198,7 +198,7 @@ class Double_motor:
             self.rollPendu = data.data[0] + 3.1416
         if (data.data[0] > 0):
             self.rollPendu = data.data[0] - 3.1416
-        self.rollPendu = self.rollPendu + 0.07
+        self.rollPendu = self.rollPendu 
         self.pitchPendu = data.data[1]
         #
     def GRLinit(self, node_name_default):
