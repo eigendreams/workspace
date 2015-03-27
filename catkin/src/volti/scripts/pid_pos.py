@@ -54,7 +54,7 @@ class PID_pos:
             self.derror = 0
         self.times = self.times + 1
         #
-        self.kisum = constrain(self.kisum + self.error * (self.ki if (sign(self.kisum) == sign(self.error)) else self.ki_dec), -self.range, self.range)
+        self.kisum = constrain(self.kisum + self.error * (self.ki if (sign(self.kisum) == sign(self.error)) else self.ki_dec), -self.range/5, self.range/5)
         #
         if (abs(self.error) < self.umbral):
             self.error = 0
