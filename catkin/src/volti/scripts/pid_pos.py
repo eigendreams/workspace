@@ -27,6 +27,8 @@ class PID_pos:
         self.kisum          = 0.
         self.error          = 0.
         self.last_error     = 0.
+        self.actual         = 0.
+        self.last_actual    = 0.
         self.derror         = 0.                               # FILTRAR
         self.pid_out        = 0.
         self.times          = 0.
@@ -35,6 +37,8 @@ class PID_pos:
     def compute(self, desired, actual, speed):
         #
         self.last_error = self.error
+        self.actual = actual
+        self.last_actual = self.actual
         self.error = desired - actual
         #
         if (speed == None):
@@ -44,7 +48,7 @@ class PID_pos:
             # to keep consistency
             # i recommend to pass the speed value from the encoders??? error prone, noise, from the imus??? slow, not really motor speed
             # leave it like this, but pass the speed if possible from a higer level 
-            self.derror = (self.error - self.last_error) * self.rate
+            self.derror = (self.actual - self.last_actual) * self.rate
         else:
             self.derror = speed
         #
