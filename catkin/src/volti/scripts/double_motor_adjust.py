@@ -368,7 +368,7 @@ class Double_motor:
         # 
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var)
         self.salida_control_angulo  = self.salida_control_angulo + sign(self.salida_control_angulo) * 0
-        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante)
+        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
         #
         self.outpidangPub.publish(self.salida_control_angulo)
         #
