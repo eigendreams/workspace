@@ -105,13 +105,13 @@ class Double_motor:
         # Asociaciones con publicadores y suscriptores
         self.m1    = rospy.Publisher( "m1",    Int16)              # salida al motor 1
         self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
-        #self.e1ang = rospy.Publisher("e1_ang", Float32)     #
-        #self.e1vel = rospy.Publisher("e1_vel", Float32)     #
+        self.e1ang = rospy.Publisher("e1_ang", Float32)     #
+        self.e1vel = rospy.Publisher("e1_vel", Float32)     #
         #
         self.m2    = rospy.Publisher( "m2",    Int16)              # salida al motor 1
         self.e2    = rospy.Subscriber("e2",    Int16, self.e2cb)  # entrada del encoder 1
-        #self.e2ang = rospy.Publisher("e2_ang", Float32)     #
-        #self.e2vel = rospy.Publisher("e2_vel", Float32)     #
+        self.e2ang = rospy.Publisher("e2_ang", Float32)     #
+        self.e2vel = rospy.Publisher("e2_vel", Float32)     #
         #
         #self.vdes = rospy.Subscriber("vdes", Float32, self.vdescb)  # velocidad deseada adelante atras
         #
@@ -296,8 +296,8 @@ class Double_motor:
         self.speed_m1 = self.X_m1[1, 0]
         #self.accel_m1 = self.X_m1[2, 0]
         #
-        #self.e1ang.publish(self.angle_m1)
-        #self.e1vel.publish(self.speed_m1)
+        self.e1ang.publish(self.angle_m1)
+        self.e1vel.publish(self.speed_m1)
         #
     def e2cb(self, data):
         #
@@ -309,8 +309,8 @@ class Double_motor:
         self.speed_m2 = self.X_m2[1, 0]
         #self.accel_m2 = self.X_m2[2, 0]
         #
-        #self.e2ang.publish(self.angle_m2)
-        #self.e2vel.publish(self.speed_m2)
+        self.e2ang.publish(self.angle_m2)
+        self.e2vel.publish(self.speed_m2)
         #
     def controller(self):
         #
