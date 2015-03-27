@@ -100,4 +100,4 @@ class Kfilter:
         self.P = diag((float(settings['P0']), float(settings['P0']), float(settings['P0'])))
         self.Q = array([[settings['Q'], 0., 0.] , [0., settings['Q'], 0.], [0., 0., settings['Q']]])
         self.R = array([[settings['R'], 0., 0.] , [0., settings['R'], 0.], [0., 0., settings['R']]])
-        self.dt = float(settings['rate'])
+        self.dt = 1 / float(settings['rate'])
