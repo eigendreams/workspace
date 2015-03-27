@@ -283,6 +283,7 @@ class Double_motor:
         self.kf_settings['rate'] = float(config['rate'])
         #
         self.filter_e1.resetting(self.kf_settings)
+        self.filter_e1.resetting(self.kf_settings)
         #
         return config
         #
