@@ -73,7 +73,7 @@ class PID_pos:
         #
     def getKp(self, speed):
         #
-        return (self.kp_at_0rps - (self.kp_at_0rps - self.kp_at_1rps) * abs(speed) / (2 * pi))
+        return (self.kp_at_0rps - (self.kp_at_0rps - self.kp_at_1rps) * abs(speed))
         #
         #
     def reset(self):
