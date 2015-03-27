@@ -109,14 +109,14 @@ class PID_pos:
             self.kisum2 = 0
         #
         #
-        self.mult = map(self.error, -0.4, 0.4, -1, 1)
+        self.mult = 1 + 0 * abs(map(self.error, -0.4, 0.4, -1, 1))
         #
         #
         #
         self.pid_out = self.getKp(self.derror) * self.error - self.kd * self.derror
         #
         #self.kisum = sign(self.kisum) * min(abs(self.kisum - sign(self.kisum) * max(abs(self.kisum + self.pid_out) - self.range, 0)), abs(self.kisum))
-        self.pid_out = constrain(self.pid_out + self.kisum * abs(self.mult) + self.kisum2 * abs(self.mult), -self.range, self.range)
+        self.pid_out = constrain(self.pid_out + self.kisum * self.mult + self.kisum2 * self.mult, -self.range, self.range)
         #
         return self.pid_out
         #
