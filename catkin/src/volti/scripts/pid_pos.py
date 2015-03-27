@@ -83,7 +83,7 @@ class PID_pos:
         #
         #
         #if (sign(self.error) > 0 and sign(self.kisum2) > 0):
-        self.kisum2 = constrain(self.kisum2 + self.error * self.ki, -self.range, self.range)
+        self.kisum2 = constrain(self.kisum2 + self.error * self.ki, -self.ki_dec, self.ki_dec)
         #if (sign(self.error) < 0 and sign(self.kisum2) < 0):
         #    self.kisum2 = self.kisum2 + self.error * self.ki
         #
@@ -93,6 +93,12 @@ class PID_pos:
         #    self.kisum2 = self.kisum2 + self.error * self.ki_dec
         #
         #
+        if (abs(self.error) > self.umbral and abs(self.last_error) < self.umbral):
+            self.kisum2 = 0
+            self.kisum = 0
+        if (abs(self.error) < self.umbral and abs(self.last_error) > self.umbral):
+            self.kisum2 = 0
+            self.kisum = 0
         #
         if (abs(self.error) < self.umbral):
             self.kisum2 = 0
