@@ -66,6 +66,7 @@ class PID_pos:
         #
         #
         #
+        #
         # cuando el cambio del error es positivo, el error esta aumentando, 
         # parte integral normal pero que se resetea cuando llegue a banda, solo resetear
         # si el error esta en aumento, se usa la ki positiva, y el termino integral crece
