@@ -12,8 +12,9 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 from dynamic_reconfigure.server import Server
 ################################################################################
-from volti.cfg import PIDConfig
+#from volti.cfg import PIDConfig
 #from volti.cfg import ENCConfig
+from volti.cfg import VOLConfig
 ################################################################################
 from ino_mod import *
 from kfilter import *
@@ -115,7 +116,7 @@ class Double_motor:
         #self.vdes = rospy.Subscriber("vdes", Float32, self.vdescb)  # velocidad deseada adelante atras
         #
         #
-        self.srv = Server(PIDConfig, self.SRVcallback)
+        self.srv = Server(VOLConfig, self.SRVcallback)
         #self.srvenc = Server(ENCConfig, self.ENCcallback)
         #
         """
@@ -237,19 +238,6 @@ class Double_motor:
         self.vel_settings['ki_dec'] = float(rospy.get_param('~ki_vel',     '0'))  
         self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '10'))
         #
-    def ENCcallback(self, config, level):
-        #
-        rospy.loginfo("reconiguring encoders")
-        #
-        self.kf_settings['P0'] = float(config['P0'])
-        self.kf_settings['Q'] = float(config['Q'])
-        self.kf_settings['R'] = float(config['R'])
-        self.kf_settings['rate'] = float(config['rate'])
-        #
-        self.filter_e1.resetting(self.kf_settings)
-        #
-        return config
-        #h
     def SRVcallback(self, config, level):
         #
         rospy.loginfo("reconfiguring")
@@ -286,6 +274,15 @@ class Double_motor:
         #
         self.pid_pos_ang.resetting(self.pos_settings)
         self.pid_vel_vel.resetting(self.vel_settings)
+        #
+        #
+        #
+        self.kf_settings['P0'] = float(config['P0'])
+        self.kf_settings['Q'] = float(config['Q'])
+        self.kf_settings['R'] = float(config['R'])
+        self.kf_settings['rate'] = float(config['rate'])
+        #
+        self.filter_e1.resetting(self.kf_settings)
         #
         return config
         #
