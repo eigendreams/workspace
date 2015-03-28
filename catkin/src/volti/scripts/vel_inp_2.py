@@ -343,6 +343,7 @@ class Double_motor:
         self.salida_m1_angulo = -self.salida_ang
         self.salida_m2_angulo = self.salida_ang
         #   """
+        """
         if (self.rollPendu > 0):
             # el aungulo intentara aumentar
             if (self.salida_m2_angulo < 0):
@@ -359,6 +360,7 @@ class Double_motor:
             if (self.salida_m2_angulo < 0):
                 pass
         #
+        """
         """
         self.actual_error = self.control_var
         if (abs(self.actual_error) < self.minimal_error):
