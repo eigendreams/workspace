@@ -104,9 +104,9 @@ class PID_pos:
             self.kisum2 = 0
         if (abs(self.error) > self.umbral):
             self.kisum = 0
-        #if (sign(self.error) != sign(self.last_error)):
-        #    self.kisum = 0
-        #    self.kisum2 = 0
+        if (sign(self.error) != sign(self.last_error)):
+            self.kisum = 0
+            self.kisum2 = 0
         #
         #
         self.mult = 0 * abs(map(self.error, -0.4, 0.4, -1, 1))
