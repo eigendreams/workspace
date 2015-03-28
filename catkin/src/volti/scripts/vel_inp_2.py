@@ -352,11 +352,11 @@ class Double_motor:
                     self.salida_m1_angulo = 0
                     self.salida_m2_angulo = 0
         if (self.rollPendu < 0):
-            if (self.salida_m2_angulo > 0):
+            if (self.salida_m2_angulo < 0):
                 if (abs(self.rollPendu) < self.umbralonoff):
                     self.salida_m1_angulo = 0
                     self.salida_m2_angulo = 0
-            if (self.salida_m2_angulo < 0):
+            if (self.salida_m2_angulo > 0):
                 pass
         #
         """
