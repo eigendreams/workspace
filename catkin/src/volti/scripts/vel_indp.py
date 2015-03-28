@@ -330,7 +330,9 @@ class Double_motor:
         self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
         #
         self.control_var = self.rollPlate
+        #
         self.salida_ang = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
+        #
         self.outpidangPub.publish(self.salida_ang)
         #
         if (self.ang_lat_diff > 0.41):
@@ -341,6 +343,7 @@ class Double_motor:
         self.salida_m1_angulo = -self.salida_ang
         self.salida_m2_angulo = self.salida_ang
         #
+        """
         if (self.rollPendu > 0):
             # el aungulo intentara aumentar
             if (self.salida_m2_angulo > 0):
@@ -357,6 +360,7 @@ class Double_motor:
             if (self.salida_m2_angulo < 0):
                 pass
         #
+        """
         """
         self.actual_error = self.control_var
         if (abs(self.actual_error) < self.minimal_error):
