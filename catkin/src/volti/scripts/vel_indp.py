@@ -444,7 +444,7 @@ class Double_motor:
         #self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
         #
         #
-        self.out_pos_m1 = self.profile_m1.compute(-self.salida_m1)
+        self.out_pos_m1 = self.profile_m1.compute(self.salida_m1)
         self.out_pos_m2 = self.profile_m2.compute(self.salida_m2)
         #
         #
