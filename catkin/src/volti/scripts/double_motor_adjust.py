@@ -375,7 +375,7 @@ class Double_motor:
         #if (self.rollPlate < 0):
         #    if (self.ang_lat_des > 0):
         #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        self.salida_control_angulo = self.salida_control_angulo * (self.rollPendu / 0.6)
+        self.salida_control_angulo = self.salida_control_angulo * max((self.rollPendu / 0.6), 0.5)
         #
         #
         #

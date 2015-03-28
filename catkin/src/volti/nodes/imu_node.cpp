@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   ros::Publisher imu2_pub = n.advertise<volti_msgs::float32_3>("imu_plate_3", 1);
 
   //publicar cada 20 ms
-  ros::Rate loop_rate(20);
+  ros::Rate loop_rate(50);
 
   // modulos de salida en el BBB
   IMU imu_plate(1);
