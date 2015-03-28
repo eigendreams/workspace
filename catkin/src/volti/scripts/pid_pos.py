@@ -109,7 +109,7 @@ class PID_pos:
             self.kisum2 = 0
         #
         #
-        self.mult = 1 + 0 * abs(map(self.error, -0.4, 0.4, -1, 1))
+        self.mult = 0 + 0 * abs(map(self.error, -0.4, 0.4, -1, 1))
         #
         #
         #
