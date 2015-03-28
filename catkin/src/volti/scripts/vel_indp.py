@@ -345,8 +345,8 @@ class Double_motor:
         #
         self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
         #
-        self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des - self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m1, 0)
-        self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des + self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m2, 0)
+        self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des - 0*self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m1, 0)
+        self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des + 0*self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m2, 0)
         #
         self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_m1)
         self.out_pos_m2 = self.profile_m2.compute(self.salida_control_angulo + self.salida_m2)
