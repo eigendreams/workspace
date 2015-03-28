@@ -60,7 +60,7 @@ class Double_motor:
         self.enc_2 = Encoder(self.enc_settings)
         #
         # Objeto de limitacion de la salida a los motores
-        self.profile_settings = {'max_output' : 20, 'max_speed' : 10000, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
+        self.profile_settings = {'max_output' : 30, 'max_speed' : 10000, 'rate' : self.rate, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}
         #
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
@@ -115,6 +115,8 @@ class Double_motor:
         #
         #self.vdes = rospy.Subscriber("vdes", Float32, self.vdescb)  # velocidad deseada adelante atras
         #
+        self.umbralki = 0
+        self.umbralonoff = 0
         #
         self.srv = Server(VOLConfig, self.SRVcallback)
         #self.srvenc = Server(ENCConfig, self.ENCcallback)
@@ -285,6 +287,9 @@ class Double_motor:
         self.kf_settings['R'] = float(config['R'])
         self.kf_settings['rate'] = float(config['rate'])
         #
+        self.umbralki = float(config['umbralki'])
+        self.umbralonoff = float(config['umbralonoff'])
+        #
         self.filter_e1.resetting(self.kf_settings)
         self.filter_e1.resetting(self.kf_settings)
         #
@@ -318,44 +323,66 @@ class Double_motor:
         #
     def controller(self):
         #
+        # control on off que apague en un umbral del pendulo
+        #
         self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
         self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
         self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
-        self.control_var                = self.rollPlate
         #
-        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
-        #
+        self.control_var = self.rollPlate
+        self.salida_ang = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
         self.outpidangPub.publish(self.salida_control_angulo)
         #
         if (self.ang_lat_diff > 0.41):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 0)
+            self.salida_ang = constrain(self.salida_ang, -30, 0)
         if (self.ang_lat_diff < -0.41):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 20)
+            self.salida_ang = constrain(self.salida_ang, 0, 30)
         #
+        self.salida_m1_angulo = -self.salida_ang
+        self.salida_m2_angulo = self.salida_ang
+        #
+        if (self.rollPendu > 0):
+            # el aungulo intentara aumentar
+            if (self.salida_m2_angulo > 0):
+                pass
+            if (self.salida_m2_angulo < 0):
+                if (abs(self.rollPendu) < self.umbralonoff):
+                    self.salida_m1_angulo = 0
+                    self.salida_m2_angulo = 0
+        if (self.rollPendu < 0):
+            if (self.salida_m2_angulo > 0):
+                if (abs(self.rollPendu) < self.umbralonoff):
+                    self.salida_m1_angulo = 0
+                    self.salida_m2_angulo = 0
+            if (self.salida_m2_angulo < 0):
+                pass
+        #
+        """
         self.actual_error = self.control_var
         if (abs(self.actual_error) < self.minimal_error):
             self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
         #
         self.tmp_constrain = 20 - 7 * (1 - map(self.minimal_error, 0, 0.4, 0, 1))
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
+        """
         #
         self.rollPenduPub.publish(self.rollPendu)
         self.rollPlatePub.publish(self.rollPlate)
         self.anglatdifPub.publish(self.ang_lat_diff)
         self.minierrorPub.publish(self.minimal_error)
         #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
+        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des), self.speed_m1, 0)
+        self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des), self.speed_m2, 0)
         #
-        self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des - 0*self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m1, 0)
-        self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des + 0*self.salida_control_angulo / (1 + 10*self.vel_settings['ki_dec']), self.speed_m2, 0)
-        #
-        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_m1)
-        self.out_pos_m2 = self.profile_m2.compute(self.salida_control_angulo + self.salida_m2)
+        self.out_pos_m1 = self.profile_m1.compute(self.salida_m1_angulo + self.salida_m1_vel)
+        self.out_pos_m2 = self.profile_m2.compute(self.salida_m2_angulo + self.salida_m2_vel)
         #
         if (self.con_mode is 1):
             return
         #
         self.m1.publish(int((self.out_pos_m1) * 100))
         self.m2.publish(int((self.out_pos_m2) * 100))
+        #
     def update(self):
         #
         self.times = self.times + 1

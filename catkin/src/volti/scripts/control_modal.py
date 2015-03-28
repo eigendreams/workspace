@@ -117,7 +117,7 @@ class Control_interface:
         self.conmode.publish(self.btog)
         #
         self.angmultval = constrain( (1 + self.ltval) * (1 + self.lastlb), 1, 4)
-        self.velmultval = constrain( (1 + self.rtval + self.lastrb), 1, 2)
+        self.velmultval = constrain( (1 + self.rtval) * (1 + self.lastrb), 1, 4)
         # the multiply values have to published anyway, yo be cathced and processed in the control nodes
         self.angmult.publish(self.angmultval)
         self.velmult.publish(self.velmultval)
@@ -146,12 +146,12 @@ class Control_interface:
         if (self.btog is 1):
             #
             if (self.angdifval > 0.41):
-                self.angle_des_change = constrain(self.angle_des_change, -13, 0)
+                self.angle_des_change = constrain(self.angle_des_change, -30, 0)
             if (self.angdifval < -0.41):
-                self.angle_des_change = constrain(self.angle_des_change, 0, 13)
+                self.angle_des_change = constrain(self.angle_des_change, 0, 30)
             #
-            self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
-            self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des_change * 5 * self.angmultval * 100,-2000, 2000))
+            self.m1.publish(constrain(self.vel_des * 6 * self.velmultval * 100 - self.angle_des_change * 6 * self.angmultval * 100,-3000, 3000))
+            self.m2.publish(constrain(self.vel_des * 6 * self.velmultval * 100 + self.angle_des_change * 6 * self.angmultval * 100,-3000, 3000))
         else:
             self.angdespub.publish(self.angle_des_change * 0.4)
             self.veldespub.publish(self.vel_des   * 1.0)
