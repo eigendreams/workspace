@@ -385,8 +385,8 @@ class Double_motor:
         #
         #
         #
-        self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des, self.speed_m1)
-        self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des, self.speed_m2)
+        self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des, self.speed_m1, 0)
+        self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des, self.speed_m2, 0)
         #
         #self.salida_control_angulo  = self.salida_control_angulo + sign(self.salida_control_angulo) * 0
         #
