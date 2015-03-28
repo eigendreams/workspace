@@ -305,8 +305,8 @@ class Double_motor:
         self.speed_m1 = self.X_m1[1, 0]
         #self.accel_m1 = self.X_m1[2, 0]
         #
-        self.e1ang.publish(self.angle_m1)
-        self.e1vel.publish(self.speed_m1)
+        #self.e1ang.publish(self.angle_m1)
+        #self.e1vel.publish(self.speed_m1)
         #
     def e2cb(self, data):
         #
@@ -318,8 +318,8 @@ class Double_motor:
         self.speed_m2 = self.X_m2[1, 0]
         #self.accel_m2 = self.X_m2[2, 0]
         #
-        self.e2ang.publish(self.angle_m2)
-        self.e2vel.publish(self.speed_m2)
+        #self.e2ang.publish(self.angle_m2)
+        #self.e2vel.publish(self.speed_m2)
         #
     def controller(self):
         #
