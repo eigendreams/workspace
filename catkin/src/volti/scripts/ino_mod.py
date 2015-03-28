@@ -20,4 +20,4 @@ def constrain(x, min, max):
     return x
     #
 def sign(a):
-    return (a > 0) - (a < 0)
+    return int((a > 0) - (a < 0))

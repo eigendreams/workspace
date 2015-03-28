@@ -104,7 +104,10 @@ class PID_pos:
             self.kisum2 = 0
         if (abs(self.error) > self.umbral):
             self.kisum = 0
-        if (abs(self.error) < 0.1):
+        if (abs(self.error) < 0.05):
+            self.kisum = 0
+            self.kisum2 = 0
+        if (sign(self.error) != sign(self.last_error)):
             self.kisum = 0
             self.kisum2 = 0
         #
