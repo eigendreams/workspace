@@ -366,7 +366,18 @@ class Double_motor:
         #
         # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
         # 
-        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var)
+        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
+        #
+        #
+        if (self.rollPlate > 0):
+            if (self.ang_lateral_des < 0):
+                self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
+        if (self.rollPlate < 0):
+            if (self.ang_lateral_des > 0):
+                self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
+        #
+        #
+        #
         self.salida_control_angulo  = self.salida_control_angulo + sign(self.salida_control_angulo) * 0
         self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
         #
