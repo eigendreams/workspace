@@ -331,7 +331,7 @@ class Double_motor:
         #
         self.control_var = self.rollPlate
         self.salida_ang = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
-        self.outpidangPub.publish(self.salida_control_angulo)
+        self.outpidangPub.publish(self.salida_ang)
         #
         if (self.ang_lat_diff > 0.41):
             self.salida_ang = constrain(self.salida_ang, -30, 0)
