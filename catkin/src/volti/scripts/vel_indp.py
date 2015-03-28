@@ -349,7 +349,7 @@ class Double_motor:
         self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des, self.speed_m2, 0)
         #
         self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_m1)
-        self.out_pos_m2 = self.profile_m2.compute(-self.salida_control_angulo + self.salida_m2)
+        self.out_pos_m2 = self.profile_m2.compute(self.salida_control_angulo + self.salida_m2)
         #
         if (self.con_mode is 1):
             return
