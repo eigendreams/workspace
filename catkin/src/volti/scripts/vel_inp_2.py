@@ -332,8 +332,8 @@ class Double_motor:
         self.control_var = self.rollPlate
         #
         self.salida_ang = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var)
-        self.salida_ang = sign(self.salida_ang) * self.umbralki 
-        self.salida_ang_tmp = self.salida_ang
+        #self.salida_ang =  
+        self.salida_ang_tmp = sign(self.salida_ang) * self.umbralki
         #
         self.outpidangPub.publish(self.salida_ang)
         #
