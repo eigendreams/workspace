@@ -369,12 +369,13 @@ class Double_motor:
         self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
         #
         #
-        if (self.rollPlate > 0):
-            if (self.ang_lat_des < 0):
-                self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        if (self.rollPlate < 0):
-            if (self.ang_lat_des > 0):
-                self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
+        #if (self.rollPlate > 0):
+        #    if (self.ang_lat_des < 0):
+        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
+        #if (self.rollPlate < 0):
+        #    if (self.ang_lat_des > 0):
+        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
+        self.salida_control_angulo = self.salida_control_angulo * (self.rollPendu / 0.6)
         #
         #
         #
