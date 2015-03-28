@@ -318,145 +318,44 @@ class Double_motor:
         #
     def controller(self):
         #
-        #
-        # Quiero controlar el angulo de roll del pendulo, pero verificar contra el angulo de roll de plate para evitar colisiones
-        # este control es solamente de posicion, la parte del angulo de pitch se deriva de un controlador de velocidad, que se 
-        # superpondra linealmente a las salidas de este controlador, obviamente, la parte del control de velocidad no podria probarse
-        # con el pendulo en la base de pruebas
-        #
-        # la unica forma de sensar la velocidad de movimiento del pendulo seria a traves de los encoders, PERO como tambien se mueve
-        # en direccion del roll, no podemos simplemente asumir que es los encoders y ya, pareces ser que habria que considerar la
-        # contribucion del angulo de pitc. En general, las ecuaciones son:
-        #
-        # movimiento hacia adelante = (e1 + e2) / 2 (PITCH_RELATIVE)
-        # movimiento hacia los lados = (e1 - e2) / 2 (ROLL_RELATIVE)
-        #
-        # entonces, para saber el grado de avance hacia adelante, si tenemos la lectura de los encoders pero deseamos quitar el efecto del roll:
-        #
-        # datos: e1, e2, rolls, pitchs
-        # 
         self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
-        #self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
-        #self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
+        self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
+        self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
+        self.control_var                = self.rollPlate
         #
+        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
         #
-        #self.control_var                = self.rollPlate
+        self.outpidangPub.publish(self.salida_control_angulo)
         #
+        if (self.ang_lat_diff > 0.41):
+            self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 0)
+        if (self.ang_lat_diff < -0.41):
+            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 20)
         #
-        #rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
+        self.actual_error = self.control_var
+        if (abs(self.actual_error) < self.minimal_error):
+            self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
         #
+        self.tmp_constrain = 20 - 7 * (1 - map(self.minimal_error, 0, 0.4, 0, 1))
         #
-        # el control de angulo del pendulo en roll, no podria ser a traves de los encoders... por el juego de las bandas, en primer lugar... por ende este solo
-        # podria ser un controlador de posicion, donde
+        self.rollPenduPub.publish(self.rollPendu)
+        self.rollPlatePub.publish(self.rollPlate)
+        self.anglatdifPub.publish(self.ang_lat_diff)
+        self.minierrorPub.publish(self.minimal_error)
         #
-        # speed_m1_setpoint = velocidad_adelante_deseada + velocidad_lateral_deseada
-        # speed_m2_setpoint = velocidad_Adelante_deseada - velocidad_lateral_deseada
-        #
-        # queremos hacer dos cosas, controlar la velocidad_adelante, con una posible contribucion de un angulo de la imu en pitch que no podria probarse
-        # en una base de pruebas... then
-        #
-        # el control de la velocidad deberia hacerse por motor, y con referencia de las velocidades de las imus
-        # el control de posicion deberia hacerse global (un unico controlador), y con referencia de los angulos de las imus y un factor integral adicionas
-        #
-        #
-        #
-        # pero debemos encontrar alguna forma de mitigar el bamboleo, se me ocurre que tengamos alguno valor de umbral, para el control del angulo, en velocidad
-        # no hay un problema tan grande, basicamente, como los motores parece capaces de soportarse a si mismos, por la amplia reduccion, basta con apagar los motores
-        # cuando se alcance el objetivo de control, y reiniciar cuando se salga de un umbral de digamos 5 grados, en radianes son 0.1 radianes TOP
-        #
-        #
-        #
-        # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
-        # 
-        #
-        #
-        #
-        #
-        #self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
-        #
-        #
-        #if (self.rollPlate > 0):
-        #    if (self.ang_lat_des < 0):
-        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        #if (self.rollPlate < 0):
-        #    if (self.ang_lat_des > 0):
-        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        #self.salida_control_angulo = self.salida_control_angulo * max((self.rollPendu / 0.6), 0.5)
-        #
-        #
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
         #
         self.salida_m1              = self.pid_vel_m1.compute(self.vel_del_des, self.speed_m1, 0)
         self.salida_m2              = self.pid_vel_m2.compute(self.vel_del_des, self.speed_m2, 0)
         #
-        #self.salida_control_angulo  = self.salida_control_angulo + sign(self.salida_control_angulo) * 0
+        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_m1)
+        self.out_pos_m2 = self.profile_m2.compute(-self.salida_control_angulo + self.salida_m2)
         #
-        #
-        #
-        #
-        #
-        #self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
-        #
-        #self.outpidangPub.publish(self.salida_control_angulo)
-        #
-        #rospy.loginfo("pid: " + str(self.salida_control_angulo))
-        #
-        #self.salida_control_angulo  = self.salida_control_angulo + 0 * sign(self.salida_control_angulo)
-        #
-        #
-        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
-        #
-        #
-        #
-        # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
-        #
-        #if (self.ang_lat_diff > 0.41):
-        #    self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 0)
-        #if (self.ang_lat_diff < -0.41):
-        #    self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 20)
-        #
-        #
-        #rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
-        # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
-        # pida una nueva posicion de control del angulo
-        #
-        #
-        #self.actual_error = self.control_var
-        #if (abs(self.actual_error) < self.minimal_error):
-        #    self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
-        #
-        #self.tmp_constrain = 20 - 7 * (1 - map(self.minimal_error, 0, 0.4, 0, 1))
-        #
-        #
-        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
-        # aplica un constrain de salida al motor
-        #
-        #
-        #
-        #self.rollPenduPub.publish(self.rollPendu)
-        #self.rollPlatePub.publish(self.rollPlate)
-        #self.anglatdifPub.publish(self.ang_lat_diff)
-        #self.minierrorPub.publish(self.minimal_error)
-        #self.veladesumPub.publish(self.velocidad_adelante) 
-        #
-        #
-        #
-        #self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
-        #self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
-        #
-        #
-        self.out_pos_m1 = self.profile_m1.compute(self.salida_m1)
-        self.out_pos_m2 = self.profile_m2.compute(self.salida_m2)
-        #
-        #
-        # the control interface is publishing motor pwm values directly
-        # though, I would prefer to vanish the integral term in this case, and fix the desired angle and speed, etc.
         if (self.con_mode is 1):
             return
         #
         self.m1.publish(int((self.out_pos_m1) * 100))
         self.m2.publish(int((self.out_pos_m2) * 100))
-        #
-        #
     def update(self):
         #
         self.times = self.times + 1
