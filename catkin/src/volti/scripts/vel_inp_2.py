@@ -379,7 +379,7 @@ class Double_motor:
         self.anglatdifPub.publish(self.ang_lat_diff)
         self.minierrorPub.publish(self.minimal_error)
         #
-        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des,- self.salida_ang_tmp, self.speed_m1, 0)
+        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des - self.salida_ang_tmp, self.speed_m1, 0)
         self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des + self.salida_ang_tmp, self.speed_m2, 0)
         #
         self.out_pos_m1 = self.profile_m1.compute(self.salida_m1_angulo + self.salida_m1_vel)
