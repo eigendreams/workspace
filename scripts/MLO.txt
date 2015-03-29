@@ -1,4 +1,6 @@
-Para evitar tener que presionar siempre el boton de boot, podemos editar el archivo MLO del sistema. Aunque, en las ultimas versiones podria ser que baste con iniciar el Debian desde la memoria flash, y usar sudo find para encontrar el archivo MLO y renombrarlo, desde Debian.
+Para evitar tener que presionar siempre el boton de boot, podemos editar el archivo MLO del sistema residente en la memoria flash. Aunque, en las ultimas versiones podria ser que baste con iniciar el Debian desde la memoria flash, y usar sudo find para encontrar el archivo MLO y renombrarlo, desde Debian.
+
+http://www.twam.info/hardware/beaglebone-black/u-boot-on-beaglebone-black
 
 --- Bootear la BBB desde la uSd con la revisión C Debian
     
