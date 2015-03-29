@@ -11,8 +11,7 @@ chmod +x dtc.sh
 ./dtc.sh
 
 update-locale LANG=C LANGUAGE=C LC_ALL=C LC_MESSAGES=POSIX
-sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > 
-/etc/apt/sources.list.d/ros-latest.list'
+sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
 wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add -
 apt-get update
 apt-get -y install ros-indigo-ros-comm
@@ -46,6 +45,7 @@ rm -rf src/hector*
 rm -rf src/hokuyo*
 rm -rf src/urg*
 rm -rf src/audio*
+rm -rf src/rosserial*
 catkin_make
 
 cd /home/ubuntu

@@ -37,7 +37,7 @@ http://www.twam.info/hardware/beaglebone-black/u-boot-on-beaglebone-black
         sha1sum *
         md5sum *
 
---- Instalando cosas (nodejs?), esta en script bbboncesetup.sh
+--- Instalando cosas (nodejs?), esta mejor en script bbboncesetup.sh
 
         Ver http://thethingsystem.com/dev/Bootstrapping-the-BeagleBone-Black-with-Debian.html
         Ver* http://shrkey.com/installing-node-version-manager-and-node-js-on-beaglebone-black/
