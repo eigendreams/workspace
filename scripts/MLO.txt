@@ -1,6 +1,11 @@
+Para evitar tener que presionar siempre el boton de boot, podemos editar el archivo MLO del sistema. Aunque, en las ultimas versiones podria ser que baste con iniciar el Debian desde la memoria flash, y usar sudo find para encontrar el archivo MLO y renombrarlo, desde Debian.
+
 --- Bootear la BBB desde la uSd con la revisión C Debian
     
-        Bootear con una imagen de Ubuntu
+        Bootear con una imagen de Ubuntu, en la uSD, usando el boton de booteo, y acceder por ssh al sistema
+
+	    ssh ubuntu@192.168.7.2
+            password: temppwd
 
         Ver la tabla de particiones:
 
@@ -20,7 +25,7 @@
 
             sudo reboot
 
-        *Para deshacer:
+        *Para deshacer montaje y MLO:
 
             sudo umount /dev/mmcblk1p1
             sudo mv bakMLO MLO
@@ -30,7 +35,7 @@
         sha1sum *
         md5sum *
 
---- Instalando cosas (nodejs?)
+--- Instalando cosas (nodejs?), esta en script bbboncesetup.sh
 
         Ver http://thethingsystem.com/dev/Bootstrapping-the-BeagleBone-Black-with-Debian.html
         Ver* http://shrkey.com/installing-node-version-manager-and-node-js-on-beaglebone-black/
