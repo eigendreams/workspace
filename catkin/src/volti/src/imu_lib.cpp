@@ -626,7 +626,7 @@ void IMU::loop()
     
     // Update sensor readings
     //Wire.setModule(module);
-    G_Dt = .050;
+    G_Dt = .020;
     read_sensors();
 
     // Apply sensor calibration

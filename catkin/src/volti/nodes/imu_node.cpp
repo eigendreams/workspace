@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
     times++;
 
-    if (times % 2 == 1) {
+    if (times % 5 == 1) {
 
     //kalman1.compute(imu_plate.roll);
     //kalman2.compute(imu_plate.pitch);

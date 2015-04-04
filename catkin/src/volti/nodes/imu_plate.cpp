@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
   string topic_name;
   int    i2c_num;
 
-  nh.param("rate", rate_num, int(20));
+  nh.param("rate", rate_num, int(50));
   nh.param("topic", topic_name, string("imu_plate_3"));
   nh.param("i2c", i2c_num, int(2));
 
