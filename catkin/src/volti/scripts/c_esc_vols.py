@@ -3,7 +3,6 @@
 
 import rospy
 from std_msgs.msg import Int16
-from std_msgs.msg import UInt16
 from ino_mod import *
 
 class Control_ESC_Volantes:
@@ -20,6 +19,7 @@ class Control_ESC_Volantes:
         # state  = 0 -> volantes apagados
         # state  = 1 -> volantes encendiendo
         # state  = 2 -> volante a velocidad crucero
+        #
         # vol1 y vol2 de 0 a 100,00
         # 
         self.state     = 0
@@ -35,22 +35,15 @@ class Control_ESC_Volantes:
         self.vol1      = 0
         self.vol2      = 0
         #
-        # copy_vol -> vol2 = vol1
-        # rise_time se da en segundos
-        #
-        self.con_mode = int(rospy.get_param("copy_vol", 0))
-        self.rise_time = int(rospy.get_param("rise_vol_time", 30))
+        self.rise_time = int(rospy.get_param("rise_vol_segs", 30))
         #
         # Los datos de salida a los ESC deberan seguir el patron del resto del codigo, con una diferencia
         # En general, vamos de -100,00 a 100,00, en este caso, solo tiene sentido ir de 0 a 100,00
+        # se dejan dos publicadores, por si acaso se quiera implementar alguna funcionalidad en otro nodo que 
+        # necesite hacer un uso dispar de los volantes
         #
         self.vol1Pub = rospy.Publisher('vol1', Int16)
         self.vol2Pub = rospy.Publisher('vol2', Int16)
-        #
-        # la idea de una mascara de bits es reciente, esta funcionalidad debe implementarse en el codigo
-        # del microcontrolador
-        #
-        self.maskPub = rospy.Publisher('al_mask', Int16)
         #
         # Las senales de control seran simplemente
         #
@@ -78,15 +71,14 @@ class Control_ESC_Volantes:
         # modo para varios sistemas en forma de una mascara de bits, con un maximo de 14 opciones, la primera prohibida porque tiene signo,
         # y la ultima porque especifica el estado como alive o no
         #
-        # ok
+        # ok, pero no sera implementado aun
         #
         # Esta clase necesita de varios parametros:
         #
         # RISE_TIME o el tiempo necesario para alcanzar la velocidad de crucero
-        # CON_MODE   o la adicion a la mascara de bits que sea alive para duplicar vol1 en vol2
-        # CON_SIGN   o una senal que le indique cuando parar o iniciar los volantes, todos los inicios deben de durar 30 segundos
+        # CON_SIGN   o una senal que le indique cuando parar o iniciar los volantes, todos los inicios deben de durar ej 30 segundos
         #            pero los paros podrian hacerse simplemente apagando la salida de los ESC, recomiendo, que los paros se hagan de
-        #            manera controlada y durante un tiempo total de dos minutos, por la tremenda energia que se tiene que disipar
+        #            manera controlada y durante un tiempo total de ej dos minutos, por la tremenda energia que se tiene que disipar
         #
         # Usamos una maquina de estados desacoplada del resto del flujo del programa, porque es necesario asegurar que los estados se
         # cumplan siempre de forma precisa, no hacerlo podria ser peligroso, por la gran velocidad de los volantes, como consecuencia, cada
@@ -135,10 +127,7 @@ class Control_ESC_Volantes:
             self.vol2 = self.signal
         #
         self.vol1Pub.publish(self.vol1 * 100)
-        if (self.con_mode == 1):
-            self.vol2Pub.publish(self.vol1 * 100)
-        else:
-            self.vol2Pub.publish(self.vol2 * 100)
+        self.vol2Pub.publish(self.vol2 * 100)
         #
     def spin(self):
 		#

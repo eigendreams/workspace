@@ -324,9 +324,9 @@ void IMU::Read_Accel()
 
 void IMU::Read_Gyro(){
   this->Gyrometro->readFullGyro();
-  gyro[0] = this->Gyrometro->getGyroX();  // X axis (internal sensor y axis)
-  gyro[1] = this->Gyrometro->getGyroY();  // Y axis (internal sensor x axis)
-  gyro[2] = this->Gyrometro->getGyroZ();  // Z axis (internal sensor z axis)
+  gyro[0] = this->Gyrometro->getGyroX() * 1.05;  // X axis (internal sensor y axis)
+  gyro[1] = this->Gyrometro->getGyroY() * 1.05;  // Y axis (internal sensor x axis)
+  gyro[2] = this->Gyrometro->getGyroZ() * 1.05;  // Z axis (internal sensor z axis)
 
 }
 void IMU::Read_Magn(){

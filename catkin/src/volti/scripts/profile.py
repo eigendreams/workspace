@@ -107,38 +107,15 @@ class Profile:
         #
         self.output_limit = constrain(self.output_limit + self.gain_val, 0, self.max_output)
         #
-        if abs(self.output_des) > abs(self.output_limit):
-            self.output_actual = self.output_limit * sign(self.output_des)
-        else:
-            self.output_actual = self.output_des
+        self.output_actual = constrain(self.output_des, -self.output_limit, self.output_limit)
         #
         # try to limit output change due to specified maximal speed
         #
         self.output_change = self.output_actual - self.last_output_actual
         #
         # if changing too fast
-        if (abs(self.output_change) > self.max_speed / self.rate):
-            #
-            #self.possible_output = self.output_actual
-            #self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / self.rate)
-            #
-            #if (abs(self.possible_output) < abs(self.output_actual)):
-            #    return self.possible_output
-            #else:
-            #    return self.output_actual
-            # if decreasing, i dont care, decrease as fast as possible
-            """
-            if sign(self.last_output_actual) == sign(self.output_change):
-                self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / self.rate)
-            else:
-                self.possible_output = self.output_actual
-                if sign(self.last_output_actual) == sign(self.output_actual):
-                    self.output_actual = self.possible_output
-                else:
-                    self.output_actual = 0
-            """
-            self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / self.rate)
-        # try to make the diminishing option faster than the increasing one
+        #
+        self.output_actual = constrain(self.output_actual, self.last_output_actual - self.max_speed / self.rate, self.last_output_actual + self.max_speed / self.rate)
         #
         return self.output_actual
         #

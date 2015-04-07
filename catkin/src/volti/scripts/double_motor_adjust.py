@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #
-#
-#
 ################################################################################
 from math import *
 ################################################################################
@@ -12,8 +10,6 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 from dynamic_reconfigure.server import Server
 ################################################################################
-#from volti.cfg import PIDConfig
-#from volti.cfg import ENCConfig
 from volti.cfg import VOLConfig
 ################################################################################
 from ino_mod import *
@@ -38,13 +34,16 @@ class Double_motor:
         self.SRVinit()
         #
         # creando los objetos PID
-        self.pid_pos_m1          = PID_pos(self.pos_settings)
+        #self.pid_pos_m1          = PID_pos(self.pos_settings)
         self.pid_vel_m1          = PID_vel(self.vel_settings)
-        self.pid_pos_m2          = PID_pos(self.pos_settings)
+        #self.pid_pos_m2          = PID_pos(self.pos_settings)
         self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
         self.pid_vel_vel         = PID_vel(self.vel_settings)
-        self.pid_pos_ang         = PID_pos(self.pos_settings)
+        #self.pid_pos_ang         = PID_pos(self.pos_settings)
+        #
+        self.integral_ang        = 0
+        self.integral_vel        = 0
         #
         # filtro de entradas del encoder
         self.kf_settings         = {'Q' : 10, 'R' : 10, 'P0' : 10, 'rate' : self.rate}
@@ -52,6 +51,8 @@ class Double_motor:
         # filtros kalman de los encoders
         self.filter_e1           = Kfilter(self.kf_settings)
         self.filter_e2           = Kfilter(self.kf_settings)
+        self.filter_plate        = Kfilter(self.kf_settings)
+        self.filter_pendu        = Kfilter(self.kf_settings)
         #
         # objeto de lectura del encoder
         self.enc_settings = {'offset' : -1}
@@ -71,15 +72,11 @@ class Double_motor:
         self.speed_m1 = 0
         self.accel_m1 = 0
         #
-        self.angle_lock_m1 = 0
-        #
         self.des_m2 = 0
         self.value_m2 = 0
         self.angle_m2 = 0
         self.speed_m2 = 0
         self.accel_m2 = 0
-        #
-        self.angle_lock_m2 = 0
         #
         self.vel_del_des = 0
         self.ang_lat_des = 0
@@ -88,8 +85,6 @@ class Double_motor:
         self.pitchPlate = 0
         self.rollPendu  = 0
         self.pitchPendu = 0
-        #
-        self.minimal_error = 0
         #
         self.powtog = 0
         self.con_mode = 0
@@ -118,26 +113,6 @@ class Double_motor:
         #
         self.srv = Server(VOLConfig, self.SRVcallback)
         #self.srvenc = Server(ENCConfig, self.ENCcallback)
-        #
-        """
-        self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
-        self.pos_settings['kp1rps'] = float(config['kp1rps_pos'])      
-        self.pos_settings['ki']     = float(config['ki_pos'])           
-        self.pos_settings['kd']     = float(config['kd_pos'])              
-        # variables de limitacion adicionales
-        self.pos_settings['umbral'] = float(config['umbral_pos'])
-        self.pos_settings['ki_dec'] = float(config['ki_dec_pos'])
-        self.pos_settings['range']  = float(config['range_pos'])
-        # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.vel_settings['kp']     = float(config['kp_vel'])          
-        self.vel_settings['ki']     = float(config['ki_vel'])          
-        self.vel_settings['kd']     = float(config['kd_vel'])          
-        self.vel_settings['km']     = float(config['km_vel'])         
-        # variables de limitacion adicionales
-        self.vel_settings['umbral'] = float(config['umbral_vel'])
-        self.vel_settings['ki_dec'] = float(config['ki_dec_vel'])
-        self.vel_settings['range']  = float(config['range_vel'])
-        """
         #
         self.normalizedkp0rps = 1
         self.normalizedkp1rps = 1
@@ -174,17 +149,7 @@ class Double_motor:
         #
     def anglatdescb(self, data):
         #
-        self.minimal_error = 1
-        #
         self.ang_lat_des = data.data
-        #
-    def angleRange(self, data):
-        #
-        if (data > 0):
-            return data - 3.1416
-        if (data < 0):
-            return data + 3.1416
-        return data
         #
     def imuplatecb(self, data):
         #
@@ -218,26 +183,8 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
-        self.vel_settings = {'kp' : 0,         'ki' : 0, 'kd' : 0, 'km' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
-        # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.pos_settings['kp0rps'] = float(rospy.get_param('~kp0rps_pos',  '0'))      
-        self.pos_settings['kp1rps'] = float(rospy.get_param('~kp1rps_pos',  '0'))      
-        self.pos_settings['ki']     = float(rospy.get_param('~ki_pos',  '0'))           
-        self.pos_settings['kd']     = float(rospy.get_param('~kd_pos',  '0'))                    
-        # variables de limitacion adicionales
-        self.pos_settings['umbral'] = float(rospy.get_param('~umbral_pos', '0'))  
-        self.pos_settings['ki_dec'] = float(rospy.get_param('~ki_dec',     '0'))  
-        self.pos_settings['range']  = float(rospy.get_param('~range_pos',  '10'))
-        # parametros de posicion, hacer parametros posteriormente, usar dynamic
-        self.vel_settings['kp']     = float(rospy.get_param('~kp_vel',  '0'))           
-        self.vel_settings['ki']     = float(rospy.get_param('~ki_vel',  '0'))           
-        self.vel_settings['kd']     = float(rospy.get_param('~kd_vel',  '0'))           
-        self.vel_settings['km']     = float(rospy.get_param('~km_vel',  '0'))           
-        # variables de limitacion adicionales
-        self.vel_settings['umbral'] = float(rospy.get_param('~umbral_vel', '0'))  
-        self.vel_settings['ki_dec'] = float(rospy.get_param('~ki_vel',     '0'))  
-        self.vel_settings['range']  = float(rospy.get_param('~range_vel',  '10'))
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'range' : 0, 'rate' : self.rate}
+        self.vel_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
         #
     def SRVcallback(self, config, level):
         #
@@ -252,39 +199,37 @@ class Double_motor:
         self.pos_settings['kp0rps'] = float(config['kp0rps_pos'])      
         self.pos_settings['kp1rps'] = float(config['kp1rps_pos'])      
         self.pos_settings['ki']     = float(config['ki_pos'])           
-        self.pos_settings['kd']     = float(config['kd_pos'])              
+        self.pos_settings['kd']     = float(config['kd_pos'])
+        self.pos_settings['ka']     = float(config['ka_pos'])           
+        self.pos_settings['ks']     = float(config['ks_pos'])              
         # variables de limitacion adicionales
-        self.pos_settings['umbral'] = float(config['umbral_pos'])
-        self.pos_settings['ki_dec'] = float(config['ki_dec_pos'])
-        self.pos_settings['range']  = float(config['range_pos'])
+        self.pos_settings['umbral']     = float(config['umbral_pos'])
+        self.pos_settings['umbral_int'] = float(config['umbral_int'])
+        self.pos_settings['umbral_oof'] = float(config['umbral_oof'])
+        self.pos_settings['range']      = float(config['range_pos'])
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
         self.vel_settings['kp']     = float(config['kp_vel'])          
         self.vel_settings['ki']     = float(config['ki_vel'])          
         self.vel_settings['kd']     = float(config['kd_vel'])          
-        self.vel_settings['km']     = float(config['km_vel'])         
+        self.vel_settings['km']     = float(config['km_vel']) 
+        self.vel_settings['ka']     = float(config['ka_vel'])          
+        self.vel_settings['ks']     = float(config['ks_vel'])             
         # variables de limitacion adicionales
         self.vel_settings['umbral'] = float(config['umbral_vel'])
-        self.vel_settings['ki_dec'] = float(config['ki_dec_vel'])
         self.vel_settings['range']  = float(config['range_vel'])
         #
-        #self.pid_pos_m1.resetting(self.pos_settings)
-        #self.pid_vel_m1.resetting(self.vel_settings)
-        #
-        #self.pid_pos_m2.resetting(self.pos_settings)
-        #self.pid_vel_m2.resetting(self.vel_settings)
-        #
-        self.pid_pos_ang.resetting(self.pos_settings)
+        #self.pid_pos_ang.resetting(self.pos_settings)
         self.pid_vel_vel.resetting(self.vel_settings)
         #
-        #
-        #
-        self.kf_settings['P0'] = float(config['P0'])
-        self.kf_settings['Q'] = float(config['Q'])
-        self.kf_settings['R'] = float(config['R'])
+        self.kf_settings['P0']   = float(config['P0'])
+        self.kf_settings['Q']    = float(config['Q'])
+        self.kf_settings['R']    = float(config['R'])
         self.kf_settings['rate'] = float(config['rate'])
         #
         self.filter_e1.resetting(self.kf_settings)
         self.filter_e1.resetting(self.kf_settings)
+        self.filter_plate.resetting(self.kf_settings)
+        self.filter_pendu.resetting(self.kf_settings)
         #
         return config
         #
@@ -314,126 +259,126 @@ class Double_motor:
         self.e2ang.publish(self.angle_m2)
         self.e2vel.publish(self.speed_m2)
         #
+    def getKp(self, speed):
+        #
+        return constrain(self.pos_settings['kp0rps_pos'] - (self.pos_settings['kp0rps_pos'] - self.pos_settings['kp1rps_pos']) * abs(speed), 0, 10000)
+        #
     def controller(self):
         #
         #
-        # Quiero controlar el angulo de roll del pendulo, pero verificar contra el angulo de roll de plate para evitar colisiones
-        # este control es solamente de posicion, la parte del angulo de pitch se deriva de un controlador de velocidad, que se 
-        # superpondra linealmente a las salidas de este controlador, obviamente, la parte del control de velocidad no podria probarse
-        # con el pendulo en la base de pruebas
+        # Una pmejor ley de control necesita de los siguientes parametros, ignrando por ahora la parte integral
+        # o anadiendola de forma posterior, una mejor aproximacion podria ser incluyendo o excluyendo terminos de:
         #
-        # la unica forma de sensar la velocidad de movimiento del pendulo seria a traves de los encoders, PERO como tambien se mueve
-        # en direccion del roll, no podemos simplemente asumir que es los encoders y ya, pareces ser que habria que considerar la
-        # contribucion del angulo de pitc. En general, las ecuaciones son:
+        # K1 * vel + K2 * ang + K3 * accel + K4 * sen(ang)
         #
-        # movimiento hacia adelante = (e1 + e2) / 2 (PITCH_RELATIVE)
-        # movimiento hacia los lados = (e1 - e2) / 2 (ROLL_RELATIVE)
+        # la orientacion de los motores en el estado actual es tal que si m2 recibe una salida positiva, y m1 su 
+        # contrario, el angulo tendera a incrementarse a valores positivos
         #
-        # entonces, para saber el grado de avance hacia adelante, si tenemos la lectura de los encoders pero deseamos quitar el efecto del roll:
+        # Necesitamos las varaibles que puede dar la IMU
         #
-        # datos: e1, e2, rolls, pitchs
+        # como angulo:
+        #
+        self.ang_plate = self.rollPlate
+        self.ang_pendu = self.rollPendu
+        #
+        # pero quiza necesitamos de filtrar las variables para poder encontrar las velocidades, y en eso no 
+        # estamos el retraso que pueda darse en el procesamiento
+        #
+        self.X_plate   = self.filter_plate.compute(self.ang_plate)
+        self.X_pendu   = self.filter_pendu.compute(self.ang_pendu)
+        #
+        self.ang_plate = self.X_plate[0, 0]
+        self.ang_pendu = self.X_pendu[0, 0]
+        #
+        self.vel_plate = self.X_plate[1, 0]
+        self.vel_pendu = self.X_pendu[1, 0]
+        #
+        # no se las aceleraciones, pareceria ser algo inestable y problematico, pero podria estar bien
+        #
+        self.ace_plate = self.X_plate[2, 0]
+        self.ace_pendu = self.X_pendu[2, 0]
+        #
+        # se necesita conocer la velocidad de los motores, para poder dar una kp variable
+        #
+        self.avg_vel_m1_m2 = (self.speed_m1 + self.speed_m2) / 2;
+        #
+        # como sea, es el angulo del pendulo el que tiene a subir con m2 positiva, y lo que queremos es estabilixar...
+        # que? podria parecer ser el pendulo, pero no estoy tan seguro de que sea la mejor opcion, 
+        #
+        # no podemos o querriamos operar sobre la diferencia, porque podria salir mal, en el caso de que los angulos
+        # coincidan la accion de control seria inutil
+        # no podemos operar directamente sobre la placa, pero si podemos operar directamente sobre el pendulo...
+        # pero el pendulo y la placa actuan de formas opuestas, aumentar el angulo del pendulo es lo mismo que disminuir
+        # el angulo de la placa, bajo algun retraso introducido por el sistema, etc.
+        # podria recomendar hacer simulacions mejores, pero hemos visto que no son necesariamente utiles para el 
+        # funcionamiento del sistema
+        #
+        # ok, propongamos entonces suponer que tratamos con un sistema con alta inercia o alta friccion, prob. mas inercia,
+        # controlando la placa, entones, las ecuaciones de control posibles podrian ser simplemente:
+        #
+        # dar una salia positiva a m2 incrementa el angulo del endulo y por ende disminuye el de la placa, ok, aunque la tendencia
+        # del angulo del pendulo sea siempre a buscar el equilibiro, ok ok
+        #
+        # PWM_m1 = -K1 * vel_plate - K2 * ang_plate - K3 * ace_plate - K4 * sen(ang) - K5 * sum(ang_plate)
+        #
+        # la parte importante adicional podria ser la adicion del termino de angulo, para bajos angulos seria muy
+        # similar a un termino de angulo adicional... no se si funcione correctamente
+        #
+        # los problemas actuales con el control son:
+        #
+        # que los motores necesitan de un valor de pwm minimo para accionarse por la necesidad de romper la inercia del sistema
+        # de aproximadamente el 4% del pwm total, esto esta documentado tambien el el manual del talon
+        # -> establecer un floor para las salidas de los motores, aunque podrian desgastarse los carbones mucho mas rapido
+        #
+        # la parte integral introduce innecesraias complicaciones cerca del cero, porque su descarga tiene a que el sistema oscile por un
+        # rato
+        # -> eliminar la parte integral cerca de un entorno del cero, pero mover al sistema con mas energia con el resto de los
+        # parametros del controlador
+        #
+        # el procesamiento de las imus es lento, intentare ver que pasa si se incrementa la velocidad de sampling, como ya se hace, y se
+        # reintroduce lo de incrementar ligeramente la contribucion de los giroscopios
+        # -> incrementar el valor de las lecturas de los giroscopios un 5%, pero pasar las lecturas por un filtro kalman tambien
+        #
+        # todavia parece haver un problema de desequilibrio del sistema, tal vez pueda ajustarse mejor, tal vez, tal vez
+        #
+        # ok, pues tendria que hacerso todo aqui mismo, pero deberia preservarse la salida a traves del perfil por proteccion al sistema
+        # pero nunca pude implementarla de tal forma que fuera muy asimetrica, no se, no era tan facil...
         # 
-        self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2   # no estamos haciendo correcciones, ests es la unica forma de controlar la
-        self.ang_lat_pend               = self.rollPendu # este es el valor que queremos controlar
-        self.ang_lat_diff               = self.rollPlate - self.rollPendu # pero este valor no debe salir de rango de entre -0.5 a 0.5, aprox
-        self.control_var                = self.rollPlate
+        # entonces, podria ser algo como
         #
-        #
-        #rospy.loginfo("rollPendu: " + str(self.rollPendu) + " rollPlate: " + str(self.rollPlate) + " angdes: " + str(self.ang_lat_des))
-        #
-        #
-        # el control de angulo del pendulo en roll, no podria ser a traves de los encoders... por el juego de las bandas, en primer lugar... por ende este solo
-        # podria ser un controlador de posicion, donde
-        #
-        # speed_m1_setpoint = velocidad_adelante_deseada + velocidad_lateral_deseada
-        # speed_m2_setpoint = velocidad_Adelante_deseada - velocidad_lateral_deseada
-        #
-        # queremos hacer dos cosas, controlar la velocidad_adelante, con una posible contribucion de un angulo de la imu en pitch que no podria probarse
-        # en una base de pruebas... then
-        #
-        # el control de la velocidad deberia hacerse por motor, y con referencia de las velocidades de las imus
-        # el control de posicion deberia hacerse global (un unico controlador), y con referencia de los angulos de las imus y un factor integral adicionas
-        #
-        #
-        #
-        # pero debemos encontrar alguna forma de mitigar el bamboleo, se me ocurre que tengamos alguno valor de umbral, para el control del angulo, en velocidad
-        # no hay un problema tan grande, basicamente, como los motores parece capaces de soportarse a si mismos, por la amplia reduccion, basta con apagar los motores
-        # cuando se alcance el objetivo de control, y reiniciar cuando se salga de un umbral de digamos 5 grados, en radianes son 0.1 radianes TOP
-        #
-        #
-        #
-        # aunque el controlador sea global, depende de parametros de cada uno de los motores, por ende alguna implementacion futura deberia considerarlos por separado
+        if abs(self.ang_plate) < self.pos_settings['umbral']:
+            self.ang_plate_tmp = 0
+        else:
+            self.ang_plate_tmp = self.ang_plate
         # 
-        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var) 
+        self.salida_m1_ang = -self.getKp(self.avg_vel_m1_m2) * self.ang_plate_tmp - self.pos_settings['kd'] * self.vel_plate - self.pos_settings['ka'] * self.ace_plate - self.pos_settings['ks'] * sin(self.ang_plate) 
         #
+        self.integral_ang  = constrain(self.integral_ang + self.ang_plate, -1, 1)
+        if abs(self.ang_plate) < self.pos_settings['umbral_int']:
+             self.integral_ang = 0
         #
-        #if (self.rollPlate > 0):
-        #    if (self.ang_lat_des < 0):
-        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        #if (self.rollPlate < 0):
-        #    if (self.ang_lat_des > 0):
-        #        self.salida_control_angulo = self.salida_control_angulo * sin(self.rollPlate) / 0.4
-        self.salida_control_angulo = self.salida_control_angulo * max((self.rollPendu / 0.6), 0.5)
+        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
         #
+        if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 4
+        else:
+            if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 1:
+                self.salida_m1_ang = sign(self.salida_m1_ang) * 4
         #
+        # implementando los umbrales
+        # umbral      -> cero err
+        # umbral_int  -> cero int
+        # umbral_oof  -> +-4%
         #
-        self.salida_control_angulo  = self.salida_control_angulo + sign(self.salida_control_angulo) * 0
-        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
+        self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
+        self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.outpidangPub.publish(self.salida_control_angulo)
-        #
-        #rospy.loginfo("pid: " + str(self.salida_control_angulo))
-        #
-        #self.salida_control_angulo  = self.salida_control_angulo + 0 * sign(self.salida_control_angulo)
-        #
-        #
-        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " anglatdiff: " + str(self.ang_lat_diff))
-        #
-        #
-        #
-        # esto no basta, tenemos que revisar que no salgamos de los limites de plate y en ese caso habria que apagar los motores, en ese rango, por ahora de inmediato
-        #
-        if (self.ang_lat_diff > 0.41):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 0)
-        if (self.ang_lat_diff < -0.41):
-            self.salida_control_angulo = constrain(self.salida_control_angulo, 0, 20)
-        #
-        #
-        #rospy.loginfo("salidaaftlatdiff: " + str(self.salida_control_angulo))
-        # si el valor del error minimo baja de cierto umbral, tambien habria que apagar los motores y no encenderlos hasta que se salga de ese umbral o se
-        # pida una nueva posicion de control del angulo
-        #
-        #
-        self.actual_error = self.control_var
-        if (abs(self.actual_error) < self.minimal_error):
-            self.minimal_error = constrain(abs(self.actual_error), 0, 0.4)
-        #
-        self.tmp_constrain = 20 - 7 * (1 - map(self.minimal_error, 0, 0.4, 0, 1))
-        #
-        #
-        #rospy.loginfo("salida: " + str(self.salida_control_angulo) + " minerror: " + str(self.minimal_error))
-        # aplica un constrain de salida al motor
-        #
-        #
-        #
-        self.rollPenduPub.publish(self.rollPendu)
-        self.rollPlatePub.publish(self.rollPlate)
-        self.anglatdifPub.publish(self.ang_lat_diff)
-        self.minierrorPub.publish(self.minimal_error)
-        #self.veladesumPub.publish(self.velocidad_adelante) 
-        #
-        #
-        #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -self.tmp_constrain, self.tmp_constrain)
-        self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
-        #
-        #
-        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_control_vel)
-        self.out_pos_m2 = self.profile_m2.compute( self.salida_control_angulo + self.salida_control_vel)
-        #
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang + self.salida_control_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang + self.salide_control_vel )
         #
         # the control interface is publishing motor pwm values directly
         # though, I would prefer to vanish the integral term in this case, and fix the desired angle and speed, etc.
+        #
         if (self.con_mode is 1):
             return
         #
