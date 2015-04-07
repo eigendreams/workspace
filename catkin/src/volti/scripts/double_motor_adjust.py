@@ -261,7 +261,7 @@ class Double_motor:
         #
     def getKp(self, speed):
         #
-        return constrain(self.pos_settings['kp0rps_pos'] - (self.pos_settings['kp0rps_pos'] - self.pos_settings['kp1rps_pos']) * abs(speed), 0, 10000)
+        return constrain(self.pos_settings['kp0rps'] - (self.pos_settings['kp0rps'] - self.pos_settings['kp1rps']) * abs(speed), 0, 10000)
         #
     def controller(self):
         #
@@ -374,7 +374,7 @@ class Double_motor:
         self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
         self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang + self.salida_control_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang + self.salide_control_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang + self.salida_control_vel )
         #
         # the control interface is publishing motor pwm values directly
         # though, I would prefer to vanish the integral term in this case, and fix the desired angle and speed, etc.
