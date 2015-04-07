@@ -363,10 +363,10 @@ class Double_motor:
         self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
         #
         if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 4
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5
         else:
             if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 1:
-                self.salida_m1_ang = sign(self.salida_m1_ang) * 4
+                self.salida_m1_ang = sign(self.salida_m1_ang) * 5
         #
         # implementando los umbrales
         # umbral      -> cero err
