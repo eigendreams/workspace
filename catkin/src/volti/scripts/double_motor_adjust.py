@@ -302,6 +302,9 @@ class Double_motor:
         #
         self.avg_vel_m1_m2 = (self.speed_m1 + self.speed_m2) / 2;
         #
+        self.rollPenduPub.publisher(self.ang_pendu)
+        self.rollPlatePub.publisher(self.ang_plate)
+        #
         # como sea, es el angulo del pendulo el que tiene a subir con m2 positiva, y lo que queremos es estabilixar...
         # que? podria parecer ser el pendulo, pero no estoy tan seguro de que sea la mejor opcion, 
         #
@@ -375,6 +378,7 @@ class Double_motor:
         #
         self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang + self.salida_control_vel )
         self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang + self.salida_control_vel )
+        #
         #
         # the control interface is publishing motor pwm values directly
         # though, I would prefer to vanish the integral term in this case, and fix the desired angle and speed, etc.
