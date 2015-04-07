@@ -183,7 +183,7 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'range' : 0, 'rate' : self.rate}
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'div_minimal' : 0, 'div_ang2vel' : 0, 'range' : 0, 'rate' : self.rate}
         self.vel_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
         #
     def SRVcallback(self, config, level):
@@ -206,6 +206,10 @@ class Double_motor:
         self.pos_settings['umbral']     = float(config['umbral_pos'])
         self.pos_settings['umbral_int'] = float(config['umbral_int'])
         self.pos_settings['umbral_oof'] = float(config['umbral_oof'])
+        #
+        self.pos_settings['div_minimal'] = float(config['div_minimal'])
+        self.pos_settings['div_ang2vel'] = float(config['div_ang2vel'])
+        #
         self.pos_settings['range']      = float(config['range_pos'])
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
         self.vel_settings['kp']     = float(config['kp_vel'])          
@@ -363,10 +367,10 @@ class Double_motor:
              self.integral_ang = 0
         #
         if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + 19 * self.avg_vel_m1_m2)
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2)
         else:
             if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
-                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + 19 * self.avg_vel_m1_m2)
+                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2)
         #
         # implementando los umbrales
         # umbral      -> cero err
@@ -378,8 +382,8 @@ class Double_motor:
         #
         #self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
         #
-        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des + self.ang_plate / 5, self.speed_m1, 0)
-        self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des - self.ang_plate / 5, self.speed_m2, 0)
+        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des + self.ang_plate / self.pos_settings['div_ang2vel'] , self.speed_m1, 0)
+        self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des - self.ang_plate / self.pos_settings['div_ang2vel'] , self.speed_m2, 0)
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
