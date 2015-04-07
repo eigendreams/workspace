@@ -99,12 +99,10 @@ class Double_motor:
         #
         # Asociaciones con publicadores y suscriptores
         self.m1    = rospy.Publisher( "m1",    Int16)              # salida al motor 1
-        self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
         self.e1ang = rospy.Publisher("e1_ang", Float32)     #
         self.e1vel = rospy.Publisher("e1_vel", Float32)     #
         #
         self.m2    = rospy.Publisher( "m2",    Int16)              # salida al motor 1
-        self.e2    = rospy.Subscriber("e2",    Int16, self.e2cb)  # entrada del encoder 1
         self.e2ang = rospy.Publisher("e2_ang", Float32)     #
         self.e2vel = rospy.Publisher("e2_vel", Float32)     #
         #
@@ -124,6 +122,9 @@ class Double_motor:
         self.anglatdifPub = rospy.Publisher( "angdif", Float32)
         self.minierrorPub = rospy.Publisher( "minerr", Float32)
         self.outpidangPub = rospy.Publisher( "outang", Float32)
+        #
+        self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
+        self.e2    = rospy.Subscriber("e2",    Int16, self.e2cb)  # entrada del encoder 1
         #
         self.veldeldessub = rospy.Subscriber("vel_delante_des", Float32, self.veldeldescb)
         self.anglatdessub = rospy.Subscriber("ang_lateral_des", Float32, self.anglatdescb)
