@@ -356,15 +356,15 @@ class Double_motor:
         # 
         self.salida_m1_ang = self.getKp(self.avg_vel_m1_m2) * self.ang_plate_tmp + self.pos_settings['kd'] * self.vel_plate + self.pos_settings['ka'] * self.ace_plate - self.pos_settings['ks'] * sin(self.ang_plate) 
         #
-        self.integral_ang  = constrain(self.integral_ang + self.ang_plate, -1, 1)
+        self.integral_ang  = constrain(self.integral_ang + self.ang_plate / self.rate, -1, 1)
         if abs(self.ang_plate) < self.pos_settings['umbral_int']:
              self.integral_ang = 0
         #
         if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + 19 * self.avg_vel_m1_m2)
         else:
             if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
-                self.salida_m1_ang = sign(self.salida_m1_ang) * 5
+                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + 19 * self.avg_vel_m1_m2)
         #
         # implementando los umbrales
         # umbral      -> cero err
@@ -374,7 +374,11 @@ class Double_motor:
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
         self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
         #
-        self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
+        #self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
+        #
+        self.pid_vel_m1.compute(self.vel_del_des + self.ang_plate / 5, self.speed_m1, 0)
+        self.pid_vel_m2.compute(self.vel_del_des - self.ang_plate / 5, self.speed_m2, 0)
+        #
         self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
         self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang + self.salida_control_vel )
