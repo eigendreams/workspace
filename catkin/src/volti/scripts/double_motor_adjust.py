@@ -354,7 +354,7 @@ class Double_motor:
         else:
             self.ang_plate_tmp = self.ang_plate
         # 
-        self.salida_m1_ang = self.getKp(self.avg_vel_m1_m2) * self.ang_plate_tmp - self.pos_settings['kd'] * self.vel_plate - self.pos_settings['ka'] * self.ace_plate - self.pos_settings['ks'] * sin(self.ang_plate) 
+        self.salida_m1_ang = self.getKp(self.avg_vel_m1_m2) * self.ang_plate_tmp + self.pos_settings['kd'] * self.vel_plate + self.pos_settings['ka'] * self.ace_plate - self.pos_settings['ks'] * sin(self.ang_plate) 
         #
         self.integral_ang  = constrain(self.integral_ang + self.ang_plate, -1, 1)
         if abs(self.ang_plate) < self.pos_settings['umbral_int']:
