@@ -360,8 +360,6 @@ class Double_motor:
         if abs(self.ang_plate) < self.pos_settings['umbral_int']:
              self.integral_ang = 0
         #
-        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
-        #
         if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
             self.salida_m1_ang = sign(self.salida_m1_ang) * 5
         else:
@@ -374,6 +372,7 @@ class Double_motor:
         # umbral_oof  -> +-4%
         #
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
+        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
         #
         self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
         self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
