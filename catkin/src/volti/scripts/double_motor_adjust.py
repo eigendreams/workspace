@@ -409,8 +409,8 @@ class Double_motor:
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_minimal']) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_minimal']) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2) + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2) + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly
