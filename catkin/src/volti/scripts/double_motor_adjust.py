@@ -39,7 +39,7 @@ class Double_motor:
         self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
         self.pid_vel_vel         = PID_vel(self.vel_settings)
-        self.pid_pos_ang         = PID_pos(self.pos_settings)
+        #self.pid_pos_ang         = PID_pos(self.pos_settings)
         #
         self.integral_ang        = 0
         self.integral_vel        = 0
