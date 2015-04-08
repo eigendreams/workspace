@@ -223,7 +223,7 @@ class Double_motor:
         self.vel_settings['umbral'] = float(config['umbral_vel'])
         self.vel_settings['range']  = float(config['range_vel'])
         #
-        self.pid_pos_ang.resetting(self.pos_settings)
+        #self.pid_pos_ang.resetting(self.pos_settings)
         self.pid_vel_vel.resetting(self.vel_settings)
         self.pid_vel_m1.resetting(self.vel_settings)
         self.pid_vel_m2.resetting(self.vel_settings)
