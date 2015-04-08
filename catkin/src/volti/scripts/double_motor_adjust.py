@@ -183,7 +183,7 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'div_minimal' : 1, 'div_ang2vel' : 1, 'range' : 0, 'rate' : self.rate}
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'div_minimal' : 1, 'div_ang2vel' : 1, 'div_modes' : 0, 'range' : 0, 'rate' : self.rate}
         self.vel_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
         #
     def SRVcallback(self, config, level):
@@ -209,6 +209,7 @@ class Double_motor:
         #
         self.pos_settings['div_minimal'] = float(config['div_minimal'])
         self.pos_settings['div_ang2vel'] = float(config['div_ang2vel'])
+        self.pos_settings['div_modes']   = float(config['div_modes'])
         #
         self.pos_settings['range']      = float(config['range_pos'])
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
