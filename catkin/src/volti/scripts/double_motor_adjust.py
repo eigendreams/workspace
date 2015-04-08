@@ -34,13 +34,12 @@ class Double_motor:
         self.SRVinit()
         #
         # creando los objetos PID
-        #self.pid_pos_m1          = PID_pos(self.pos_settings)
+        #
         self.pid_vel_m1          = PID_vel(self.vel_settings)
-        #self.pid_pos_m2          = PID_pos(self.pos_settings)
         self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
         self.pid_vel_vel         = PID_vel(self.vel_settings)
-        #self.pid_pos_ang         = PID_pos(self.pos_settings)
+        self.pid_pos_ang         = PID_pos(self.pos_settings)
         #
         self.integral_ang        = 0
         self.integral_vel        = 0
@@ -184,7 +183,7 @@ class Double_motor:
         # con el angulo real del motor. Los encoders se consideran digitales de 0 a 1023 en una vuelta completa
         # pid_vel da el valor de la velocidad del angulo del encoder en su marco de referencia, se calcula en base al valor anterior
         #
-        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'div_minimal' : 0, 'div_ang2vel' : 0, 'range' : 0, 'rate' : self.rate}
+        self.pos_settings = {'kp0rps' : 0, 'kp1rps' : 0, 'ki' : 0, 'kd' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'umbral_int' : 0, 'umbral_oof' : 0, 'div_minimal' : 1, 'div_ang2vel' : 1, 'range' : 0, 'rate' : self.rate}
         self.vel_settings = {'kp' : 0, 'ki' : 0, 'kd' : 0, 'km' : 0, 'ka' : 0, 'ks' : 0, 'umbral' : 0, 'ki_dec' : 0, 'range' : 0, 'rate' : self.rate}
         #
     def SRVcallback(self, config, level):
@@ -223,7 +222,7 @@ class Double_motor:
         self.vel_settings['umbral'] = float(config['umbral_vel'])
         self.vel_settings['range']  = float(config['range_vel'])
         #
-        #self.pid_pos_ang.resetting(self.pos_settings)
+        self.pid_pos_ang.resetting(self.pos_settings)
         self.pid_vel_vel.resetting(self.vel_settings)
         self.pid_vel_m1.resetting(self.vel_settings)
         self.pid_vel_m2.resetting(self.vel_settings)
@@ -269,6 +268,27 @@ class Double_motor:
     def getKp(self, speed):
         #
         return constrain(self.pos_settings['kp0rps'] - (self.pos_settings['kp0rps'] - self.pos_settings['kp1rps']) * abs(speed), 0, 10000)
+        #
+    def controller_diff(self):
+        #
+        self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2
+        self.ang_lat_diff               = self.rollPlate - self.rollPendu
+        self.control_var                = self.ang_lat_diff
+        #
+        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var, 0)
+        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
+        #
+        self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 20)
+        self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
+        #
+        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_control_vel)
+        self.out_pos_m2 = self.profile_m2.compute( self.salida_control_angulo + self.salida_control_vel)
+        #
+        if (self.con_mode is 1):
+            return
+        #
+        self.m1.publish(int((self.out_pos_m1) * 100))
+        self.m2.publish(int((self.out_pos_m2) * 100))
         #
     def controller(self):
         #
@@ -388,8 +408,8 @@ class Double_motor:
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_modes'] + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_modes'] + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly
