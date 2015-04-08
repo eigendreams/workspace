@@ -150,8 +150,8 @@ class Control_interface:
             if (self.angdifval < -0.41):
                 self.angle_des_change = constrain(self.angle_des_change, 0, 30)
             #
-            self.m1.publish(constrain(self.vel_des * 6 * self.velmultval * 100 - self.angle_des_change * 6 * self.angmultval * 100,-3000, 3000))
-            self.m2.publish(constrain(self.vel_des * 6 * self.velmultval * 100 + self.angle_des_change * 6 * self.angmultval * 100,-3000, 3000))
+            self.m1.publish(constrain(self.vel_des * 8 * self.velmultval * 100 - self.angle_des_change * 7 * self.angmultval * 100,-3000, 3000))
+            self.m2.publish(constrain(self.vel_des * 8 * self.velmultval * 100 + self.angle_des_change * 7 * self.angmultval * 100,-3000, 3000))
         else:
             self.angdespub.publish(self.angle_des_change * 0.4)
             self.veldespub.publish(self.vel_des   * 1.0)
