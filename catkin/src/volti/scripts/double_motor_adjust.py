@@ -389,10 +389,10 @@ class Double_motor:
              self.integral_ang = 0
         #
         if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2)
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
         else:
             if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
-                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2)
+                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
         #
         # implementando los umbrales
         # umbral      -> cero err
@@ -409,8 +409,8 @@ class Double_motor:
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (5 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (5 + self.pos_settings['div_minimal'] * self.avg_vel_m1_m2) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (5 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2)) + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (5 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2)) + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly
