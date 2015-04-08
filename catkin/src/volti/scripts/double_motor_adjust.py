@@ -209,7 +209,7 @@ class Double_motor:
         #
         self.pos_settings['div_minimal'] = float(config['div_minimal'])
         self.pos_settings['div_ang2vel'] = float(config['div_ang2vel'])
-        self.pos_settings['div_modes']   = float(config['div_modes'])
+        #self.pos_settings['div_modes']   = float(config['div_modes'])
         #
         self.pos_settings['range']      = float(config['range_pos'])
         # parametros de posicion, hacer parametros posteriormente, usar dynamic
@@ -409,8 +409,8 @@ class Double_motor:
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_modes']) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_modes']) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_minimal']) + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_minimal']) + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly
