@@ -293,7 +293,7 @@ class Double_motor:
         self.rollPenduPub.publish(self.ang_pendu)
         self.rollPlatePub.publish(self.ang_plate)
         #
-        self.ang_control = self.ang_plate
+        self.ang_control = self.ang_plate - self.ang_lat_des
         self.vel_control = self.vel_plate
         self.ace_control = self.ace_plate 
         #
