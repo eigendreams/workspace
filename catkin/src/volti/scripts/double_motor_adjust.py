@@ -374,7 +374,7 @@ class Double_motor:
         self.integral_ang_int  = constrain(self.integral_ang_int + self.ang_control / self.rate, -1, 1)
         if abs(self.ang_control) > self.pos_settings['umbral_int']:
             self.integral_ang_int = 0
-        self.integral_ang_int_out = 5 * self.integral_ang_int * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal'])
+        self.integral_ang_int_out = 5 * self.integral_ang_int * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
         #
         # pero necesito alguna forma de sumar al valor minimo para pequenos valores de salida
         # pero la misma salida depende de la velocidad, de la misma forma que en otras partes del codigo
@@ -385,11 +385,11 @@ class Double_motor:
         # de los motores en el sistema
         #
         if abs(self.ang_control) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal'])
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
         else:
             #if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
             #    self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m1_ang
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m1_ang
         #
         # implementando los umbrales
         # umbral      -> cero err
@@ -416,8 +416,8 @@ class Double_motor:
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly
