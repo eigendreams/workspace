@@ -105,8 +105,8 @@ class Double_motor:
         self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
         self.rollPlatePub = rospy.Publisher( "rplate", Float32)
         #
-        self.anglatdifPub = rospy.Publisher( "vel_avg", Float32)
-        self.minierrorPub = rospy.Publisher( "", Float32)
+        self.anglatdifPub = rospy.Publisher( "angdif", Float32)
+        self.minierrorPub = rospy.Publisher( "minerr", Float32)
         self.outpidangPub = rospy.Publisher( "outang", Float32)
         #
         self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
