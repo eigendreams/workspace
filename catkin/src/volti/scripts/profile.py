@@ -66,7 +66,7 @@ class Profile:
     #
     # {'max_output' : 20, 'max_speed' : 10, 'rate' : 20, 'max_output_at_0RPS' : 30, 'max_output_at_1RPS' : 10, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20})
     #
-    def __init__(self, settings = {'max_output' : 20, 'max_speed' : 20, 'rate' : 20, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}):
+    def __init__(self, settings = {'max_output' : 30, 'max_speed' : 100, 'rate' : 10, 'heal_time_at_0pc' : 20, 'stable_point_pc' : 20}):
         #
         self.max_output         = float(settings['max_output'])
         self.max_speed          = float(settings['max_speed'])

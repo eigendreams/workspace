@@ -38,10 +38,11 @@ class Double_motor:
         self.pid_vel_m1          = PID_vel(self.vel_settings)
         self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
-        self.pid_vel_vel         = PID_vel(self.vel_settings)
+        #self.pid_vel_vel         = PID_vel(self.vel_settings)
         #self.pid_pos_ang         = PID_pos(self.pos_settings)
         #
         self.integral_ang        = 0
+        self.integral_ang_int    = 0
         self.integral_vel        = 0
         #
         # filtro de entradas del encoder
@@ -65,13 +66,11 @@ class Double_motor:
         self.profile_m1 = Profile(self.profile_settings)
         self.profile_m2 = Profile(self.profile_settings)
         #
-        self.des_m1 = 0
         self.value_m1 = 0
         self.angle_m1 = 0
         self.speed_m1 = 0
         self.accel_m1 = 0
         #
-        self.des_m2 = 0
         self.value_m2 = 0
         self.angle_m2 = 0
         self.speed_m2 = 0
@@ -85,31 +84,18 @@ class Double_motor:
         self.rollPendu  = 0
         self.pitchPendu = 0
         #
-        self.powtog = 0
         self.con_mode = 0
         #
         self.powsub = rospy.Subscriber("con_mode", Int16, self.modecb)
         #
-        self.angmultval = 1
-        self.velmultval = 1
-        #
-        self.angmultsub = rospy.Subscriber("ang_mult", Float32, self.angmultcb)
-        self.velmultsub = rospy.Subscriber("vel_mult", Float32, self.velmultcb)
-        #
         # Asociaciones con publicadores y suscriptores
-        self.m1    = rospy.Publisher( "m1",    Int16)              # salida al motor 1
+        self.m1    = rospy.Publisher("m1",     Int16)              # salida al motor 1
         self.e1ang = rospy.Publisher("e1_ang", Float32)     #
         self.e1vel = rospy.Publisher("e1_vel", Float32)     #
         #
-        self.m2    = rospy.Publisher( "m2",    Int16)              # salida al motor 1
+        self.m2    = rospy.Publisher("m2",     Int16)              # salida al motor 1
         self.e2ang = rospy.Publisher("e2_ang", Float32)     #
         self.e2vel = rospy.Publisher("e2_vel", Float32)     #
-        #
-        #self.vdes = rospy.Subscriber("vdes", Float32, self.vdescb)  # velocidad deseada adelante atras
-        #
-        #
-        self.srv = Server(VOLConfig, self.SRVcallback)
-        #self.srvenc = Server(ENCConfig, self.ENCcallback)
         #
         self.normalizedkp0rps = 1
         self.normalizedkp1rps = 1
@@ -131,13 +117,7 @@ class Double_motor:
         self.subImuPlate = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
         self.subImuPendu = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
         #
-    def angmultcb(self, data):
-        #
-        self.angmultval = data.data
-        #
-    def velmultcb(self, data):
-        #
-        self.velmultval = data.data
+        self.srv = Server(VOLConfig, self.SRVcallback)
         #
     def modecb(self, data):
         #
@@ -224,7 +204,7 @@ class Double_motor:
         self.vel_settings['range']  = float(config['range_vel'])
         #
         #self.pid_pos_ang.resetting(self.pos_settings)
-        self.pid_vel_vel.resetting(self.vel_settings)
+        #self.pid_vel_vel.resetting(self.vel_settings)
         self.pid_vel_m1.resetting(self.vel_settings)
         self.pid_vel_m2.resetting(self.vel_settings)
         #
@@ -248,7 +228,7 @@ class Double_motor:
         #
         self.angle_m1 = self.X_m1[0, 0]
         self.speed_m1 = self.X_m1[1, 0]
-        #self.accel_m1 = self.X_m1[2, 0]
+        self.accel_m1 = self.X_m1[2, 0]
         #
         self.e1ang.publish(self.angle_m1)
         self.e1vel.publish(self.speed_m1)
@@ -261,7 +241,7 @@ class Double_motor:
         #
         self.angle_m2 = self.X_m2[0, 0]
         self.speed_m2 = self.X_m2[1, 0]
-        #self.accel_m2 = self.X_m2[2, 0]
+        self.accel_m2 = self.X_m2[2, 0]
         #
         self.e2ang.publish(self.angle_m2)
         self.e2vel.publish(self.speed_m2)
@@ -269,27 +249,6 @@ class Double_motor:
     def getKp(self, speed):
         #
         return constrain(self.pos_settings['kp0rps'] - (self.pos_settings['kp0rps'] - self.pos_settings['kp1rps']) * abs(speed), 0, 10000)
-        #
-    def controller_diff(self):
-        #
-        self.velocidad_adelante         = (self.speed_m1 + self.speed_m2) / 2
-        self.ang_lat_diff               = self.rollPlate - self.rollPendu
-        self.control_var                = self.ang_lat_diff
-        #
-        self.salida_control_angulo  = self.pid_pos_ang.compute(self.ang_lat_des, self.control_var, 0)
-        self.salida_control_vel     = self.pid_vel_vel.compute(self.vel_del_des, self.velocidad_adelante, 0)
-        #
-        self.salida_control_angulo = constrain(self.salida_control_angulo, -20, 20)
-        self.salida_control_vel    = constrain(self.salida_control_vel, -20, 20)
-        #
-        self.out_pos_m1 = self.profile_m1.compute(-self.salida_control_angulo + self.salida_control_vel)
-        self.out_pos_m2 = self.profile_m2.compute( self.salida_control_angulo + self.salida_control_vel)
-        #
-        if (self.con_mode is 1):
-            return
-        #
-        self.m1.publish(int((self.out_pos_m1) * 100))
-        self.m2.publish(int((self.out_pos_m2) * 100))
         #
     def controller(self):
         #
@@ -329,9 +288,14 @@ class Double_motor:
         # se necesita conocer la velocidad de los motores, para poder dar una kp variable
         #
         self.avg_vel_m1_m2 = (self.speed_m1 + self.speed_m2) / 2;
+        self.avg_vel_m1_m2_abs = (abs(self.speed_m1) + abs(self.speed_m2)) / 2;
         #
         self.rollPenduPub.publish(self.ang_pendu)
         self.rollPlatePub.publish(self.ang_plate)
+        #
+        self.ang_control = self.ang_plate
+        self.vel_control = self.vel_plate
+        self.ace_control = self.ace_plate 
         #
         # como sea, es el angulo del pendulo el que tiene a subir con m2 positiva, y lo que queremos es estabilixar...
         # que? podria parecer ser el pendulo, pero no estoy tan seguro de que sea la mejor opcion, 
@@ -377,22 +341,55 @@ class Double_motor:
         # 
         # entonces, podria ser algo como
         #
-        if abs(self.ang_plate) < self.pos_settings['umbral']:
-            self.ang_plate_tmp = 0
+        if abs(self.ang_control) < self.pos_settings['umbral']:
+            self.ang_control_tmp = 0
         else:
-            self.ang_plate_tmp = self.ang_plate
+            self.ang_control_tmp = self.ang_control
         # 
-        self.salida_m1_ang = self.getKp(self.avg_vel_m1_m2) * self.ang_plate_tmp + self.pos_settings['kd'] * self.vel_plate + self.pos_settings['ka'] * self.ace_plate - self.pos_settings['ks'] * sin(self.ang_plate) 
+        self.salida_m1_ang = self.getKp(self.avg_vel_m1_m2) * self.ang_control_tmp + self.pos_settings['kd'] * self.vel_control + self.pos_settings['ka'] * self.ace_control - self.pos_settings['ks'] * sin(self.ang_control) 
         #
-        self.integral_ang  = constrain(self.integral_ang + self.ang_plate / self.rate, -1, 1)
-        if abs(self.ang_plate) < self.pos_settings['umbral_int']:
+        self.integral_ang  = constrain(self.integral_ang + self.ang_control / self.rate, -1, 1)
+        if abs(self.ang_control) < self.pos_settings['umbral_int']:
              self.integral_ang = 0
         #
-        if abs(self.ang_plate) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
+        # dentro del intervalo integral, tambien estaria bien tener una contribucion integral que disminuya rapidamente
+        # a medida que aumenta la velocidad del sistema, necesito una funcion que permita establecer el decremento
+        # de forma mas o menos rapida, una forma lineal, como * exp(- abs(vel) * K) podria ser, por ejemplo, a una velocidad
+        # de 0.1rps -> 40cm * 3.14 -> 1.3m -> 13cm/s, querria tener algo ya muy cercano a 0, por lo que un exponente adecuado
+        # podria ser e-3 o e-5 -> K de 30 o 50
+        #
+        # tambien, podriamos considerar que esta ki, si fuera otra, debe acumularse lentamente, lo cual podria solucionarse
+        # con una ki pequena que multiplique antes de la salida en la suma, tambien hay que especificar el valor de salida de pwm, 
+        # pero aun tendriamos el problema de que la salida limitida no tiene porque estar necesariamente limitada, pero necesitamos alguna
+        # forma de stickiness
+        #
+        # pero la limitaremos, de todos modos, a un pwm total del 5%
+        #
+        # el unico parametro que seria conveniente especificar para este termino integral depende solamente de que
+        # tan rapido queramos llegar al punto estable
+        #
+        # a un error de 0.1 rad, en un segundo la suma sera de 0.1, un error comun es de 0.25 rads, con cuatro segundos
+        # para la unidad..., una ki unitaria pareceria una decision razonable
+        #
+        self.integral_ang_int  = constrain(self.integral_ang_int + self.ang_control / self.rate, -1, 1)
+        if abs(self.ang_control) > self.pos_settings['umbral_int']:
+            self.integral_ang_int = 0
+        self.integral_ang_int_out = 5 * self.integral_ang_int * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal'])
+        #
+        # pero necesito alguna forma de sumar al valor minimo para pequenos valores de salida
+        # pero la misma salida depende de la velocidad, de la misma forma que en otras partes del codigo
+        # la salida de 5% deberia sumarse a las salidas pero solamente a velocidades bajas, pero independientemente del
+        # control on off que se tiene
+        #
+        # la salida del control onoff deberia poder especificarse, en lugar de limitarse alvalor minimo para iniciar el movimiento
+        # de los motores en el sistema
+        #
+        if abs(self.ang_control) < self.pos_settings['umbral_oof']:
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal'])
         else:
-            if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
-                self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
+            #if abs(self.salida_m1_ang) < 4 and abs(self.salida_m1_ang) > 0.5:
+            #    self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * 1 / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2))
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m1_ang
         #
         # implementando los umbrales
         # umbral      -> cero err
@@ -400,17 +397,27 @@ class Double_motor:
         # umbral_oof  -> +-4%
         #
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
-        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
+        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang + self.integral_ang_int_out
         #
         #self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
         #
-        self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des + self.ang_plate / self.pos_settings['div_ang2vel'] , self.speed_m1, 0)
-        self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des - self.ang_plate / self.pos_settings['div_ang2vel'] , self.speed_m2, 0)
+        #
+        self.vel_m1_des = self.vel_del_des + self.ang_control / self.pos_settings['div_ang2vel']
+        self.vel_m2_des = self.vel_del_des - self.ang_control / self.pos_settings['div_ang2vel']
+        self.vel_m1_err = self.vel_m1_des - self.speed_m1
+        self.vel_m2_err = self.vel_m2_des - self.speed_m2
+        self.salida_m1_vel = self.vel_settings['kp'] * self.vel_m1_err - self.vel_settings['kd'] * self.accel_m1 + self.vel_settings['km'] * self.vel_m1_des
+        self.salida_m2_vel = self.vel_settings['kp'] * self.vel_m2_err - self.vel_settings['kd'] * self.accel_m2 + self.vel_settings['km'] * self.vel_m2_des
+        self.salida_m1_vel = constrain(self.salida_m1_vel, -self.vel_settings['range'], self.vel_settings['range'])
+        self.salida_m2_vel = constrain(self.salida_m2_vel, -self.vel_settings['range'], self.vel_settings['range'])
+        #
+        #self.salida_m1_vel = self.pid_vel_m1.compute(self.vel_del_des + self.ang_control / self.pos_settings['div_ang2vel'] , self.speed_m1, 0)
+        #self.salida_m2_vel = self.pid_vel_m2.compute(self.vel_del_des - self.ang_control / self.pos_settings['div_ang2vel'] , self.speed_m2, 0)
         #
         #self.salida_control_vel = constrain(self.salida_control_vel, -20, 20)
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2)) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang / (1 + self.pos_settings['div_minimal'] * abs(self.avg_vel_m1_m2)) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * exp(- self.avg_vel_m1_m2_abs * self.pos_settings['div_minimal']) + self.salida_m2_vel )
         #
         #
         # the control interface is publishing motor pwm values directly

@@ -11,12 +11,6 @@ from numpy.linalg import inv, det
 import rospy
 ################################################################################
 #
-"""
-Implementacion burde de un sistema de filtrado kalman de una sola dimension
-para reducir el ruido al estimar derivadas de cosas, en realidad, podriamos hace dos
-dimensiones y estimar ademas la propia posicion
-"""
-#
 class Kfilter:
     #
     def __init__(self, settings = {'Q':10. , 'R':10. , 'P0':10. , 'rate':10.}):

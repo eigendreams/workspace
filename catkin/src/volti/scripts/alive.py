@@ -12,14 +12,23 @@ class Alive:
         self.nodename = rospy.get_name()
         rospy.loginfo("Node starting with name %s", self.nodename) 
         #
-        # el codigo de la stellaris esta dispuesto de manera que si se pierde comunicacion por
-        # mas de medio segundo, los motores deben apagarse, sin embrgo, el codigo de la interfaz con la
-        # stellaris mismo debe soportar un delay de 2 segundos, antes de forzar el apagado por timeout que
-        # pueda suceder por problemas de comunicacion
+        # el codigo de la stellaris esta dispuesto de manera que si se pierde comunicacion con el BBB por
+        # mas de medio segundo, los motores deben apagarse, esto puede suceder porque
+        #   algun programa en el BBB trabo el sistema
+        #   se apago el BBB
+        # Aqui el valor de alive se emite cada segundo, de manera que, luego de 1s de timeout
+        # si no se recibe alive=1, el nodo de push_servos enviara un cero como alive y se apagaran los motores
+        # esto puede suceder porque
+        #   el usuario decide apagar los motores con el control, haciendo alive=0 directamente
+        #   se perdio contacto por wifi
+        # este nodo esta pensado para ser usado con la terminal para debugeo, si se usa el nodo de control, ese mismo
+        # implementa una version de este nodo
+        #
+        # Este nodo SIEMPRE debe ejecutarse en el equipo de tierra
         #
         self.rate = rospy.get_param("alive_rate", 1)
         #
-        # Eventualmente, el valor de alive podria reflejar diferente modos de operacion
+        # Eventualmente, el valor de alive podria reflejar diferente modos de operacion sobre sus bits
         #
         self.alive_val = 1
         self.alivePub = rospy.Publisher('al', Int16)

@@ -28,8 +28,6 @@ class Control_ESC_Volantes:
         self.tick_time = 1. / self.rate
         self.task_done = False
         #
-        self.al_mask   = 0
-        #
         self.signal    = 0
         #
         self.vol1      = 0
@@ -59,12 +57,12 @@ class Control_ESC_Volantes:
     def update(self):
         #
         # Este nodo trata de brindar una secuencia de arranque suave para los volantes, por el potencial golpe que podria
-        # sufrir el robot, de inicarse de forma violenta. Se tiene pensado que los volantes alcanzen la velocidad maxima
+        # sufrir el robot, de iniciarse de forma violenta. Se tiene pensado que los volantes alcanzen la velocidad maxima
         # en 30 segundos, como maximo, mediante parametros que se definen como parametros de ROS, pero con defaults
         # especificados en el codigo superior. 
         #
         # Una posibilidad mas seria que la senal de control de los volantes, puesto que deben girar a la misma velocidad, se
-        # repita en el micro para ambos, y se ahorren problemas de retraso de comunicaciones
+        # repita en el micro para ambos, y se ahorren problemas de retraso de comunicaciones que se reflejen en jerk
         #
         # Es una propuesta aceptable, pero deberia brindarse alguna forma de comunicacion explicita de ello fuera del codigo
         # Propongo usar algun mensaje adicional, por ejemplo, usar alive como una serie de codigos de control que especifiquen el
@@ -88,6 +86,8 @@ class Control_ESC_Volantes:
         # operaciones en el estado
         # salidas en los estados
         #
+        # transcisiones de estados
+        #
         if (self.state > 0 and selg.signal == 0):
             self.state = -1
             self.task_done = False
@@ -100,6 +100,8 @@ class Control_ESC_Volantes:
             self.task_time = 0
         if (self.state == 1 and self.task_done):
             self.state = 2
+        #
+        # acciones dentro de los estados
         #
         if (self.state == -1):
             # secuencia de apagado, que dure por lo menos cuatro veces el tiempo de encendido
@@ -125,6 +127,12 @@ class Control_ESC_Volantes:
             # encendido, quiza publicar el valor de senal constantemente
             self.vol1 = self.signal
             self.vol2 = self.signal
+        #
+        # salidas, independientes de los estados pero quiza dependientes de modos de operacion
+        #
+        # la publicacion se hace de manera continua, no tiene porque ser asi, pero si se agregase algun modo
+        # de operacion diferente, por ejemplo, para pruebas manuales, la division de modos de salida se haria aqui pero
+        # la maquina de estados y demas seguiria funcionando, aunque no se le de salida
         #
         self.vol1Pub.publish(self.vol1 * 100)
         self.vol2Pub.publish(self.vol2 * 100)

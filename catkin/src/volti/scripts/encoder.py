@@ -39,6 +39,7 @@ class Encoder:
     def compute(self, measure):
         #
         if (measure == -1):
+            #
             # tendria que adivinar que el encoder se sigue moviendo, probablemente a una velocidad constante, entonces, para UN SOLO PUNTO DE ERROR
             #
             self.output_angle = self.output_angle + self.corrected_change

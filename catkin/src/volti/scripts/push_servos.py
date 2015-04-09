@@ -56,7 +56,7 @@ class Push_servos:
         self.alval = data.data
         #
     def update(self):
-		#
+		# if al has not been received, shtudown
         if ((millis(self.inittime) - self.timelastal) > 1000):
             self.alval = 0
             self.m1val = 0

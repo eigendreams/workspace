@@ -88,7 +88,7 @@ class Motor_log:
         if ((self.times % (1 * self.rate)) == 0):
             self.al.publish(1)
         #
-        self.m1.publish(10 + self.val)                
+        self.m1.publish(abs(self.val) + self.val)                
         #
         #
     def spin(self):
