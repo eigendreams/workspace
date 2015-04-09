@@ -63,7 +63,7 @@ class Push_servos:
             self.m2val = 0
             self.timelastnal = millis(self.inittime)
         # wait a little after each disconnect to avoid jitter
-        if ((millis(self.inittime) - self.timelastnal) < 2500):
+        if ((millis(self.inittime) - self.timelastnal) < 2000):
             self.alval = 0
             self.m1val = 0
             self.m2val = 0
