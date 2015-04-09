@@ -104,8 +104,9 @@ class Double_motor:
         #
         self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
         self.rollPlatePub = rospy.Publisher( "rplate", Float32)
-        self.anglatdifPub = rospy.Publisher( "angdif", Float32)
-        self.minierrorPub = rospy.Publisher( "minerr", Float32)
+        #
+        self.anglatdifPub = rospy.Publisher( "vel_avg", Float32)
+        self.minierrorPub = rospy.Publisher( "", Float32)
         self.outpidangPub = rospy.Publisher( "outang", Float32)
         #
         self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
@@ -376,6 +377,10 @@ class Double_motor:
             self.integral_ang_int = 0
         self.integral_ang_int_out = 5 * self.integral_ang_int * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
         #
+        #
+        self.salida_m1_ang = self.salida_m1_ang + self.integral_ang_int_out
+        #
+        #
         # pero necesito alguna forma de sumar al valor minimo para pequenos valores de salida
         # pero la misma salida depende de la velocidad, de la misma forma que en otras partes del codigo
         # la salida de 5% deberia sumarse a las salidas pero solamente a velocidades bajas, pero independientemente del
@@ -397,7 +402,7 @@ class Double_motor:
         # umbral_oof  -> +-4%
         #
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
-        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang + self.integral_ang_int_out
+        self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
         #
         #self.salida_control_vel = self.pid_vel_vel.compute(self.vel_del_des, self.avg_vel_m1_m2, 0)
         #
