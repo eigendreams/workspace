@@ -24,6 +24,7 @@ from numpy.linalg import inv
 ################################################################################
 from volti.msg import float32_3
 from volti.msg import float32_12
+from volti.msg import pid_ext
 ################################################################################
 #
 class Control:
@@ -89,34 +90,63 @@ class Control:
         self.powsub = rospy.Subscriber("con_mode", Int16, self.modecb)
         #
         # Asociaciones con publicadores y suscriptores
-        self.m1    = rospy.Publisher("m1",     Int16)              # salida al motor 1
-        self.e1ang = rospy.Publisher("e1_ang", Float32)     #
-        self.e1vel = rospy.Publisher("e1_vel", Float32)     #
+        self.e1_proc_msg = float32_3()
+        self.m1    = rospy.Publisher("m1",     Int16)        
+        self.e1pub = rospy.Publisher("e1_proc", float32_3)     
         #
-        self.m2    = rospy.Publisher("m2",     Int16)              # salida al motor 1
-        self.e2ang = rospy.Publisher("e2_ang", Float32)     #
-        self.e2vel = rospy.Publisher("e2_vel", Float32)     #
+        self.e2_proc_msg = float32_3()
+        self.m2    = rospy.Publisher("m2",     Int16)            
+        self.e2pub = rospy.Publisher("e2_proc", float32_3)     
         #
         self.normalizedkp0rps = 1
         self.normalizedkp1rps = 1
         self.normalizedkpvel  = 1
         self.normalizedkmvel  = 1
         #
-        self.rollPenduPub = rospy.Publisher( "rpendu", Float32)
-        self.rollPlatePub = rospy.Publisher( "rplate", Float32)
+        self.rplate_proc_msg = float32_3()
+        self.rpendu_proc_msg = float32_3()
+        self.rollPenduPub = rospy.Publisher("rpendu", float32_3)
+        self.rollPlatePub = rospy.Publisher("rplate", float32_3)
         #
-        self.anglatdifPub = rospy.Publisher( "angdif", Float32)
-        self.minierrorPub = rospy.Publisher( "minerr", Float32)
-        self.outpidangPub = rospy.Publisher( "outang", Float32)
+        # los datos qu eme gustaria poder publicar son todos estos:
+        # la velocidad de cada motor, ya se publica en e1_proc
+        # la velocidad suma de las individuales
+        # las imus en roll y sus datos filtrados
+        # el error y sus derivadas
+        # los coeficientes de decremento de las salidas
+        # todas las componentes de salida de los controladores, especificamente
+        #   para la posicion
+        #       contribucion integral interna
+        #       parte proporcional
+        #       parte derivativa
+        #       parte acelerativa
+        #       parte sinusoidal
+        #       salida de posicione
+        #   para la velocidad
+        #       contribucion de la parte p
+        #       contribucion de la parte m
+        #       contribucion de la parte angular para la velocidad deseada del control de velocidad
         #
-        self.e1    = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
-        self.e2    = rospy.Subscriber("e2",    Int16, self.e2cb)  # entrada del encoder 1
+        self.pidangmsg    = pid_ext()
+        self.pidvelm1msg  = pid_ext()
+        self.pidvelm2msg  = pid_ext()
+        self.pidangpub    = rospy.Publisher("pidang", pid_ext)
+        self.pidvelm1vel  = rospy.Publisher("pidvm1", pid_ext)
+        self.pidvelm2vel  = rospy.Publisher("pidvm2", pid_ext)
+        #
+        self.err_proc_msg = float32_3()
+        self.errPub       = rospy.Publisher("errpro", float32_3)
+        self.avg_vel_pub  = rospy.Publisher("avgvel", Float32)
+        self.exp_pub      = rospy.Publisher("expdec", Float32)
+        #
+        self.e1           = rospy.Subscriber("e1",    Int16, self.e1cb)  # entrada del encoder 1
+        self.e2           = rospy.Subscriber("e2",    Int16, self.e2cb)  # entrada del encoder 1
         #
         self.veldeldessub = rospy.Subscriber("vel_delante_des", Float32, self.veldeldescb)
         self.anglatdessub = rospy.Subscriber("ang_lateral_des", Float32, self.anglatdescb)
         #
-        self.subImuPlate = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
-        self.subImuPendu = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
+        self.subImuPlate  = rospy.Subscriber('imu_plate_3', float32_3, self.imuplatecb)
+        self.subImuPendu  = rospy.Subscriber('imu_pendu_3', float32_3, self.imupenducb)
         #
         self.srv = Server(VOLConfig, self.SRVcallback)
         #
@@ -231,8 +261,9 @@ class Control:
         self.speed_m1 = self.X_m1[1, 0]
         self.accel_m1 = self.X_m1[2, 0]
         #
-        self.e1ang.publish(self.angle_m1)
-        self.e1vel.publish(self.speed_m1)
+        self.e1_proc_msg.data[0] = self.angle_m1
+        self.e1_proc_msg.data[1] = self.speed_m1
+        self.e1_proc_msg.data[2] = self.accel_m1
         #
     def e2cb(self, data):
         #
@@ -244,8 +275,9 @@ class Control:
         self.speed_m2 = self.X_m2[1, 0]
         self.accel_m2 = self.X_m2[2, 0]
         #
-        self.e2ang.publish(self.angle_m2)
-        self.e2vel.publish(self.speed_m2)
+        self.e2_proc_msg.data[0] = self.angle_m2
+        self.e2_proc_msg.data[1] = self.speed_m2
+        self.e2_proc_msg.data[2] = self.accel_m2
         #
     def getKp(self, speed):
         #
@@ -268,12 +300,39 @@ class Control:
         self.avg_vel_m1_m2     = (self.speed_m1 + self.speed_m2) / 2;
         self.avg_vel_m1_m2_abs = (abs(self.speed_m1) + abs(self.speed_m2)) / 2;
         #
-        self.rollPenduPub.publish(self.ang_pendu)
-        self.rollPlatePub.publish(self.ang_plate)
-        #
         self.ang_control = self.ang_plate - self.ang_lat_des
         self.vel_control = self.vel_plate
         self.ace_control = self.ace_plate 
+        #
+        self.decexp = exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
+        #
+        #
+        #
+        self.rplate_proc_msg.data[0] = self.ang_plate
+        self.rplate_proc_msg.data[1] = self.vel_plate
+        self.rplate_proc_msg.data[2] = self.ace_plate
+        #
+        self.rpendu_proc_msg.data[0] = self.ang_pendu
+        self.rpendu_proc_msg.data[1] = self.vel_pendu
+        self.rpendu_proc_msg.data[2] = self.ace_pendu
+        #
+        #
+        #
+        self.err_proc_msg.data[0] = self.ang_control
+        self.err_proc_msg.data[1] = self.vel_control
+        self.err_proc_msg.data[2] = self.ace_control
+        #
+        #
+        #
+        self.exp_pub.publish(self.decexp)
+        self.errPub.publish(self.err_proc_msg)
+        self.avg_vel_pub.publish(self.avg_vel_m1_m2)
+        self.e1pub.publish(self.e1_proc_msg)
+        self.e2pub.publish(self.e2_proc_msg)
+        self.rollPenduPub.publish(self.rpendu_proc_msg)
+        self.rollPlatePub.publish(self.rplate_proc_msg)
+        #
+        #
         #
         if abs(self.ang_control) < self.pos_settings['umbral']:
             self.ang_control_tmp = 0
@@ -290,14 +349,14 @@ class Control:
         if abs(self.ang_control) > self.pos_settings['umbral_int']:
             self.integral_ang_int = 0
         #
-        self.integral_ang_int_out = 3 * self.integral_ang_int * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
+        self.integral_ang_int_out = 3 * self.integral_ang_int * self.decexp
         #
         self.salida_m1_ang = self.salida_m1_ang + self.integral_ang_int_out
         #
         if abs(self.ang_control) < self.pos_settings['umbral_oof']:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal'])
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * self.decexp
         else:
-            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m1_ang
+            self.salida_m1_ang = sign(self.salida_m1_ang) * 5 * self.decexp + self.salida_m1_ang
         #
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
         self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
@@ -311,8 +370,8 @@ class Control:
         self.salida_m1_vel = constrain(self.salida_m1_vel, -self.vel_settings['range'], self.vel_settings['range'])
         self.salida_m2_vel = constrain(self.salida_m2_vel, -self.vel_settings['range'], self.vel_settings['range'])
         #
-        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m1_vel )
-        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * exp(- abs(self.avg_vel_m1_m2) * self.pos_settings['div_minimal']) + self.salida_m2_vel )
+        self.out_pos_m1 = self.profile_m1.compute( self.salida_m1_ang * self.decexp + self.salida_m1_vel )
+        self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * self.decexp + self.salida_m2_vel )
         #
         if (self.con_mode is 1):
             return
@@ -325,39 +384,6 @@ class Control:
         self.times = self.times + 1
         #
         self.controller()
-        #
-        # the interaction between modifying the values in rqt at the same time that with the joystick could
-        # lead to runaway exponential growth, not catched by the rqt applet, be careful
-        #
-        # a possible solutino would be to avoid setting the paramters, and just pass to the pid reconfigure methods, but
-        # i feel that would be expensive
-        #
-        # you dont know if that is necessary...
-        #
-        # because the methods are not updated outside of a dyn reconf event!!!
-        # a call here would be expensive, but useful regardless...
-        #        
-        # do every second? its not another node, after all, overhead should be smalll
-        #
-        #
-        #
-        # self.roll_des_val
-        #
-        #self.roll_diff_act_val  = self.rollPlate - self.rollPendu - 0.126
-        #self.roll_diff_des_val  = self.roll_des_val
-        #
-        #rospy.loginfo("rolldiffact: " + str(self.roll_diff_act_val) + " rolldiffdes: " + str(self.roll_diff_des_val))
-        #
-        #self.out_pos_m1 = -self.pid_pos_m1.compute(self.roll_diff_des_val, self.roll_diff_act_val, 0)
-        #self.limited_out_m1 = constrain(self.out_pos_m1 + 100, -500, 500)#self.limit_m1.compute(self.final_out_m1)
-        #self.m1.publish(self.limited_out_m1)
-        #self.out_pos_m2 = self.pid_pos_m2.compute(self.roll_diff_des_val, self.roll_diff_act_val, 0)
-        #self.limited_out_m2 = constrain(self.out_pos_m2 + 100, -500, 500)#self.limit_m1.compute(self.final_out_m1)
-        #self.m2.publish(self.limited_out_m2)
-        #
-        #
-        #
-        #
         #
     def spin(self):
         #
