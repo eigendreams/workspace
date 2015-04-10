@@ -291,6 +291,9 @@ class Control:
         self.X_plate   = self.filter_plate.compute(self.ang_plate)
         self.X_pendu   = self.filter_pendu.compute(self.ang_pendu)
         #
+        self.ang_plate = self.X_plate[0, 0]
+        self.ang_pendu = self.X_plate[0, 0]
+        #
         self.vel_plate = self.X_plate[1, 0]
         self.vel_pendu = self.X_pendu[1, 0]
         #
