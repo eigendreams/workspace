@@ -17,7 +17,7 @@ find_package(
 
 #set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-add_message_files( FILES float32_12.msg float32_3.msg )
+add_message_files( FILES float32_12.msg float32_3.msg pid_ext.msg)
 
 generate_messages(
 	DEPENDENCIES
