@@ -121,7 +121,7 @@ class Control_interface:
             self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des * 7 * self.angmultval * 100,-3000, 3000))
             self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des * 7 * self.angmultval * 100,-3000, 3000))
         else:
-            self.angdespub.publish(self.angle_des * 0.4)
+            self.angdespub.publish(self.angle_des * 1.0)
             self.veldespub.publish(self.vel_des   * 1.0)
             #
     def spin(self):

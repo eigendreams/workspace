@@ -373,16 +373,18 @@ class Control:
         #
         #
         #
-
         #
         #
         #
         self.vel_m1_des = self.vel_del_des + self.ang_control / self.pos_settings['div_ang2vel']
         self.vel_m2_des = self.vel_del_des - self.ang_control / self.pos_settings['div_ang2vel']
+        #
         self.vel_m1_err = self.vel_m1_des - self.speed_m1
         self.vel_m2_err = self.vel_m2_des - self.speed_m2
-        self.salida_m1_vel = self.vel_settings['kp'] * self.vel_m1_err - self.vel_settings['kd'] * self.accel_m1 + self.vel_settings['km'] * self.vel_m1_des
-        self.salida_m2_vel = self.vel_settings['kp'] * self.vel_m2_err - self.vel_settings['kd'] * self.accel_m2 + self.vel_settings['km'] * self.vel_m2_des
+        #
+        self.salida_m1_vel = self.pidvelm1msg.kp - self.pidvelm1msg.kd + self.pidvelm1msg.km
+        self.salida_m2_vel = self.pidvelm2msg.kp - self.pidvelm2msg.kd + self.pidvelm2msg.km
+        #
         self.salida_m1_vel = constrain(self.salida_m1_vel, -self.vel_settings['range'], self.vel_settings['range'])
         self.salida_m2_vel = constrain(self.salida_m2_vel, -self.vel_settings['range'], self.vel_settings['range'])
         #
@@ -390,7 +392,19 @@ class Control:
         self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * self.decexp + self.salida_m2_vel )
         #
         #
-        self.pidangpub.publish(self.pidangmsg)
+        self.pidvelm1msg.kp = self.vel_settings['kp'] * self.vel_m1_err
+        self.pidvelm1msg.kd = self.vel_settings['kd'] * self.accel_m1 
+        self.pidvelm1msg.km = self.vel_settings['km'] * self.vel_m1_des
+        self.pidvelm1msg.sub = (self.vel_settings['kp'] + self.vel_settings['km']) * self.ang_control / self.pos_settings['div_ang2vel']
+        #
+        self.pidvelm2msg.kp = self.vel_settings['kp'] * self.vel_m2_err
+        self.pidvelm2msg.kd = self.vel_settings['kd'] * self.accel_m2 
+        self.pidvelm2msg.km = self.vel_settings['km'] * self.vel_m2_des
+        self.pidvelm2msg.sub = (self.vel_settings['kp'] + self.vel_settings['km']) * -self.ang_control / self.pos_settings['div_ang2vel']
+        #
+        #
+        self.pidvelm1vel.publish(self.pidvelm1msg)
+        self.pidvelm2vel.publish(self.pidvelm2msg)
         #
         #
         if (self.con_mode is 1):
