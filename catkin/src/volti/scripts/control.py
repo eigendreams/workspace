@@ -392,15 +392,17 @@ class Control:
         self.out_pos_m2 = self.profile_m2.compute( -self.salida_m1_ang * self.decexp + self.salida_m2_vel )
         #
         #
-        self.pidvelm1msg.kp = self.vel_settings['kp'] * self.vel_m1_err
-        self.pidvelm1msg.kd = self.vel_settings['kd'] * self.accel_m1 
-        self.pidvelm1msg.km = self.vel_settings['km'] * self.vel_m1_des
+        self.pidvelm1msg.kp  = self.vel_settings['kp'] * self.vel_m1_err
+        self.pidvelm1msg.kd  = self.vel_settings['kd'] * self.accel_m1 
+        self.pidvelm1msg.km  = self.vel_settings['km'] * self.vel_m1_des
         self.pidvelm1msg.sub = (self.vel_settings['kp'] + self.vel_settings['km']) * self.ang_control / self.pos_settings['div_ang2vel']
+        self.pidvelm1msg.out = self.salida_m1_vel 
         #
-        self.pidvelm2msg.kp = self.vel_settings['kp'] * self.vel_m2_err
-        self.pidvelm2msg.kd = self.vel_settings['kd'] * self.accel_m2 
-        self.pidvelm2msg.km = self.vel_settings['km'] * self.vel_m2_des
+        self.pidvelm2msg.kp  = self.vel_settings['kp'] * self.vel_m2_err
+        self.pidvelm2msg.kd  = self.vel_settings['kd'] * self.accel_m2 
+        self.pidvelm2msg.km  = self.vel_settings['km'] * self.vel_m2_des
         self.pidvelm2msg.sub = (self.vel_settings['kp'] + self.vel_settings['km']) * -self.ang_control / self.pos_settings['div_ang2vel']
+        self.pidvelm2msg.out = self.salida_m2_vel 
         #
         #
         self.pidvelm1vel.publish(self.pidvelm1msg)
