@@ -337,6 +337,57 @@ class Control:
         #
         #
         #
+        self.fi    = self.ang_plate - self.ang_lat_des
+        self.beta  = self.ang_pendu - self.ang_plate
+        self.fip   = self.vel_plate
+        self.betap = self.vel_pendu - self.vel_plate
+        #
+        self.u = ((-5*self.fi*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
+        self.fi)))/(2*((9 + (10*(-0.419163868 + \
+        0.16569095399999997*cos(self.beta + self.fi)))/(0.4278062687504448 + \
+        0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + self.fi))))/4 - \
+        (5*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
+        self.fi)))/(2*(0.4278062687504448 + 0.032367102026846464*cos(self.fi) \
+        - 0.013726746118715057*cos(2*(self.beta + \
+        self.fi)))))*(0.4278062687504448 + 0.032367102026846464*cos(self.fi) \
+        - 0.013726746118715057*cos(2*(self.beta + self.fi)))) - (self.fi*(9 + \
+        (10*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
+        self.fi)))/(0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + \
+        self.fi))))*(0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + self.fi))))/(10*(-0.419163868 \
+        + 0.16569095399999997*cos(self.beta + self.fi))) - \
+        (2*self.fip*(0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + self.fi)))*(3 + \
+        (-0.026093055573967 + 0.03236710202684647*self.fip*sin(self.fi) - \
+        0.13890332234250014*self.betap*sin(self.beta + self.fi) - \
+        0.13890332234250014*self.fip*sin(self.beta + \
+        self.fi))/(0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + self.fi)))))/(5*(-0.419163868 \
+        + 0.16569095399999997*cos(self.beta + self.fi))))
+        #
+        """
+        u esta dada en terminos de voltaje, pero necesitamos pasarla a un porcentaje que oueda ir de 0
+        a 100, como en el resto del programa, y dejar que las funciones "administren" la zona muerta, la conversion
+        a porcenta podria ser algo como
+
+        pc = u * 100 / 15
+
+        para un maximo asumido de 15 volts, con un sensor este valor podria cambiar de manera dinamica
+        """
+        #
+        #
+        #
+        #
+        #
+        self.sal_u_pc = self.u * 100 / 15
+        self.sal_u_pc_fix = sign(self.sal_u_pc) * 5 * self.decexp + self.sal_u_pc
+        #
+        #
+        #
+        #
+        #
         if abs(self.ang_control) < self.pos_settings['umbral']:
             self.ang_control_tmp = 0
         else:
@@ -369,6 +420,14 @@ class Control:
         #
         self.salida_m1_ang = constrain(self.salida_m1_ang, -self.pos_settings['range'], self.pos_settings['range'])
         self.salida_m1_ang = self.salida_m1_ang + self.pos_settings['ki'] * self.integral_ang
+        self.pidangmsg.out = self.salida_m1_ang
+        #
+        #
+        #
+        #
+        #
+        #
+        self.salida_m1_ang = constrain(self.sal_u_pc_fix, -self.pos_settings['range'], self.pos_settings['range'])
         self.pidangmsg.out = self.salida_m1_ang
         #
         #
