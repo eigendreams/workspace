@@ -342,6 +342,7 @@ class Control:
         self.fip   = self.vel_plate
         self.betap = self.vel_pendu - self.vel_plate
         #
+        """
         self.u = ((-5*self.fi*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
         self.fi)))/(2*((9 + (10*(-0.419163868 + \
         0.16569095399999997*cos(self.beta + self.fi)))/(0.4278062687504448 + \
@@ -366,6 +367,22 @@ class Control:
         self.fi))/(0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
         0.013726746118715057*cos(2*(self.beta + self.fi)))))/(5*(-0.419163868 \
         + 0.16569095399999997*cos(self.beta + self.fi))))
+        """
+        self.u = -((0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
+        0.013726746118715057*cos(2*(self.beta + self.fi)))*(self.fi*(81 + \
+        (2620.5349931237606*(2.529793316296556 - 1.*cos(self.beta + \
+        self.fi))**2)/(13.217317645416836 + 1.*cos(self.fi) - \
+        0.42409561743679086*cos(2*(self.beta + self.fi)))**2 + \
+        (-1165.5275189205913 + 460.72045151374016*cos(self.beta + \
+        self.fi))/(13.217317645416836 + 1.*cos(self.fi) - \
+        0.42409561743679086*cos(2*(self.beta + self.fi)))) + 36*self.fip*(3 + \
+        (-0.8061597714965171 + 1.0000000000000002*self.fip*sin(self.fi) + \
+        (-4.2914970338490175*self.betap - \
+        4.2914970338490175*self.fip)*sin(self.beta + \
+        self.fi))/(13.217317645416836 + 1.*cos(self.fi) - \
+        0.42409561743679086*cos(2*(self.beta + \
+        self.fi))))))/(90*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
+        self.fi)))
         #
         """
         u esta dada en terminos de voltaje, pero necesitamos pasarla a un porcentaje que oueda ir de 0
