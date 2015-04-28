@@ -3,7 +3,7 @@
 # IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall OR rosws TOOL INSTEAD.
-# Generator version: 0.7.3
+# Generator version: 0.7.5
 # see: http://www.ros.org/wiki/rosinstall
 
 
@@ -55,4 +55,3 @@ if [ ! -z "${ROS_ROOT}" ]; then
 fi
 
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/workspace/rosbuild:~/workspace/rosbuild/robot_self_filter:~/workspace/rosbuild/hector_vision
-

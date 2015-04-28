@@ -10,19 +10,7 @@ from ino_mod import *
 Tratar de pasar de un sistema de encoders digitales de 0 a 1023 a un valor continuo en radianes que
 podria no tener limites, la primera lectura, por la disposicion mecanica, se toma como un cero de angulo,
 pero lo que se quiera controlar del motor sera velocidad, y de esta forma no deberia ser problematico con la ayuda
-de los sensores externos como la imu
-Esta clase no debe hacer ninguna forma de filtrado o derivacion, de ello se encargaran clases posteriores, solo debe
-devolver el valor del angulo sin limite del encoder en formato binario? en angulo?... Yo recomendaria en angulo para 
-reducir las modificaiones posibles a estapas superiores
-
-aunque este codigo podria tener algun valor de rate, no se podria usar, al menos de manera directa, lo unico que el valor 
-de rate seria capaz de afectar en esta clase seria la determinacion de la frecuencia de lectura minima para evitar
-errores por encima de alguna velocidad de rotacion maxima del encoder. De todas formas, es imposible usar esta informacion
-para evitar tal error, por el problema de decidir entre un movimiento en reversa, parada subita, ruido, etc. A menos
-que podamos mantener una historia del movimiento por cierta cantidad de segundos, y algun algoritmo de aprendizaje
-realize una prediccion, pero incluso en tal caso, un frenado subito casi necesariamente provocaria un error, que el
-algoritmo solo podria prevenir teniendo mas informacion, que necesitaria de mayor frecuencia, negando la necesidad de
-siquiera hacer la correccion en primer lugar
+de los sensores externos como la IMU.
 """
 #
 class Encoder:
@@ -40,29 +28,7 @@ class Encoder:
         #
         if (measure == -1):
             #
-            # tendria que adivinar que el encoder se sigue moviendo, probablemente a una velocidad constante, entonces, para UN SOLO PUNTO DE ERROR
-            #
             self.output_angle = self.output_angle + self.corrected_change
-            #
-            # no hacemos alguna forma de verificacion de que el cambio, en el proximo ciclo, sea el correcto, para que en dos puntos fallemos, deberiamos
-            # movernos a un cambio de 512 pasos entre esos dos puntos, suponiendo que solo falle el primer punto, por ende, fallariamos a una velocidad de
-            # de movimiento del motor, a un rate de 20 hz, de 512 pasos en un decimo de segundo, lo que serian 5 RPS (creo que es condierable)
-            # si los errores ocntinuan estamos en un problema, alive debera matar los motores en el tiempo que resta
-            #
-            # esto es para que no se pierda el filtro de la velocidad para errores transientes, y nada mas para eso? 
-            #
-            # y que tal que los erroes sigan? no me parece que esto tenga tanto sentido, en este caso lo mejor sea ignorar el dato erroneo
-            # pero estimar o no estimar el angulo destino?
-            # yo propondria que no, pero como hay un controlador de velocidad, pero toma de las imus, pero no se...
-            # 
-            # depende de las pruebas, las pruebas muestran que los errores son en ocasiones solamente puntuales, pero uno de los encoders parecia ser algo
-            # renuente... y daba valores de error, por periodos mas largos, porque??? hacemos verificacion y eso pero no parecia ser suficiente? parecian ser falsos???
-            # deberiamos depender de las imus solamente???
-            #
-            # la naturaleza de los errores parecia ser transiente y puntual, con eso en mente, esta aproximacion esta bien
-            #
-            # ok
-            #
             return self.output_angle
         #
         if (self.times == 0):

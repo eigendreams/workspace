@@ -18,18 +18,16 @@ class Control_interface:
         self.nodename = rospy.get_name()
         rospy.loginfo("Node starting with name %s", self.nodename) 
         self.rate = float(rospy.get_param("rate", 5))
-        #
+        # Nombres de los botones de Joy
         self.axes_names     = {'left_stick_hor':0, 'left_stick_ver':1, 'LT':2, 'right_stick_hor':3, 'right_stick_ver':4, 'RT':5, 'cross_hor':6, 'cross_ver':7}
         self.buttons_names  = {'A':0, 'B':1, 'X':2, 'Y':3, 'LB':4, 'RB':5, 'back':6, 'start':7, 'power':8, 'btn_stick_left':9, 'btn_stick_right':10}
-        #
+        # Publicadores a los motores, SOLO para el modo manual
         self.m1    = rospy.Publisher("m1", Int16)              # salida al motor 1
         self.m2    = rospy.Publisher("m2", Int16)              # salida al motor 1
-        #
+        # Publicadores para valores controlados, bandera de comunicacion, y modo de control (0 automatico, 1 manual)
         self.veldespub  = rospy.Publisher("vel_delante_des", Float32)
         self.angdespub  = rospy.Publisher("ang_lateral_des", Float32)
-        #
         self.alpub      = rospy.Publisher("al", Int16)
-        #
         self.conmode    = rospy.Publisher("con_mode", Int16)
         #
         self.btog = 0
@@ -49,38 +47,30 @@ class Control_interface:
         #
         self.angle_des = 0
         self.vel_des    = 0
-        #
-        self.angdifval = 0
-        #
+        # Proteccion por timeout de Joy
         self.inittime = rospy.get_time()
         self.timelastjoy = -1000
         self.timed_out = True
         #
-        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb) 
-        #
-        self.angdifsub = rospy.Subscriber( "angdif", Float32, self.angdifcb)       
-        #
-    def angdifcb(self, data):
-        #
-        self.angdifval = data.data
+        self.joySub = rospy.Subscriber("joy", Joy, self.joyCb)       
         #
     def joyCb(self, data):
         #
         self.timelastjoy = millis(self.inittime)
         self.timed_out   = False
-        #
+        # Quiero detectar cambion del boton de power
         self.lastpowtog = self.powtog
         if (data.buttons[self.buttons_names['power']] is 1 and self.lastpow is 0):
             self.powtog = int(not self.powtog)
         self.powtogchanged = self.lastpowtog or not (self.powtog == self.lastpowtog)
         self.lastpow = data.buttons[self.buttons_names['power']]
-        #
+        # y del boton b
         self.lastbtog = self.btog
         if (data.buttons[self.buttons_names['B']] is 1 and self.lastb is 0):
             self.btog = int(not self.btog)
         self.btogchanged = 0 or not (self.btog == self.lastbtog)
         self.lastb = data.buttons[self.buttons_names['B']]
-        #
+        # Corrigiendo escala y signo de los gatillos
         self.rtval = (data.axes[self.axes_names['RT']] - 1) / -2.
         self.ltval = (data.axes[self.axes_names['LT']] - 1) / -2.
         #
@@ -88,15 +78,10 @@ class Control_interface:
         self.lastrb = data.buttons[self.buttons_names['RB']]
         #
         self.angle_des   = -data.axes[self.axes_names['left_stick_hor']]
-        #
         self.vel_des     = data.axes[self.axes_names['right_stick_ver']]
         #
     def update(self):
-        #
-        # publish the control mode, if 0 control is used, if 1 pwm values are passed directly and the motor control node waits 
-        #
-        # we timed out! 1s to give room to wifi and processing delays, skip publishing, maybe control was disconnected?
-        #
+        # Proteccion por timeout
         if ((millis(self.inittime) - self.timelastjoy) > 1000):
             if not self.timed_out :
                 self.angle_des = 0
@@ -107,20 +92,16 @@ class Control_interface:
         #
         self.conmode.publish(self.btog)
         self.alpub.publish(self.powtog)
-        #
+        # Obteniendo valores de escalamiento para el modo manual
         self.angmultval = constrain( (1 + self.ltval) * (1 + self.lastlb), 1, 4)
         self.velmultval = constrain( (1 + self.rtval) * (1 + self.lastrb), 1, 4)
         #
         if (self.btog is 1):
-            #
-            if (self.angdifval > 0.41):
-                self.angle_des = constrain(self.angle_des, -30, 0)
-            if (self.angdifval < -0.41):
-                self.angle_des = constrain(self.angle_des, 0, 30)
-            #
+            # Modo manual
             self.m1.publish(constrain(self.vel_des * 7 * self.velmultval * 100 - self.angle_des * 7 * self.angmultval * 100,-3000, 3000))
             self.m2.publish(constrain(self.vel_des * 7 * self.velmultval * 100 + self.angle_des * 7 * self.angmultval * 100,-3000, 3000))
         else:
+            # Modo controlado
             self.angdespub.publish(self.angle_des * 1.0)
             self.veldespub.publish(self.vel_des   * 1.0)
             #

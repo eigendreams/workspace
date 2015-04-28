@@ -75,7 +75,7 @@
         </li>
       </ul> -->
       <!-- <div id="map"></div> -->
-      <img class="img-responsive" src="images/map.jpg" />
+      <img class="img-responsive" ng-src="{{ mapImageUrl }}" />
     </div>
 
     <div class="col-md-3 well well-sm sensor-container">
@@ -107,7 +107,7 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <p><img style="max-height: 150px" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/laser_node_17/image_detected?quality={{videoQuality}}?{{videoReset}}"></p>
+              <p><img style="max-height: 150px" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/laser_node_17/image_detected&quality={{videoQuality}}?{{videoReset}}"></p>
             </div>
           </div>
         </div>
@@ -158,8 +158,8 @@
         <!-- <div class="col-lg-2"></div> -->
         <div class="col-lg-12 col-sm-12">
           <div class="camera-frame-horizontal">
-          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video1}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
-          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video2}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
+          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video1}}/image_raw&quality={{videoQuality}}&{{videoReset}}">
+          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video2}}/image_raw&quality={{videoQuality}}&{{videoReset}}">
           </div>
         </div>
         <!-- <div class="col-lg-2"></div> -->
@@ -167,13 +167,13 @@
       <div class="row camera container-vertical">
         <!-- <div class="col-lg-2"></div> -->
         <div class="col-lg-5 col-sm-12">
-          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video3}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
+          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video3}}/image_raw&quality={{videoQuality}}&{{videoReset}}">
         </div>
         <div class="col-lg-2 col-sm-12">
           Modo de operación: </br> {{operationModeMessage}}
         </div>
         <div class="col-lg-5 col-sm-12">
-          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video4}}/image_raw?quality={{videoQuality}}?{{videoReset}}">
+          <img style="height: 225px;" class="img-responsive margin-center" ng-src="http://{{serverIP}}:8080/stream?topic=/usb_cam_{{video4}}/image_raw&quality={{videoQuality}}&{{videoReset}}">
         </div>
         <!-- <div class="col-lg-2"></div> -->
       </div>

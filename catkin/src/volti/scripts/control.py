@@ -34,8 +34,6 @@ class Control:
         self.GRLinit(node_name_default)
         self.SRVinit()
         #
-        # creando los objetos PID
-        #
         self.pid_vel_m1          = PID_vel(self.vel_settings)
         self.pid_vel_m2          = PID_vel(self.vel_settings)
         #
@@ -107,25 +105,6 @@ class Control:
         self.rpendu_proc_msg = float32_3()
         self.rollPenduPub = rospy.Publisher("rpendu", float32_3)
         self.rollPlatePub = rospy.Publisher("rplate", float32_3)
-        #
-        # los datos qu eme gustaria poder publicar son todos estos:
-        # la velocidad de cada motor, ya se publica en e1_proc
-        # la velocidad suma de las individuales
-        # las imus en roll y sus datos filtrados
-        # el error y sus derivadas
-        # los coeficientes de decremento de las salidas
-        # todas las componentes de salida de los controladores, especificamente
-        #   para la posicion
-        #       contribucion integral interna
-        #       parte proporcional
-        #       parte derivativa
-        #       parte acelerativa
-        #       parte sinusoidal
-        #       salida de posicione
-        #   para la velocidad
-        #       contribucion de la parte p
-        #       contribucion de la parte m
-        #       contribucion de la parte angular para la velocidad deseada del control de velocidad
         #
         self.pidangmsg    = pid_ext()
         self.pidvelm1msg  = pid_ext()
@@ -396,14 +375,8 @@ class Control:
         """
         #
         #
-        #
-        #
-        #
-        self.sal_u_pc = self.u * 100 / 15
+        self.sal_u_pc = self.u * 100 / 13.6
         self.sal_u_pc_fix = sign(self.sal_u_pc) * 5 * self.decexp + self.sal_u_pc
-        #
-        #
-        #
         #
         #
         if abs(self.ang_control) < self.pos_settings['umbral']:
@@ -441,20 +414,12 @@ class Control:
         self.pidangmsg.out = self.salida_m1_ang
         #
         #
+        #self.salida_m1_ang = constrain(self.sal_u_pc_fix  + self.pidangmsg.ki, -self.pos_settings['range'], self.pos_settings['range'])
+        #self.pidangmsg.out = self.salida_m1_ang
         #
         #
-        #
-        #
-        self.salida_m1_ang = constrain(self.sal_u_pc_fix, -self.pos_settings['range'], self.pos_settings['range'])
-        self.pidangmsg.out = self.salida_m1_ang
-        #
-        #
-        #
-        #
-        #
-        #
-        self.vel_m1_des = self.vel_del_des + 0 * self.ang_control / self.pos_settings['div_ang2vel']
-        self.vel_m2_des = self.vel_del_des - 0 * self.ang_control / self.pos_settings['div_ang2vel']
+        self.vel_m1_des = self.vel_del_des + self.ang_control / self.pos_settings['div_ang2vel']
+        self.vel_m2_des = self.vel_del_des - self.ang_control / self.pos_settings['div_ang2vel']
         #
         self.vel_m1_err = self.vel_m1_des - self.speed_m1
         self.vel_m2_err = self.vel_m2_des - self.speed_m2

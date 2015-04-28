@@ -3,7 +3,7 @@
 # IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall OR rosws TOOL INSTEAD.
-# Generator version: 0.7.3
+# Generator version: 0.7.5
 # see: http://www.ros.org/wiki/rosinstall
 
 

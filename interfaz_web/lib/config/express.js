@@ -11,8 +11,8 @@ var express = require('express'),
     errorHandler = require('errorhandler'),
     path = require('path'),
     config = require('./config'),
-    passport = require('passport'),
-    mongoStore = require('connect-mongo')(session);
+    passport = require('passport');
+    // mongoStore = require('connect-mongo')(session);
 
 /**
  * Express configuration
@@ -53,15 +53,6 @@ module.exports = function(app) {
   app.use(cookieParser());
 
   // Persist sessions with mongoStore
-  app.use(session({
-    secret: 'angular-fullstack secret',
-    store: new mongoStore({
-      url: config.mongo.uri,
-      collection: 'sessions'
-    }, function () {
-      console.log('db connection open');
-    })
-  }));
 
   // Use passport session
   app.use(passport.initialize());

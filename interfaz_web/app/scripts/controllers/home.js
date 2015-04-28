@@ -214,6 +214,10 @@ angular.module('finderApp')
 
     }, 200);
 
+    $interval(function () {
+    	$scope.mapImageUrl = 'images/map.jpg?' + new Date().getTime();
+    }, 1000);
+
     $scope.publishData = function (topic, data) {
         console.log("publishData");
         Ros.topic.publishData(topic, data);

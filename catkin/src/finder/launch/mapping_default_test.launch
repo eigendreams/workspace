@@ -14,8 +14,9 @@
   <node pkg="tf" type="static_transform_publisher" name="laser_node_5" args="0 0 0 0 0 0 /odom /base_footprint 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_6" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_7" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 
-  <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/>-->
-  <!--<node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /base_stabilized /base_stabilized_frame 100"/>-->
+  <node pkg="tf" type="static_transform_publisher" name="laser_node_8" args="0 0 0 0 0 0 /scanmatcher_frame /map 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="laser_node_81" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="laser_node_82" args="0 0 0 0 0 0 /base_stabilized /base_stabilized_frame 100"/>
   <node pkg="tf" type="static_transform_publisher" name="laser_node_9" args="0 0 0 0 0 0 /base_frame /laser 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="laser_node_10" args="0 0 0 0 0 0 /base_frame /nav 100"/>
 
@@ -61,7 +62,7 @@
     <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
   </node>
     
-  <!--<node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>-->
+  <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>
 </launch>
   
   

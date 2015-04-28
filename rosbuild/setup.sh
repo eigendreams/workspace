@@ -3,7 +3,7 @@
 # IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall OR rosws TOOL INSTEAD.
-# Generator version: 0.7.3
+# Generator version: 0.7.5
 # see: http://www.ros.org/wiki/rosinstall
 
 
@@ -23,7 +23,7 @@ if [ x"$_ROSINSTALL_IN_RECURSION" != x"recurse" ] ; then
   export ROS_PACKAGE_PATH=
 fi
 
-export ROS_WORKSPACE=/home/finder/workspace/rosbuild
+export ROS_WORKSPACE=/home/jakob/workspace/rosbuild
 if [ ! "$ROS_MASTER_URI" ] ; then export ROS_MASTER_URI=http://localhost:11311 ; fi
 unset ROS_ROOT
 
@@ -36,7 +36,7 @@ unset _SETUP_SH_ERROR
 # We store into _PARSED_CONFIG the result of python code,
 # which is the ros_package_path and the list of setup_files to source
 # Using python here to benefit of the pyyaml library
-export _PARSED_CONFIG=`/usr/bin/env python << EOPYTHON
+export _PARSED_CONFIG=`/usr/bin/env python2 << EOPYTHON
 
 import sys
 import os
@@ -150,7 +150,7 @@ unset _SETUPFILES_ROSINSTALL
 
 # prepend elements from .rosinstall file to ROS_PACKAGE_PATH
 # ignoring duplicates entries from value set by setup files
-export ROS_PACKAGE_PATH=`/usr/bin/env python << EOPYTHON
+export ROS_PACKAGE_PATH=`/usr/bin/env python2 << EOPYTHON
 import os
 ros_package_path = os.environ.get('ROS_PACKAGE_PATH', '')
 original_elements = ros_package_path.split(':')
@@ -167,12 +167,12 @@ EOPYTHON`
 unset _ROS_PACKAGE_PATH_ROSINSTALL
 
 # restore ROS_WORKSPACE in case other setup.sh changed/unset it
-export ROS_WORKSPACE=/home/finder/workspace/rosbuild
+export ROS_WORKSPACE=/home/jakob/workspace/rosbuild
 
 # if setup.sh did not set ROS_ROOT (pre-fuerte)
 if [ -z "${ROS_ROOT}" ]; then
   # using ROS_ROOT now being in ROS_PACKAGE_PATH
-  export _ROS_ROOT_ROSINSTALL=`/usr/bin/env python << EOPYTHON
+  export _ROS_ROOT_ROSINSTALL=`/usr/bin/env python2 << EOPYTHON
 import sys, os;
 if 'ROS_PACKAGE_PATH' in os.environ:
   pkg_path = os.environ['ROS_PACKAGE_PATH']

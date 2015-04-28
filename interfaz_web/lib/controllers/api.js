@@ -131,9 +131,9 @@ var nodes = {
     state: "0"
   },
   rosmjpegserver : {
-    start: ['rosrun',['mjpeg_server','mjpeg_server']],
-    stop: "kill -9 $(ps aux | grep mjpeg_server | grep -v grep | awk '{print $2}')",
-    evalState: "ps aux | grep -v grep | egrep 'mjpeg_server' -c",
+    start: ['rosrun',['web_video_server','web_video_server']],
+    stop: "kill -9 $(ps aux | grep web_video_server | grep -v grep | awk '{print $2}')",
+    evalState: "ps aux | grep -v grep | egrep 'web_video_server' -c",
     state: "0"
   },
   rosbatterymonitor : {
