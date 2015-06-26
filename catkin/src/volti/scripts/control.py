@@ -348,21 +348,36 @@ class Control:
         + 0.16569095399999997*cos(self.beta + self.fi))))
         """
         #
-        self.u = -((0.4278062687504448 + 0.032367102026846464*cos(self.fi) - \
-        0.013726746118715057*cos(2*(self.beta + self.fi)))*(self.fi*(81 + \
-        (2620.5349931237606*(2.529793316296556 - 1.*cos(self.beta + \
-        self.fi))**2)/(13.217317645416836 + 1.*cos(self.fi) - \
-        0.42409561743679086*cos(2*(self.beta + self.fi)))**2 + \
-        (-1165.5275189205913 + 460.72045151374016*cos(self.beta + \
-        self.fi))/(13.217317645416836 + 1.*cos(self.fi) - \
-        0.42409561743679086*cos(2*(self.beta + self.fi)))) + 36*self.fip*(3 + \
-        (-0.8061597714965171 + 1.0000000000000002*self.fip*sin(self.fi) + \
-        (-4.2914970338490175*self.betap - \
-        4.2914970338490175*self.fip)*sin(self.beta + \
-        self.fi))/(13.217317645416836 + 1.*cos(self.fi) - \
-        0.42409561743679086*cos(2*(self.beta + \
-        self.fi))))))/(90*(-0.419163868 + 0.16569095399999997*cos(self.beta + \
-        self.fi)))
+        self.u = -(((1.0866596181101764 + 0.0520677785084838*cos(self.fi) - \
+        0.04382967488275723*cos(2*(self.beta + self.fi)))*(36*self.fip*(3. + \
+        (1.*self.fip*sin(self.fi) + (-7.668477375828778*self.betap - \
+        7.668477375828778*self.fip)*sin(self.beta + \
+        self.fi))/(20.87009757739364 + 1.*cos(self.fi) - \
+        0.8417811579116194*cos(2*(self.beta + self.fi)))) + self.fi*(81 + \
+        (3233.405311403718*(2.2774557566878655 - 1.*cos(self.beta + \
+        self.fi))**2)/(20.87009757739364 + 1.*cos(self.fi) - \
+        0.8417811579116194*cos(2*(self.beta + self.fi)))**2 + \
+        36*(((19.65931863727455 + 0.5*self.fip**2)*cos(self.fi) + \
+        (-3.834238687914389*self.betap**2 - \
+        7.668477375828778*self.betap*self.fip - \
+        3.834238687914389*self.fip**2)*cos(self.beta + self.fi) - \
+        66.1953760249538*cos(2*(self.beta + self.fi)) + \
+        7.541694904952274*self.betap*sin(self.beta + \
+        self.fi))/(20.87009757739364 + 1.*cos(self.fi) - \
+        0.8417811579116194*cos(2*(self.beta + self.fi))) - ((0. + \
+        0.894309732065766*self.betap - \
+        0.3926792998896158*self.betap*cos(self.beta + self.fi) + \
+        (1.023617048433319 + 0.026033889254241903*self.fip**2)*sin(self.fi) + \
+        (-0.19964029075098597*self.betap**2 - \
+        0.39928058150197193*self.betap*self.fip - \
+        0.19964029075098597*self.fip**2)*sin(self.beta + self.fi) - \
+        1.7233230885765467*sin(2*(self.beta + \
+        self.fi)))*(-0.0520677785084838*sin(self.fi) + \
+        0.08765934976551445*sin(2*(self.beta + \
+        self.fi))))/(1.0866596181101764 + 0.0520677785084838*cos(self.fi) - \
+        0.04382967488275723*cos(2*(self.beta + \
+        self.fi)))**2))))/(-60.686428700700006 + 26.646589521*cos(self.beta + \
+        self.fi))) -2.5 * self.beta
         #
         """
         u esta dada en terminos de voltaje, pero necesitamos pasarla a un porcentaje que oueda ir de 0
@@ -414,8 +429,8 @@ class Control:
         self.pidangmsg.out = self.salida_m1_ang
         #
         #
-        #self.salida_m1_ang = constrain(self.sal_u_pc_fix  + self.pidangmsg.ki, -self.pos_settings['range'], self.pos_settings['range'])
-        #self.pidangmsg.out = self.salida_m1_ang
+        self.salida_m1_ang = constrain(self.sal_u_pc_fix  + self.pidangmsg.ki, -self.pos_settings['range'], self.pos_settings['range'])
+        self.pidangmsg.out = self.salida_m1_ang
         #
         #
         self.vel_m1_des = self.vel_del_des + self.ang_control / self.pos_settings['div_ang2vel']
